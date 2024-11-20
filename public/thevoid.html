@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Void</title>
+    <style>
+      :root {
+        --accent: #6d28d9;
+        --background: #1a1a1a;
+        --text: #ffffff;
+        --card-bg: #2a2a2a;
+        --fog: rgba(255, 255, 255, 0.05);
+        --glow: 0 0 10px var(--accent);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--text);
+        font-family: system-ui, -apple-system, sans-serif;
+        line-height: 1.5;
+        overflow-x: hidden;
+        min-height: 100vh;
+      }
+
+      .nav-header {
+        padding: 1rem;
+        background: var(--card-bg);
+        margin-bottom: 2rem;
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+      }
+
+      .back-btn {
+        color: var(--text);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        position: relative;
+      }
+
+      .void-entrance {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        transition: opacity 2s ease-out;
+      }
+
+      .void-text {
+        font-size: 2rem;
+        opacity: 0;
+        animation: fadeInOut 3s ease-in-out;
+      }
+
+      .title {
+        font-size: 2.5rem;
+        color: var(--text);
+        margin-bottom: 2rem;
+        text-align: center;
+        text-shadow: var(--glow);
+      }
+
+      .phase-card {
+        background: var(--card-bg);
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease-out;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .phase-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: var(--accent);
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform 0.5s ease-out;
+      }
+
+      .phase-card.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .phase-card.visible::before {
+        transform: scaleX(1);
+      }
+
+      .phase-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .phase-icon {
+        font-size: 1.5rem;
+        padding: 0.5rem;
+        border-radius: 8px;
+        background: var(--accent);
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+      }
+
+      .phase-card:hover .phase-icon {
+        opacity: 1;
+        text-shadow: var(--glow);
+      }
+
+      .phase-title {
+        font-size: 1.5rem;
+        color: var(--accent);
+      }
+
+      .phase-content {
+        position: relative;
+        padding: 1rem;
+      }
+
+      .phase-text {
+        margin-bottom: 1rem;
+        line-height: 1.6;
+      }
+
+      .phase-image {
+        width: 100%;
+        height: 200px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 4px;
+        margin: 1rem 0;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+      }
+
+      .phase-image:hover {
+        opacity: 1;
+      }
+
+      .memory-fragment {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background: var(--accent);
+        border-radius: 50%;
+        opacity: 0.3;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .memory-fragment:hover {
+        opacity: 1;
+        box-shadow: var(--glow);
+      }
+
+      .hidden-quote {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(0, 0, 0, 0.9);
+        padding: 2rem;
+        border-radius: 8px;
+        z-index: 100;
+        display: none;
+        text-align: center;
+        border: 1px solid var(--accent);
+        box-shadow: var(--glow);
+        max-width: 80%;
+      }
+
+      .timeline {
+        position: fixed;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        z-index: 50;
+      }
+
+      .timeline-dot {
+        width: 10px;
+        height: 10px;
+        background: var(--accent);
+        border-radius: 50%;
+        opacity: 0.3;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .timeline-dot.active {
+        opacity: 1;
+        box-shadow: var(--glow);
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translate(0, 0);
+        }
+        100% {
+          transform: translate(var(--moveX), var(--moveY));
+        }
+      }
+
+      .particle {
+        position: absolute;
+        background: var(--accent);
+        border-radius: 50%;
+        opacity: 0.2;
+        pointer-events: none;
+      }
+
+      .phase-date {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        font-size: 0.8rem;
+        color: var(--accent);
+        opacity: 0.7;
+      }
+
+      .secret-trigger {
+        position: absolute;
+        cursor: pointer;
+        opacity: 0;
+        width: 20px;
+        height: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="void-entrance">
+      <div class="void-text">Descending into memories...</div>
+    </div>
+
+    <div class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">← Return to Light</a>
+      </div>
+    </div>
+
+    <div class="container" id="voidContainer">
+      <h1 class="title">The Void</h1>
+      <!-- Phase cards will be inserted here -->
+    </div>
+
+    <div class="timeline" id="timeline">
+      <!-- Timeline dots will be inserted here -->
+    </div>
+
+    <div class="hidden-quote" id="quoteDisplay"></div>
+
+    <script>
+      // Content Data Structure
+      const voidData = {
+        phases: [
+          {
+            id: 'inception',
+            icon: '🌅',
+            title: 'The Ivo',
+            date: '1007-2019',
+            content: `During the lower grades I was an extrovert, easily making friends and being happy. I am gifted so I visited the Begabtenförderung (Program for Gifted Kids) from first grade on. I was a independent person, not needing my parents for homework/tests. I sat before my brother’s room when he and my mom did math and solved the problems of him (He is 2yrs older) for myself.
+My parents divorced in 2010. It didn’t affect me alot as I saw my dad on the weekend every other week. Here after 6. Grade you decide between Spez. Sek, Sek and Real. You can’t go to higher levels than your grades are. I went to Spez. Sek which is the highest with Sek. being in the middle and Real at the bottom.`,
+            image: '/api/placeholder/800/400',
+            secrets: [
+              {
+                position: { top: '10px', right: '10px' },
+                quote: 'Some things better stay forgotten.',
+              },
+              {
+                position: { bottom: '10px', left: '10px' },
+                quote: 'In silence, truth whispers.',
+              },
+            ],
+          },
+          {
+            id: 'descent',
+            icon: '☀️',
+            title: 'The Ivo-Prime',
+            date: '2019-2021',
+            content: `In the Spez-Sek there were finally no more people to stop the teacher or interrupt the class. It was perfect for learning as I met new people and had my first girlfriend. We were the perfect class, I felt like my life was really good. We won all school competitions as a class and many went to the High School. I struggled with French, occasionally getting a 2.5 or 3. Still in the end I had a 4.5 in 7th grade and 4.0 in 8th grade. (4.0 is okay, everything below is bad and 6.0 is the best.)`,
+            secrets: [
+              {
+                position: { top: '50%', right: '20px' },
+                quote: 'The luck was only temporary.',
+              },
+            ],
+          },
+          {
+            id: 'abyss',
+            icon: '⚫',
+            title: 'The Fall',
+            date: '2005-2010',
+            content: `During the last 2 Weeks of the 8th grade we went to Landschulwoche (School Trip (1. Week)). Now we already knew who could and would go to the High School. I could’ve but didn’t want to. 15/20 went. During Landschulwoche I asked my then best friend „Lino“ for his phone, surprisingly he gave it to me. There I saw a WhatsApp Chat „Diä Besseri Hälfti“ (The better half). It was filled with stickers mocking others from the class. It was also used to give around secrets and meetups. Lino said that I could join and they just waited to ask me. In my class were 16 Girls and 4 Boys. All the Boys were in the group,  I shared a 4people Room with them. 
+Well guess what I did…
+I declined, not wanting to identify with that stuff. So I was shunned, basically from one moment to the next completely disliked by half the class. So I went to the other half and chilled with them. Just Ivo and a bunch of girls. I talked with Lia which was also in the „Schlächteri Häufti“ (Worse Half) about it. She is also gifted but super introverted. She also knew about the chat by building together clues that she got and heard like: „Send it into the chat, shhh not so loud“. So we decided to tell the group… Shocked by what they heard I had them promising to not act on it. I was already unpopular since I declined but knowing that I snitched would’ve destroyed me even more. So we went to the teacher. Stefan Hadorn we told him about it and also that we don’t wanna talk about it in class. It would only worsen the situation. Well the same evening a girl was so pissed that she confronted the „Besseri Hälfti“…. I flipped out, insulting her until she run out crying. Atleast the others understood me, I still had to sleep in a room with 3 boys from the group…
+Then the next day which was also the last day, the teacher called us together and said „I heard of a group…“ this mf, we had a deal. So the entire last week of school no one from both halves talked with each other. Making it the worst week in my life until later.
+<br>
+<br>
+Conclusions in my head:<br>
+People do dumb stuff for personal fun. <br>
+Friendship is no exception. <br>
+I can replace fairly normal people within seconds.<br>
+People lie alot.<br>
+Everything beautiful comes to a end.<br>`,
+            secrets: [
+              {
+                position: { bottom: '20px', right: '20px' },
+                quote: 'And they never apologized.',
+              },
+              {
+                position: { bottom: '50px', right: '20px' },
+                quote: 'Just get over it they said.',
+              },
+            ],
+          },
+          {
+            id: 'ascension',
+            icon: '🌑',
+            title: 'The Abyss',
+            date: '2022-2023',
+            content: `So going down from the Spez. Sek. To the Sek. Is like a huge downgrade. I was back in a class filled with people that interrupt and can’t focus. I had perfect grades without learning a single second. I got so bored that I started to think. Maybe think about too much. You know puberty and then the Meaning of Life hits you… so all I wanted was change in the areas where I could. I wanted justice and fairness.
+This was the first time I got good at presentations since I had this narcissistic tone in my head of „you are better than them“. So I wanted fairness at home. My brother had a bigger room and own bathroom. I had the room besides my mom occasionally hearing her do fun stuff with partners... I had to share my small bathroom with her and her boyfriend. So what I suggested was Bigger Room or Smaller Room and Bathroom. 
+This would be fairer right. I didn’t even care which one. But my mom said „We are already looking for a new Apartment" this was lie.
+So I focused on another issue. A simple ruleset that would remove 90% of conflicts me and my brother had. Rules like:
+When something is in the fridge without a name for 4days anyone can take it.
+Again my mom refused „We can live together without laws, we are a family“. Then another point I had was that I got super bored talking about how my day was emotionally. She never cared what we learned and when I told her we learned this/this. She just said don’t be so arrogant.
+So I got pissed. Bored in school, not knowing why I exist and not being able to fix the smallest flaws. I got mad, I yelled at her every evening. My dad had to come around to calm me since I would lock myself and play music so loud that the neighbors would come and complain
+<br><br>
+So after many weeks of this she said „If it is so bad here move to your dad. Everyone else is happy you are the problem.“ Kinda gave me French Revolution Vibes when the 1. , 2. and 3. Stand just got one Vote each.
+So I moved to my dad. Completely unhappy since I hated my dads apartment. Its so much dirtier has less food especially healthy food and overall just sucks. So I ignored my mom for 2.5 months then eventually made a Appointment to talk about our stuff again.
+We had the appointment, I presented my points, my options and what she would accept. She said no to everything. When I asked for her points or where we could make a deal that works for all parties, she was just silent.
+Is this the way you treat someone you „care about deeply“ and when she said I only had demands and everything was illusion and that I was the problem I flipped out once again. The last time for a long period. I went to my brothers room and told her I'd destroy his stuff if we didn’t find a compromise.
+Well after some back and forth I just left. Blocked her everywhere and never again went to family festival events. This lasts even today…<br><br>
+Conclusions:<br>
+Even people that care, care more about themselves.<br>
+People suck at change.<br>
+People think time will heal scars.<br>
+Family is just forced friendship<br>`,
+            secrets: [
+              {
+                position: { top: '30px', left: '30px' },
+                quote: 'I accepted my fathers apartment after some time.',
+              },
+            ],
+          },
+          {
+            id: 'transcendence',
+            icon: '🤖',
+            title: 'The Robot',
+            date: '2023-2024',
+            content: `Hurt not only from my own mother which was my closest contact but also by friends, I decided it was time for change. Mixed with mild-severe depressions I spent alot of time with a Online-Friend. His Name was Carmelo Luzifer Fischer (YoxiQ), we understood each other had the same ideas and both hurt by how people work. We wanted change and change that lasts, we pinpointed the problem to politicians only ruling so that they get voted again, not really to help long term. We thought to ourselves "How can we stop the decay of a system?" and the conclusion was "Immortality". As human not dying could rule forever. When I say this now I know that it's delulu, but back then I really needed this hope. So what we strived for was nothing less than a longer life. Now how could you  afford such a expensive science? Money! So lets look at how people got rich, I mean as a ENTJ we are basically born for leadership. We realized only those who are ready to drop morals, humanity and sanity can consitstently get rich. Sure there are other cases out of pure luck. So I quickly turned from a loving ENFP into a cruel ENTJ not wanting anything to do with morals or emotions. This went on for more than a year, not really happy and only fueled by progress I knew it was time for change. This is the most important phase but I am trying to keep it short. We were super manipulative toxic and league players.`,
+            secrets: [
+              {
+                position: { top: '50%', left: '50%' },
+                quote:
+                  'Spend long enought around lost souls and you are bound to lose your own.',
+              },
+            ],
+          },
+          {
+            id: 'omni',
+            icon: '🌕',
+            title: 'The Omni',
+            date: '2024-2024',
+            content: `Then there came this point where I wanted to change, its like this little beacon of hope. I think it was triggered by someone I loved at this point but I am uncertain. Thus the Omni-Phase began. Instead of being this emotionless core just working for progress, I wanted to be normal. I started reading alot again, especially psychology. Wrote stuff myself, about evil, the world and me. Now with Omnism comes a open mind, not being able to accept one rational or irrational opinion as the truth. I didn't really match with my best friend YoxiQ anymore. More and more I saw a homophobe, toxic asshole in him. When his gf left and made him a voice message that he is manipulative and a psycho, that made me think. I compared myself to him and a big parted didn't want to be this anymore. I talked with him, about being less homophobe and everything but all I got was "This is who I am, accept it. You can leave anytime if you want.". Which threw me back to my mom sending me to my dad's home. So I wrote the first ever manifest of Omnism, also searching for people to further my studies and finally get happy. This is where I met Aminia, she later showed me pdb. We are still friends and call from time to time. On pdb I met you and others. Talked about my problems alot, finally got to understand them atleast a bit.`,
+            secrets: [
+              {
+                position: { top: '50px', left: '10px' },
+                quote: 'To be all is to be not yourself.',
+              },
+            ],
+          },
+          {
+            id: 'change',
+            icon: '🌟',
+            title: 'The AFC',
+            date: '2024-Now',
+            content: `AFC stands for all for change, since what I want right now is just new people, a new environment and a healthy community. No more toxic, homophobe friends that drag me down with their league tilt. So I gave control over major decisions to a friend that I value. She made all the decisions since then, like to finally leave my best-friend and stop with any sort of pornography. She tries to help me finally to be happy. I would've killed myself already mutliple times, but I have a promise to her. I won't until I am atleast 18 (25.08.2025). She is an introvert, having troubles to really understand a extroverted mind. But she tries her best, this is why I wanna also get your view. From you to me. Right now I cannot distinguish between love and friendship, since I don't really have anyone that I care about. My emotional connections don't exist. My family, friends from school, work or anywhere could die without me even shedding a tear. I wanna change that, have genuine people that I care about. Find people that are there.
+<br><br>
+So to list my Problems:<br>
+-Omnism (Still trying to figure out who I am) But I am getting closer and I want to be this ENTJ but not to the extremes like I was before more balanced like 75%t and 25%f instead of 98%t.<br>
+-Emotional Connections, I still need someone to care about and to be there for.<br>
+-Lonelyness, I feel extremly alone especially in my job, surrouned by introverts and rather dumb kids. I should've went to High School<br>
+-Morals, I still don't have a big part in guilt and remorse. I apologized to the people I hurt and try to refrain from it.<br>
+-Breakdowns, From time to time I have these breakdowns like once a month where I grab my hair and cry and scream. It is my way of letting out all the bad emotions that I can't show in my day to day life.<br>`,
+            secrets: [
+              {
+                position: { top: '50px', left: '10px' },
+                quote: 'One day I will be dead or happy. Maybe both at once.',
+              },
+            ],
+          },
+        ],
+      };
+
+      // Initialize page
+      function initializeVoid() {
+        const container = document.getElementById('voidContainer');
+        const timeline = document.getElementById('timeline');
+
+        // Create phase cards
+        voidData.phases.forEach((phase, index) => {
+          // Create phase card
+          const card = createPhaseCard(phase);
+          container.appendChild(card);
+
+          // Create timeline dot
+          const dot = document.createElement('div');
+          dot.className = 'timeline-dot';
+          dot.setAttribute('data-phase', phase.id);
+          dot.addEventListener('click', () => {
+            document
+              .getElementById(phase.id)
+              .scrollIntoView({ behavior: 'smooth' });
+          });
+          timeline.appendChild(dot);
+        });
+
+        // Initialize particles
+        createParticles();
+        initializeScrollObserver();
+      }
+
+      function createPhaseCard(phase) {
+        const card = document.createElement('div');
+        card.className = 'phase-card';
+        card.id = phase.id;
+
+        card.innerHTML = `
+                <div class="phase-header">
+                    <span class="phase-icon">${phase.icon}</span>
+                    <h2 class="phase-title">${phase.title}</h2>
+                </div>
+                <span class="phase-date">${phase.date}</span>
+                <div class="phase-content">
+                    <p class="phase-text">${phase.content}</p>
+                    ${createSecrets(phase.secrets)}
+                </div>
+            `;
+
+        return card;
+      }
+
+      function createSecrets(secrets) {
+        return secrets
+          .map(
+            (secret) => `
+                <div class="memory-fragment" 
+                     style="top: ${secret.position.top}; left: ${secret.position.left}; 
+                            right: ${secret.position.right}; bottom: ${secret.position.bottom}"
+                     onclick="revealQuote('${secret.quote}')"
+                ></div>
+            `
+          )
+          .join('');
+      }
+
+      function revealQuote(quote) {
+        const display = document.getElementById('quoteDisplay');
+        display.textContent = quote;
+        display.style.display = 'block';
+        setTimeout(() => {
+          display.style.display = 'none';
+        }, 3000);
+      }
+
+      function createParticles() {
+        const container = document.body;
+        for (let i = 0; i < 50; i++) {
+          const particle = document.createElement('div');
+          particle.className = 'particle';
+
+          const size = Math.random() * 4 + 2;
+          particle.style.width = `${size}px`;
+          particle.style.height = `${size}px`;
+
+          particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = `${Math.random() * 100}%`;
+
+          particle.style.setProperty(
+            '--moveX',
+            `${(Math.random() - 0.5) * 100}px`
+          );
+          particle.style.setProperty(
+            '--moveY',
+            `${(Math.random() - 0.5) * 100}px`
+          );
+
+          particle.style.animation = `float ${
+            Math.random() * 10 + 5
+          }s infinite alternate`;
+
+          container.appendChild(particle);
+        }
+      }
+
+      function initializeScrollObserver() {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                updateTimeline(entry.target.id);
+              }
+            });
+          },
+          { threshold: 0.3 }
+        );
+
+        document.querySelectorAll('.phase-card').forEach((card) => {
+          observer.observe(card);
+        });
+      }
+
+      function updateTimeline(activeId) {
+        document.querySelectorAll('.timeline-dot').forEach((dot) => {
+          dot.classList.toggle('active', dot.dataset.phase === activeId);
+        });
+      }
+
+      // Initialize on load
+      window.onload = function () {
+        setTimeout(() => {
+          document.querySelector('.void-entrance').style.opacity = '0';
+          setTimeout(() => {
+            document.querySelector('.void-entrance').style.display = 'none';
+          }, 2000);
+        }, 3000);
+
+        initializeVoid();
+      };
+    </script>
+  </body>
+</html>

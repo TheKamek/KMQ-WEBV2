@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --accent: #2563eb;
+        --accent-light: #60a5fa;
+
+        /* Category Colors */
+        --cat-books: #3b82f6;
+        --cat-notes: #8b5cf6;
+        --cat-tools: #10b981;
+        --cat-inspiration: #f59e0b;
+        --cat-learning: #ec4899;
+      }
+
+      [data-theme='dark'] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition: all 0.3s ease;
+      }
+
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      /* Header Styles */
+      .nav-header {
+        position: sticky;
+        top: 0;
+        background: var(--bg-secondary);
+        padding: 15px 20px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        z-index: 100;
+        border-bottom: 1px solid var(--text-secondary) 10;
+        backdrop-filter: blur(10px);
+      }
+
+      .nav-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text-primary);
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 12px;
+        background: var(--bg-primary);
+        border: 1px solid var(--text-secondary) 15;
+      }
+
+      .back-btn:hover {
+        transform: translateX(-5px);
+        background: var(--accent) 15;
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+
+      .title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      /* Resources specific styles */
+      .categories {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .category-btn {
+        padding: 10px 20px;
+        border-radius: 20px;
+        border: none;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        cursor: pointer;
+        font-weight: 500;
+        border: 1px solid transparent;
+      }
+
+      .category-btn:hover,
+      .category-btn.active {
+        background: var(--accent) 15;
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .search-bar {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto 40px;
+        padding: 15px 25px;
+        border-radius: 30px;
+        border: 1px solid var(--text-secondary) 20;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-size: 1rem;
+        display: block;
+      }
+
+      .resources-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .resource-card {
+        background: var(--bg-secondary);
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .resource-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .resource-content {
+        padding: 25px;
+      }
+
+      .resource-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        gap: 15px;
+      }
+
+      .resource-type {
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 0.9rem;
+        font-weight: 500;
+      }
+
+      .type-book {
+        background: var(--cat-books) 15;
+        color: var(--cat-books);
+      }
+      .type-note {
+        background: var(--cat-notes) 15;
+        color: var(--cat-notes);
+      }
+      .type-tool {
+        background: var(--cat-tools) 15;
+        color: var(--cat-tools);
+      }
+      .type-inspiration {
+        background: var(--cat-inspiration) 15;
+        color: var(--cat-inspiration);
+      }
+      .type-learning {
+        background: var(--cat-learning) 15;
+        color: var(--cat-learning);
+      }
+
+      .resource-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+      }
+
+      .resource-meta {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+        display: flex;
+        gap: 15px;
+      }
+
+      .resource-description {
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+        line-height: 1.6;
+      }
+
+      .resource-tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .tag {
+        padding: 4px 12px;
+        border-radius: 15px;
+        background: var(--accent) 10;
+        color: var(--accent);
+        font-size: 0.8rem;
+      }
+
+      .resource-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-top: 15px;
+        border-top: 1px solid var(--text-secondary) 10;
+      }
+
+      .action-btn {
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid var(--text-secondary) 20;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        cursor: pointer;
+        font-size: 0.9rem;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .action-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .rating {
+        display: flex;
+        gap: 3px;
+        color: var(--cat-inspiration);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .resource-header {
+          flex-direction: column;
+        }
+
+        .categories {
+          justify-content: flex-start;
+          overflow-x: auto;
+          padding-bottom: 10px;
+        }
+
+        .category-btn {
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">
+          <span>←</span>
+          <span>Back to Home</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="header">
+        <h1 class="title">Resources</h1>
+        <p class="subtitle">A collection of books, notes, and discoveries</p>
+      </div>
+
+      <input
+        type="text"
+        class="search-bar"
+        placeholder="Search resources..."
+        onkeyup="searchResources(this.value)"
+      />
+
+      <div class="categories" id="categories">
+        <!-- Categories will be generated here -->
+      </div>
+
+      <div class="resources-grid" id="resourcesGrid">
+        <!-- Resources will be generated here -->
+      </div>
+    </div>
+
+    <script>
+      // Resources data - Edit this to add your content
+      const resources = [
+        {
+          type: 'book',
+          title: 'Atomic Habits',
+          author: 'James Clear',
+          date: '2023-10-15',
+          rating: 5,
+          description:
+            'An excellent book about building good habits and breaking bad ones. Key takeaway: Small improvements accumulate into remarkable results.',
+          tags: ['Self-Development', 'Psychology', 'Productivity'],
+          link: '#',
+          notes: 'Great insights on habit formation',
+          timeToRead: '15 min read',
+        },
+        {
+          type: 'note',
+          title: 'Learning JavaScript Promises',
+          author: 'Kamek',
+          date: '2023-11-20',
+          description:
+            'My personal notes on understanding and working with Promises in JavaScript. Includes practical examples and common pitfalls.',
+          tags: ['JavaScript', 'Programming', 'Web Development'],
+          link: '#',
+          timeToRead: '10 min read',
+        },
+        {
+          type: 'tool',
+          title: 'VS Code Extensions for Productivity',
+          author: 'Kamek',
+          date: '2024-01-05',
+          rating: 4,
+          description:
+            'A curated list of VS Code extensions that have significantly improved my coding workflow.',
+          tags: ['Tools', 'Programming', 'Productivity'],
+          link: '#',
+          timeToRead: '8 min read',
+        },
+        {
+          type: 'inspiration',
+          title: 'Design Principles Collection',
+          author: 'Kamek',
+          date: '2024-02-10',
+          description:
+            "A collection of inspiring design principles and examples that I've gathered from various sources.",
+          tags: ['Design', 'UI/UX', 'Creativity'],
+          link: '#',
+          timeToRead: '12 min read',
+        },
+      ];
+
+      const categories = [
+        { id: 'all', label: 'All', icon: '📚' },
+        { id: 'book', label: 'Books', icon: '📖' },
+        { id: 'note', label: 'Notes', icon: '📝' },
+        { id: 'tool', label: 'Tools', icon: '🛠️' },
+        { id: 'inspiration', label: 'Inspiration', icon: '💡' },
+      ];
+
+      function createResourceCard(resource) {
+        const rating = resource.rating
+          ? `<div class="rating">${'⭐'.repeat(resource.rating)}</div>`
+          : '';
+
+        return `
+        <div class="resource-card" data-type="${resource.type}">
+          <div class="resource-content">
+            <div class="resource-header">
+              <h2 class="resource-title">${resource.title}</h2>
+              <span class="resource-type type-${resource.type}">
+                ${
+                  categories.find((c) => c.id === resource.type)?.icon || '📄'
+                } ${resource.type}
+              </span>
+            </div>
+            
+            <div class="resource-meta">
+              <span>👤 ${resource.author}</span>
+              <span>📅 ${new Date(resource.date).toLocaleDateString()}</span>
+              <span>⏱️ ${resource.timeToRead}</span>
+            </div>
+            
+            ${rating}
+            
+            <p class="resource-description">${resource.description}</p>
+            
+            <div class="resource-tags">
+              ${resource.tags
+                .map(
+                  (tag) => `
+                <span class="tag">${tag}</span>
+              `
+                )
+                .join('')}
+            </div>
+            
+            <div class="resource-actions">
+              <a href="${resource.link}" class="action-btn">
+                <span>Read More</span>
+                <span>→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      `;
+      }
+
+      function renderCategories() {
+        const container = document.getElementById('categories');
+        container.innerHTML = categories
+          .map(
+            (category) => `
+        <button class="category-btn ${category.id === 'all' ? 'active' : ''}" 
+                onclick="filterResources('${category.id}')">
+          ${category.icon} ${category.label}
+        </button>
+      `
+          )
+          .join('');
+      }
+
+      function renderResources(filter = 'all') {
+        const grid = document.getElementById('resourcesGrid');
+        const filteredResources =
+          filter === 'all'
+            ? resources
+            : resources.filter((r) => r.type === filter);
+
+        grid.innerHTML = filteredResources
+          .map(
+            (resource, index) => `
+          <div style="animation: fadeIn 0.5s ease-out ${
+            index * 0.1
+          }s backwards">
+            ${createResourceCard(resource)}
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      function filterResources(type) {
+        document.querySelectorAll('.category-btn').forEach((btn) => {
+          btn.classList.remove('active');
+        });
+        document
+          .querySelector(`[onclick="filterResources('${type}')"]`)
+          .classList.add('active');
+        renderResources(type);
+      }
+
+      function searchResources(query) {
+        const cards = document.querySelectorAll('.resource-card');
+        query = query.toLowerCase();
+
+        cards.forEach((card) => {
+          const text = card.textContent.toLowerCase();
+          card.style.display = text.includes(query) ? '' : 'none';
+        });
+      }
+
+      // Sort functionality
+      function sortResources(criteria = 'date') {
+        const sortedResources = [...resources].sort((a, b) => {
+          switch (criteria) {
+            case 'date':
+              return new Date(b.date) - new Date(a.date);
+            case 'rating':
+              return (b.rating || 0) - (a.rating || 0);
+            case 'title':
+              return a.title.localeCompare(b.title);
+            default:
+              return 0;
+          }
+        });
+
+        const grid = document.getElementById('resourcesGrid');
+        grid.innerHTML = sortedResources
+          .map(
+            (resource, index) => `
+          <div style="animation: fadeIn 0.5s ease-out ${
+            index * 0.1
+          }s backwards">
+            ${createResourceCard(resource)}
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      // Add resource function
+      function addResource(resource) {
+        resources.unshift(resource);
+        renderResources(
+          document
+            .querySelector('.category-btn.active')
+            .getAttribute('onclick')
+            .match(/'(.*?)'/)[1]
+        );
+      }
+
+      // Export resources
+      function exportResources() {
+        const dataStr =
+          'data:text/json;charset=utf-8,' +
+          encodeURIComponent(JSON.stringify(resources, null, 2));
+        const downloadAnchorNode = document.createElement('a');
+        downloadAnchorNode.setAttribute('href', dataStr);
+        downloadAnchorNode.setAttribute('download', 'resources.json');
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      }
+
+      // Tag filtering
+      function filterByTag(tag) {
+        const cards = document.querySelectorAll('.resource-card');
+        cards.forEach((card) => {
+          const tags = Array.from(card.querySelectorAll('.tag')).map((t) =>
+            t.textContent.toLowerCase()
+          );
+          card.style.display = tags.includes(tag.toLowerCase()) ? '' : 'none';
+        });
+      }
+
+      // Initialize everything
+      function init() {
+        renderCategories();
+        renderResources();
+
+        // Add sort button to categories
+        const sortBtn = document.createElement('button');
+        sortBtn.className = 'category-btn';
+        sortBtn.innerHTML = '🔄 Sort';
+        sortBtn.onclick = () => {
+          const criteria = prompt('Sort by: date, rating, or title');
+          if (criteria) sortResources(criteria.toLowerCase());
+        };
+        document.getElementById('categories').appendChild(sortBtn);
+
+        // Add export button
+        const exportBtn = document.createElement('button');
+        exportBtn.className = 'category-btn';
+        exportBtn.innerHTML = '📤 Export';
+        exportBtn.onclick = exportResources;
+        document.getElementById('categories').appendChild(exportBtn);
+      }
+
+      // Add quick resource function
+      function quickAdd() {
+        const newResource = {
+          type: 'note',
+          title: prompt('Enter title:'),
+          author: 'Your Name',
+          date: new Date().toISOString().split('T')[0],
+          description: prompt('Enter description:'),
+          tags: prompt('Enter tags (comma-separated):')
+            .split(',')
+            .map((t) => t.trim()),
+          link: '#',
+          timeToRead: '5 min read',
+        };
+
+        if (newResource.title && newResource.description) {
+          addResource(newResource);
+        }
+      }
+
+      // Add quick add button
+      document.addEventListener('DOMContentLoaded', () => {
+        const quickAddBtn = document.createElement('button');
+        quickAddBtn.className = 'category-btn';
+        quickAddBtn.innerHTML = '✨ Quick Add';
+        quickAddBtn.onclick = quickAdd;
+        document.getElementById('categories').appendChild(quickAddBtn);
+      });
+
+      // Start the app
+      init();
+    </script>
+  </body>
+</html>

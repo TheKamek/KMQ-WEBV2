@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --accent: #2563eb;
+        --accent-light: #60a5fa;
+
+        /* Category Colors */
+        --cat-skills: #3b82f6;
+        --cat-interests: #8b5cf6;
+        --cat-achievements: #10b981;
+        --cat-journey: #f59e0b;
+      }
+
+      [data-theme='dark'] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition: all 0.3s ease;
+      }
+
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+      }
+
+      /* Header Styles */
+      .nav-header {
+        position: sticky;
+        top: 0;
+        background: var(--bg-secondary);
+        padding: 15px 20px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        z-index: 100;
+        border-bottom: 1px solid var(--text-secondary) 10;
+        backdrop-filter: blur(10px);
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text-primary);
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 12px;
+        background: var(--bg-primary);
+        border: 1px solid var(--text-secondary) 15;
+      }
+
+      .back-btn:hover {
+        transform: translateX(-5px);
+        background: var(--accent) 15;
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .profile-section {
+        text-align: center;
+        margin-bottom: 60px;
+      }
+
+      .profile-emoji {
+        font-size: 4rem;
+        margin-bottom: 20px;
+        display: inline-block;
+        padding: 20px;
+        background: var(--bg-secondary);
+        border-radius: 30px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .name {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .tagline {
+        font-size: 1.2rem;
+        color: var(--text-secondary);
+        margin-bottom: 25px;
+      }
+
+      .social-links {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .social-link {
+        padding: 10px;
+        border-radius: 12px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        text-decoration: none;
+        border: 1px solid var(--text-secondary) 15;
+        font-size: 1.5rem;
+      }
+
+      .social-link:hover {
+        transform: translateY(-3px);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .about-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+      }
+
+      .about-card {
+        background: var(--bg-secondary);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      .card-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .card-icon {
+        font-size: 1.5rem;
+        padding: 12px;
+        border-radius: 12px;
+      }
+
+      .card-title {
+        font-size: 1.3rem;
+        font-weight: 600;
+      }
+
+      .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+      }
+
+      .skill-item {
+        padding: 10px;
+        border-radius: 8px;
+        background: var(--bg-primary);
+        text-align: center;
+        font-size: 0.9rem;
+      }
+
+      .timeline {
+        position: relative;
+        padding-left: 30px;
+      }
+
+      .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--accent) 30;
+      }
+
+      .timeline-item {
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -34px;
+        top: 0;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--accent);
+      }
+
+      .timeline-date {
+        font-size: 0.9rem;
+        color: var(--accent);
+        margin-bottom: 5px;
+      }
+
+      .timeline-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .timeline-description {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+      }
+
+      .interests-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+      }
+
+      .interest-tag {
+        padding: 8px 16px;
+        border-radius: 20px;
+        background: var(--bg-primary);
+        font-size: 0.9rem;
+      }
+
+      .quote-section {
+        text-align: center;
+        margin: 50px 0;
+        padding: 40px;
+        background: var(--bg-secondary);
+        border-radius: 20px;
+      }
+
+      .quote-text {
+        font-size: 1.5rem;
+        font-style: italic;
+        margin-bottom: 15px;
+        color: var(--text-primary);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .profile-section {
+          margin-bottom: 40px;
+        }
+
+        .quote-section {
+          padding: 20px;
+        }
+
+        .quote-text {
+          font-size: 1.2rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">
+          <span>←</span>
+          <span>Back to Home</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="profile-section">
+        <div class="profile-emoji">👨‍💻</div>
+        <h1 class="name">Your Name</h1>
+        <p class="tagline">Full Stack Developer & Creative Problem Solver</p>
+
+        <div class="social-links">
+          <a href="#" class="social-link">📧</a>
+          <a href="#" class="social-link">💼</a>
+          <a href="#" class="social-link">🐱</a>
+        </div>
+      </div>
+
+      <div class="about-grid">
+        <div class="about-card">
+          <div class="card-header">
+            <span
+              class="card-icon"
+              style="background: var(--cat-skills) 15; color: var(--cat-skills)"
+              >🎯</span
+            >
+            <h2 class="card-title">Skills</h2>
+          </div>
+          <div class="skills-grid">
+            <!-- Skills will be generated here -->
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="card-header">
+            <span
+              class="card-icon"
+              style="
+                background: var(--cat-journey) 15;
+                color: var(--cat-journey);
+              "
+              >🚀</span
+            >
+            <h2 class="card-title">Journey</h2>
+          </div>
+          <div class="timeline">
+            <!-- Timeline will be generated here -->
+          </div>
+        </div>
+
+        <div class="about-card">
+          <div class="card-header">
+            <span
+              class="card-icon"
+              style="
+                background: var(--cat-interests) 15;
+                color: var(--cat-interests);
+              "
+              >🌟</span
+            >
+            <h2 class="card-title">Interests</h2>
+          </div>
+          <div class="interests-list">
+            <!-- Interests will be generated here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="quote-section">
+        <p class="quote-text">"Your favorite quote or personal motto here"</p>
+      </div>
+    </div>
+
+    <script>
+      // Personal data - Edit this to add your information
+      const personalData = {
+        name: 'Kamek Ivo Krämer',
+        title: 'Software Developer & Overthinker',
+        emoji: '👨‍💻',
+        social: [
+          { icon: '📧', link: 'mailto:masterkamek@gmail.com', label: 'Email' },
+          {
+            icon: '💼',
+            link: 'https://ch.linkedin.com/in/ivo-kr%C3%A4mer-61ab52287',
+            label: 'LinkedIn',
+          },
+          {
+            icon: '🐱',
+            link: 'https://github.com/thekamek',
+            label: 'GitHub',
+          },
+        ],
+        skills: [
+          { name: 'JavaScript', level: 90 },
+          { name: 'React', level: 85 },
+          { name: 'Node.js', level: 80 },
+          { name: 'Python', level: 75 },
+          { name: 'UI/UX', level: 70 },
+          { name: 'DevOps', level: 65 },
+        ],
+        journey: [
+          {
+            date: '2024',
+            title: 'Software Developer @NexCC',
+            description: 'Leading development of migrations/Teaching',
+          },
+          {
+            date: '2023-2024',
+            title: 'Test-Automation @A-Team',
+            description: 'Developing Automations in UiPath & Selenium',
+          },
+          {
+            date: '2023',
+            title: 'Frontend Development @AppsTeam',
+            description:
+              'Began journey into software development in the Frontend using React',
+          },
+        ],
+        interests: [
+          'Coding',
+          'AI',
+          'Design',
+          'Russian',
+          'Security',
+          'Teaching',
+          'Psychology',
+          'Biology',
+          'Piano',
+        ],
+        quote:
+          'The smarter someone is the faster they realize that they will never be happy.',
+      };
+
+      function renderSkills() {
+        const grid = document.querySelector('.skills-grid');
+        grid.innerHTML = personalData.skills
+          .map(
+            (skill) => `
+          <div class="skill-item">
+            ${skill.name}
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      function renderJourney() {
+        const timeline = document.querySelector('.timeline');
+        timeline.innerHTML = personalData.journey
+          .map(
+            (item) => `
+          <div class="timeline-item">
+            <div class="timeline-date">${item.date}</div>
+            <div class="timeline-title">${item.title}</div>
+            <div class="timeline-description">${item.description}</div>
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      function renderInterests() {
+        const list = document.querySelector('.interests-list');
+        list.innerHTML = personalData.interests
+          .map(
+            (interest) => `
+          <span class="interest-tag">${interest}</span>
+        `
+          )
+          .join('');
+      }
+
+      function updateProfile() {
+        document.querySelector('.name').textContent = personalData.name;
+        document.querySelector('.tagline').textContent = personalData.title;
+        document.querySelector('.profile-emoji').textContent =
+          personalData.emoji;
+        document.querySelector('.quote-text').textContent = personalData.quote;
+
+        const socialLinks = document.querySelector('.social-links');
+        socialLinks.innerHTML = personalData.social
+          .map(
+            (social) => `
+          <a href="${social.link}" class="social-link" title="${social.label}">${social.icon}</a>
+        `
+          )
+          .join('');
+      }
+
+      // Initialize
+      function init() {
+        updateProfile();
+        renderSkills();
+        renderJourney();
+        renderInterests();
+      }
+
+      // Start the app
+      init();
+    </script>
+  </body>
+</html>

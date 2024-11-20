@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --accent: #2563eb;
+        --accent-hover: #1d4ed8;
+
+        /* Category Colors */
+        --cat-personal: #3b82f6;
+        --cat-health: #10b981;
+        --cat-finance: #f59e0b;
+        --cat-career: #8b5cf6;
+        --cat-social: #ec4899;
+        --cat-skills: #06b6d4;
+        --cat-goals: #f97316;
+        --cat-travel: #14b8a6;
+        --cat-all: #2563eb;
+      }
+
+      [data-theme='dark'] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: var(--bg-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        color: var(--text-primary);
+      }
+
+      .dashboard {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .nav-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .nav-header {
+        position: sticky;
+        top: 0;
+        background: var(--bg-secondary);
+        padding: 15px 20px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        z-index: 100;
+        border-bottom: 1px solid var(--text-secondary) 10;
+        backdrop-filter: blur(10px);
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text-primary);
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 12px;
+        background: var(--bg-primary);
+        border: 1px solid var(--text-secondary) 15;
+      }
+
+      .back-btn:hover {
+        transform: translateX(-5px);
+        background: var(--accent) 15;
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+
+      .title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 10px;
+      }
+      .search-container {
+        margin: 20px auto;
+        max-width: 600px;
+        display: flex;
+        gap: 10px;
+        padding: 0 20px;
+      }
+
+      .search-input {
+        flex: 1;
+        padding: 12px 20px;
+        border-radius: 20px;
+        border: 1px solid var(--text-secondary);
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        font-size: 1rem;
+      }
+
+      .filter-container {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        padding: 0 20px;
+        margin: 20px auto;
+        max-width: 1200px;
+      }
+
+      .filter-tag {
+        padding: 6px 12px;
+        border-radius: 15px;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        cursor: pointer;
+        border: 1px solid var(--text-secondary);
+      }
+
+      .filter-tag.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      .category-nav {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-bottom: 30px;
+      }
+
+      .category-btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        font-weight: 500;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+      }
+
+      .category-btn.active {
+        background: var(--accent);
+        color: white;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 20px;
+      }
+
+      .stat-card {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.5s ease-out backwards;
+      }
+
+      .stat-category {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-bottom: 10px;
+      }
+
+      .stat-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .stat-title {
+        font-size: 1rem;
+        color: var(--text-secondary);
+      }
+
+      .stat-icon {
+        font-size: 1.5rem;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+      }
+
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+      }
+
+      .stat-unit {
+        font-size: 1rem;
+        color: var(--text-secondary);
+      }
+
+      .stat-subtext {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+      }
+
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .dashboard {
+          padding: 10px;
+        }
+        .stats-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">
+          <span>←</span>
+          <span>Back to Home</span>
+        </a>
+
+        <div class="nav-center">
+          <h1 class="page-title">
+            <span style="color: var(--accent)"> 📊</span>
+            <span>Statistics</span>
+          </h1>
+        </div>
+      </div>
+    </header>
+    <div class="dashboard">
+      <div class="category-nav" id="categoryNav">
+        <!-- Categories will be generated here -->
+      </div>
+
+      <div class="search-container" id="searchContainer" style="display: none">
+        <input
+          type="text"
+          class="search-input"
+          placeholder="Search stats..."
+          id="searchInput"
+        />
+      </div>
+
+      <div class="filter-container" id="filterContainer" style="display: none">
+        <!-- Filters will be generated here -->
+      </div>
+
+      <div id="statsContainer">
+        <!-- Stats will be generated here -->
+      </div>
+    </div>
+
+    <script>
+      // Add your personalStats object here
+      const personalStats = {
+        personal: {
+          title: 'Personal',
+          icon: '👤',
+          color: 'var(--cat-personal)',
+          stats: {
+            age: {
+              value: 17,
+              unit: 'years',
+              icon: '🎂',
+              subtext: 'Born in 2007',
+            },
+            weight: {
+              value: 73,
+              unit: 'kg',
+              icon: '⚖️',
+              subtext: 'In the green zone',
+            },
+            height: { value: 175, unit: 'cm', icon: '📏' },
+            sleep: {
+              value: 8,
+              unit: 'hrs/day',
+              icon: '😴',
+              subtext: 'Average last month',
+            },
+            meditation: {
+              value: 1,
+              unit: 'hours',
+              icon: '🧘',
+              subtext: 'Lifetime',
+            },
+            languages: {
+              value: 2,
+              unit: 'spoken',
+              icon: '🗣️',
+              subtext: 'English, German',
+            },
+            Learning: {
+              value: 2,
+              unit: 'learning',
+              icon: '🗣️',
+              subtext: 'Russian, French',
+            },
+          },
+        },
+        health: {
+          title: 'Health & Fitness',
+          icon: '💪',
+          color: 'var(--cat-health)',
+          stats: {
+            workouts: {
+              value: 2,
+              unit: 'this year',
+              icon: '🏋️',
+              subtext: 'rarely',
+            },
+            runDistance: {
+              value: 20,
+              unit: 'km',
+              icon: '🏃',
+              subtext: 'This year',
+            },
+            steps: { value: 6000, unit: 'daily avg', icon: '👣' },
+          },
+        },
+        financial: {
+          title: 'Financial',
+          icon: '💰',
+          color: 'var(--cat-finance)',
+          stats: {
+            income: {
+              value: 12000,
+              unit: '$/year',
+              icon: '💵',
+              subtext: 'Pre-tax',
+            },
+            investments: { value: 500, unit: 'USD', icon: '📈' },
+            expenses: { value: 400, unit: '$/month', icon: '💳' },
+            netWorth: { value: 2000, unit: 'USD', icon: '💎' },
+            debt: { value: 0, unit: 'USD', icon: '🏷️' },
+            budget: { value: 400, unit: '$/month', icon: '📊' },
+          },
+        },
+        career: {
+          title: 'Career',
+          icon: '💼',
+          color: 'var(--cat-career)',
+          stats: {
+            experience: {
+              value: 3,
+              unit: 'years',
+              icon: '⚡',
+              subtext: 'Professional',
+            },
+            projects: { value: 7, unit: 'completed', icon: '📋' },
+            overtime: {
+              value: 60,
+              unit: 'hours',
+              icon: '⏰',
+              subtext: 'This year',
+            },
+            meetings: { value: 245, unit: 'this year', icon: '👥' },
+            presentations: { value: 12, unit: 'given', icon: '🎯' },
+            training: { value: 20, unit: 'hours', icon: '📚' },
+            certifications: { value: 2, unit: 'active', icon: '🏆' },
+          },
+        },
+        social: {
+          title: 'Social',
+          icon: '🤝',
+          color: 'var(--cat-social)',
+          stats: {
+            friends: { value: 32, unit: 'close', icon: '👥' },
+            network: { value: 200, unit: 'connections', icon: '🌐' },
+            events: { value: 5, unit: 'attended', icon: '🎉' },
+            messages: { value: 12000, unit: 'sent', icon: '💬' },
+            meetings: { value: 124, unit: 'social', icon: '☕' },
+            groups: { value: 4, unit: 'active', icon: '👥' },
+            volunteering: { value: 16, unit: 'hours', icon: '❤️' },
+          },
+        },
+        skills: {
+          title: 'Skills & Learning',
+          icon: '🎯',
+          color: 'var(--cat-skills)',
+          stats: {
+            courses: { value: 12, unit: 'completed', icon: '📚' },
+            readBooks: { value: 7, unit: 'this year', icon: '📖' },
+            tutorials: { value: 12, unit: 'watched', icon: '🎓' },
+            skills: { value: 9, unit: 'mastered', icon: '⭐' },
+            articles: { value: 4, unit: 'written', icon: '✍️' },
+            learning: { value: 200, unit: 'hours', icon: '🧠' },
+            teaching: { value: 50, unit: 'hours', icon: '👨‍🏫' },
+          },
+        },
+        travel: {
+          title: 'Travel & Experience',
+          icon: '✈️',
+          color: 'var(--cat-travel)',
+          stats: {
+            countries: { value: 23, unit: 'visited', icon: '🌎' },
+            cities: { value: 54, unit: 'explored', icon: '🌆' },
+            distance: { value: 40000, unit: 'km', icon: '🛫' },
+            trips: { value: 1, unit: 'this year', icon: '🧳' },
+            photos: { value: 153, unit: 'taken', icon: '📸' },
+            flights: { value: 2, unit: 'taken', icon: '✈️' },
+            stays: { value: 6, unit: 'nights', icon: '🏨' },
+          },
+        },
+        goals: {
+          title: 'Goals & Achievements',
+          icon: '🎯',
+          color: 'var(--cat-goals)',
+          stats: {
+            completed: { value: 15, unit: 'goals', icon: '✅' },
+            ongoing: { value: 5, unit: 'in progress', icon: '⏳' },
+            streaks: { value: 65, unit: 'days', icon: '🔥' },
+            milestones: { value: 8, unit: 'reached', icon: '🏆' },
+            habits: { value: 6, unit: 'tracked', icon: '📊' },
+            progress: { value: 75, unit: '%', icon: '📈' },
+            rewards: { value: 12, unit: 'earned', icon: '🎁' },
+          },
+        },
+      };
+
+      // Add "All Stats" category
+      personalStats.all = {
+        title: 'All Stats',
+        icon: '📊',
+        color: 'var(--cat-all)',
+        stats: {},
+      };
+
+      // Populate all stats
+      Object.entries(personalStats).forEach(([category, data]) => {
+        if (category !== 'all') {
+          Object.entries(data.stats).forEach(([statKey, stat]) => {
+            personalStats.all.stats[`${category}_${statKey}`] = {
+              ...stat,
+              category: data.title,
+              categoryColor: data.color,
+            };
+          });
+        }
+      });
+
+      function generateCategoryNav() {
+        const nav = document.getElementById('categoryNav');
+        Object.keys(personalStats).forEach((category, index) => {
+          const btn = document.createElement('button');
+          btn.className = `category-btn ${index === 8 ? 'active' : ''}`;
+          btn.textContent = `${personalStats[category].icon} ${personalStats[category].title}`;
+          btn.onclick = () => {
+            document
+              .querySelectorAll('.category-btn')
+              .forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            displayStats(category);
+
+            const searchContainer = document.getElementById('searchContainer');
+            const filterContainer = document.getElementById('filterContainer');
+            if (category === 'all') {
+              searchContainer.style.display = 'flex';
+              filterContainer.style.display = 'flex';
+              generateFilters();
+            } else {
+              searchContainer.style.display = 'none';
+              filterContainer.style.display = 'none';
+            }
+          };
+          nav.appendChild(btn);
+        });
+      }
+
+      function toggleFilter(category) {
+        const filters = document.querySelectorAll('.filter-tag');
+        if (category === 'all') {
+          filters.forEach((f) => f.classList.remove('active'));
+          filters[0].classList.add('active');
+        } else {
+          filters[0].classList.remove('active');
+          const filter = document.querySelector(
+            `[data-category="${category}"]`
+          );
+          filter.classList.toggle('active');
+        }
+        filterStats();
+      }
+
+      function filterStats() {
+        const activeFilters = Array.from(
+          document.querySelectorAll('.filter-tag.active')
+        )
+          .map((f) => f.dataset.category)
+          .filter(Boolean);
+
+        const searchTerm = document
+          .getElementById('searchInput')
+          .value.toLowerCase();
+        const allStats = document.querySelectorAll('.stat-card');
+
+        allStats.forEach((stat) => {
+          const category = stat.dataset.category;
+          const title = stat
+            .querySelector('.stat-title')
+            .textContent.toLowerCase();
+          const value = stat
+            .querySelector('.stat-value')
+            .textContent.toLowerCase();
+          const subtext =
+            stat.querySelector('.stat-subtext')?.textContent.toLowerCase() ||
+            '';
+
+          const matchesFilter =
+            activeFilters.length === 0 || activeFilters.includes(category);
+          const matchesSearch =
+            !searchTerm ||
+            title.includes(searchTerm) ||
+            value.includes(searchTerm) ||
+            subtext.includes(searchTerm);
+
+          stat.style.display = matchesFilter && matchesSearch ? '' : 'none';
+        });
+      }
+
+      function displayStats(category) {
+        const container = document.getElementById('statsContainer');
+        const categoryData = personalStats[category];
+
+        container.innerHTML = `
+          <div class="stats-grid">
+            ${Object.entries(categoryData.stats)
+              .map(
+                ([key, stat], index) => `
+              <div class="stat-card" data-category="${
+                category === 'all' ? key.split('_')[0] : category
+              }" style="animation-delay: ${index * 0.1}s">
+                ${
+                  category === 'all'
+                    ? `
+                  <div class="stat-category" style="color: ${stat.categoryColor}">${stat.category}</div>
+                `
+                    : ''
+                }
+                <div class="stat-header">
+                  <span class="stat-title">${
+                    key.split('_').pop().charAt(0).toUpperCase() +
+                    key.split('_').pop().slice(1)
+                  }</span>
+                  <span class="stat-icon" style="background: ${
+                    category === 'all' ? stat.categoryColor : categoryData.color
+                  }20">
+                    ${stat.icon}
+                  </span>
+                </div>
+                <div class="stat-value">
+                  ${stat.value.toLocaleString()}
+                  <span class="stat-unit">${stat.unit}</span>
+                </div>
+                ${
+                  stat.subtext
+                    ? `<div class="stat-subtext">${stat.subtext}</div>`
+                    : ''
+                }
+              </div>
+            `
+              )
+              .join('')}
+          </div>
+        `;
+      }
+
+      function toggleTheme() {
+        const body = document.documentElement;
+
+        if (body.getAttribute('data-theme') === 'dark') {
+          body.removeAttribute('data-theme');
+          button.textContent = '🌙';
+        } else {
+          body.setAttribute('data-theme', 'dark');
+          button.textContent = '☀️';
+        }
+      }
+
+      function init() {
+        generateCategoryNav();
+        displayStats('all');
+
+        const searchInput = document.getElementById('searchInput');
+        searchInput.addEventListener('input', filterStats);
+
+        document.getElementById('searchContainer').style.display = 'flex';
+        document.getElementById('filterContainer').style.display = 'flex';
+      }
+
+      init();
+    </script>
+  </body>
+</html>

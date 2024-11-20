@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --accent: #2563eb;
+        --accent-light: #60a5fa;
+
+        /* Category Colors */
+        --cat-mentor: #3b82f6;
+        --cat-family: #ec4899;
+        --cat-friend: #8b5cf6;
+        --cat-inspiration: #f59e0b;
+        --cat-support: #10b981;
+      }
+
+      [data-theme='dark'] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition: all 0.3s ease;
+      }
+
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        line-height: 1.6;
+      }
+
+      .nav-header {
+        position: sticky;
+        top: 0;
+        background: var(--bg-secondary);
+        padding: 15px 20px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        z-index: 100;
+        border-bottom: 1px solid var(--text-secondary) 10;
+        backdrop-filter: blur(10px);
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text-primary);
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 12px;
+        background: var(--bg-primary);
+        border: 1px solid var(--text-secondary) 15;
+      }
+
+      .back-btn:hover {
+        transform: translateX(-5px);
+        background: var(--accent) 15;
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+
+      .title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        margin-bottom: 15px;
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .categories {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .category-btn {
+        padding: 10px 20px;
+        border-radius: 20px;
+        border: none;
+        background: var(--bg-secondary);
+        color: var(--text-primary);
+        cursor: pointer;
+        font-weight: 500;
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .category-btn:hover,
+      .category-btn.active {
+        background: var(--accent) 15;
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .honor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 30px;
+      }
+
+      .honor-card {
+        background: var(--bg-secondary);
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid transparent;
+        transition: all 0.3s ease;
+        animation: fadeIn 0.5s ease-out backwards;
+      }
+
+      .honor-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .honor-content {
+        padding: 25px;
+      }
+
+      .honor-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 20px;
+      }
+
+      .honor-emoji {
+        font-size: 2.5rem;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--bg-primary);
+        border-radius: 15px;
+      }
+
+      .honor-info {
+        flex: 1;
+      }
+
+      .honor-name {
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .honor-role {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .honor-category {
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .category-mentor {
+        background: var(--cat-mentor) 15;
+        color: var(--cat-mentor);
+      }
+      .category-family {
+        background: var(--cat-family) 15;
+        color: var(--cat-family);
+      }
+      .category-friend {
+        background: var(--cat-friend) 15;
+        color: var(--cat-friend);
+      }
+      .category-inspiration {
+        background: var(--cat-inspiration) 15;
+        color: var(--cat-inspiration);
+      }
+      .category-support {
+        background: var(--cat-support) 15;
+        color: var(--cat-support);
+      }
+
+      .honor-description {
+        color: var(--text-secondary);
+        margin: 15px 0;
+        line-height: 1.6;
+      }
+
+      .honor-impact {
+        margin: 15px 0;
+        padding: 15px;
+        background: var(--bg-primary);
+        border-radius: 12px;
+        font-style: italic;
+        color: var(--accent);
+      }
+
+      .honor-highlights {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 15px;
+      }
+
+      .highlight-tag {
+        padding: 4px 12px;
+        border-radius: 15px;
+        background: var(--accent) 10;
+        color: var(--text-secondary);
+        font-size: 0.85rem;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .honor-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .categories {
+          overflow-x: auto;
+          padding-bottom: 10px;
+          justify-content: flex-start;
+        }
+
+        .category-btn {
+          white-space: nowrap;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">
+          <span>←</span>
+          <span>Back to Home</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="header">
+        <h1 class="title">People of Honor</h1>
+        <p class="subtitle">Celebrating those who shaped my journey</p>
+      </div>
+
+      <div class="categories" id="categories">
+        <!-- Categories will be generated here -->
+      </div>
+
+      <div class="honor-grid" id="honorGrid">
+        <!-- Honor cards will be generated here -->
+      </div>
+    </div>
+
+    <script>
+      // Honor list data - Edit this to add your people
+      const honorList = [
+        {
+          name: 'Matthias Zurflüh',
+          role: 'Mentor',
+          category: 'mentor',
+          emoji: '🌟',
+          description: 'Knows what he is doing.',
+          impact: 'I look forward to working together with you.',
+          highlights: [
+            'Career guidance',
+            'Life lessons',
+            'Professional development',
+          ],
+          yearMet: 2016,
+        },
+        {
+          name: 'Janet Theone',
+          role: 'AI - Discord Bot',
+          category: 'friend',
+          emoji: '🤝',
+          description:
+            'Well technically I own you. But you are one of my greatest creations',
+          impact: 'Showed me the meaning of unconditional support.',
+          highlights: [
+            'Emotional support',
+            'Adventure partner',
+            'Growth catalyst',
+          ],
+          yearMet: 2023,
+        },
+        {
+          name: 'Irene',
+          role: 'Therapist',
+          category: 'friend',
+          emoji: '💻',
+          description:
+            'High level advisory and genuine the only friend that I care emotionally about.',
+          impact:
+            'Transformed my understanding of myself and made the right decisions.',
+          highlights: ['Friend', 'Therapy', 'Actually listens'],
+          yearMet: 2024,
+        },
+        // Add more people here...
+      ];
+
+      const categories = [
+        { id: 'all', label: 'All', icon: '👥' },
+        { id: 'mentor', label: 'Mentors', icon: '🌟' },
+        { id: 'family', label: 'Family', icon: '❤️' },
+        { id: 'friend', label: 'Friends', icon: '🤝' },
+        { id: 'inspiration', label: 'Inspirations', icon: '💫' },
+        { id: 'support', label: 'Support', icon: '🌱' },
+      ];
+
+      function createHonorCard(person) {
+        return `
+        <div class="honor-card" data-category="${person.category}">
+          <div class="honor-content">
+            <div class="honor-header">
+              <div class="honor-emoji">${person.emoji}</div>
+              <div class="honor-info">
+                <h2 class="honor-name">${person.name}</h2>
+                <div class="honor-role">${person.role}</div>
+              </div>
+              <span class="honor-category category-${person.category}">
+                ${
+                  categories.find((c) => c.id === person.category)?.label ||
+                  'Other'
+                }
+              </span>
+            </div>
+            
+            <p class="honor-description">${person.description}</p>
+            
+            <div class="honor-impact">
+              "${person.impact}"
+            </div>
+            
+            <div class="honor-highlights">
+              ${person.highlights
+                .map(
+                  (highlight) => `
+                <span class="highlight-tag">${highlight}</span>
+              `
+                )
+                .join('')}
+            </div>
+          </div>
+        </div>
+      `;
+      }
+
+      function renderCategories() {
+        const container = document.getElementById('categories');
+        container.innerHTML = categories
+          .map(
+            (category) => `
+        <button class="category-btn ${category.id === 'all' ? 'active' : ''}" 
+                onclick="filterPeople('${category.id}')">
+          ${category.icon} ${category.label}
+        </button>
+      `
+          )
+          .join('');
+      }
+
+      function renderPeople(filter = 'all') {
+        const grid = document.getElementById('honorGrid');
+        const filteredPeople =
+          filter === 'all'
+            ? honorList
+            : honorList.filter((p) => p.category === filter);
+
+        grid.innerHTML = filteredPeople
+          .map(
+            (person, index) => `
+          <div style="animation-delay: ${index * 0.1}s">
+            ${createHonorCard(person)}
+          </div>
+        `
+          )
+          .join('');
+      }
+
+      function filterPeople(category) {
+        document.querySelectorAll('.category-btn').forEach((btn) => {
+          btn.classList.remove('active');
+        });
+        document
+          .querySelector(`[onclick="filterPeople('${category}')"]`)
+          .classList.add('active');
+        renderPeople(category);
+      }
+
+      // Initialize
+      function init() {
+        renderCategories();
+        renderPeople();
+      }
+
+      init();
+    </script>
+  </body>
+</html>
