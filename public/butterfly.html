@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      :root {
+        --accent: #7c3aed;
+        --background: #ffffff;
+        --text: #1a1a1a;
+        --shadow: rgba(0, 0, 0, 0.1);
+        --line: #d1d5db;
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--text);
+        font-family: system-ui, -apple-system, sans-serif;
+        margin: 0;
+        padding: 0;
+      }
+
+      .nav-header {
+        padding: 1rem;
+        background: rgba(124, 58, 237, 0.1);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+      }
+
+      .back-btn {
+        color: var(--text);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .title {
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: var(--accent);
+      }
+
+      .butterfly-container {
+        position: relative;
+        padding: 2rem 0;
+      }
+
+      .timeline {
+        position: absolute;
+        left: 50%;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--accent);
+        opacity: 0.3;
+      }
+
+      .event-node {
+        position: relative;
+        background: var(--background);
+        border: 2px solid var(--accent);
+        border-radius: 12px;
+        padding: 1.5rem;
+        margin: 2rem 0;
+        max-width: calc(50% - 3rem);
+        box-shadow: 0 4px 6px var(--shadow);
+        opacity: 0;
+        animation: slideIn 0.5s ease-out forwards;
+      }
+
+      .event-node::before {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: var(--accent);
+        border-radius: 50%;
+        top: 50%;
+        transform: translateY(-50%);
+      }
+
+      .event-node::after {
+        content: '';
+        position: absolute;
+        height: 2px;
+        background: var(--accent);
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0.5;
+      }
+
+      .event-node:nth-child(odd) {
+        margin-right: auto;
+      }
+
+      .event-node:nth-child(odd)::before {
+        right: -3.5rem;
+      }
+
+      .event-node:nth-child(odd)::after {
+        right: -2.5rem;
+        width: 2.5rem;
+      }
+
+      .event-node:nth-child(even) {
+        margin-left: auto;
+      }
+
+      .event-node:nth-child(even)::before {
+        left: -3.5rem;
+      }
+
+      .event-node:nth-child(even)::after {
+        left: -2.5rem;
+        width: 2.5rem;
+      }
+
+      .event-node:hover {
+        transform: translateY(-5px);
+        transition: transform 0.3s ease;
+      }
+
+      .butterfly {
+        position: absolute;
+        font-size: 2rem;
+        z-index: 10;
+        transform-origin: center;
+      }
+
+      .butterfly-1 {
+        animation: butterflyFly1 15s ease-in-out infinite;
+      }
+
+      .butterfly-2 {
+        animation: butterflyFly2 18s ease-in-out infinite;
+        animation-delay: 2s;
+      }
+
+      .butterfly-3 {
+        animation: butterflyFly3 20s ease-in-out infinite;
+        animation-delay: 4s;
+      }
+
+      .butterfly-4 {
+        animation: butterflyFly4 17s ease-in-out infinite;
+        animation-delay: 1s;
+      }
+
+      @keyframes butterflyFly1 {
+        0% {
+          left: 45%;
+          top: 0;
+          transform: rotate(0deg) scale(1);
+        }
+        25% {
+          left: 40%;
+          top: 25%;
+          transform: rotate(-15deg) scale(1.2);
+        }
+        50% {
+          left: 60%;
+          top: 50%;
+          transform: rotate(15deg) scale(1);
+        }
+        75% {
+          left: 40%;
+          top: 75%;
+          transform: rotate(-15deg) scale(1.2);
+        }
+        100% {
+          left: 45%;
+          top: 100%;
+          transform: rotate(0deg) scale(1);
+        }
+      }
+
+      @keyframes butterflyFly2 {
+        0% {
+          left: 55%;
+          top: 0;
+          transform: rotate(15deg) scale(0.8);
+        }
+        25% {
+          left: 65%;
+          top: 30%;
+          transform: rotate(-10deg) scale(1);
+        }
+        50% {
+          left: 45%;
+          top: 60%;
+          transform: rotate(20deg) scale(1.1);
+        }
+        75% {
+          left: 60%;
+          top: 80%;
+          transform: rotate(-15deg) scale(0.9);
+        }
+        100% {
+          left: 55%;
+          top: 100%;
+          transform: rotate(0deg) scale(0.8);
+        }
+      }
+
+      @keyframes butterflyFly3 {
+        0% {
+          left: 35%;
+          top: 0;
+          transform: rotate(-10deg) scale(0.9);
+        }
+        25% {
+          left: 45%;
+          top: 35%;
+          transform: rotate(15deg) scale(1.1);
+        }
+        50% {
+          left: 35%;
+          top: 55%;
+          transform: rotate(-20deg) scale(1);
+        }
+        75% {
+          left: 50%;
+          top: 70%;
+          transform: rotate(10deg) scale(1.2);
+        }
+        100% {
+          left: 35%;
+          top: 100%;
+          transform: rotate(-10deg) scale(0.9);
+        }
+      }
+
+      @keyframes butterflyFly4 {
+        0% {
+          left: 50%;
+          top: 0;
+          transform: rotate(0deg) scale(1.1);
+        }
+        25% {
+          left: 35%;
+          top: 40%;
+          transform: rotate(20deg) scale(0.9);
+        }
+        50% {
+          left: 55%;
+          top: 65%;
+          transform: rotate(-15deg) scale(1.2);
+        }
+        75% {
+          left: 45%;
+          top: 85%;
+          transform: rotate(10deg) scale(1);
+        }
+        100% {
+          left: 50%;
+          top: 100%;
+          transform: rotate(0deg) scale(1.1);
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .event-date {
+        font-size: 0.875rem;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .event-text {
+        margin: 0;
+        line-height: 1.5;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">← Back to Home</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1 class="title">🦋 The Butterfly Effect</h1>
+      <div class="butterfly-container">
+        <div class="timeline"></div>
+        <div class="butterfly butterfly-1">🦋</div>
+        <div class="butterfly butterfly-2">🦋</div>
+        <div class="butterfly butterfly-3">🦋</div>
+        <div class="butterfly butterfly-4">🦋</div>
+        <div id="eventsContainer"></div>
+      </div>
+    </div>
+
+    <script>
+      const events = [
+        {
+          id: 1,
+          date: 'Day 1',
+          text: 'At the age of 13, I get a recommended Youtube Stream with 3 Viewers. I decide to watch it.',
+        },
+        {
+          id: 2,
+          date: 'Day 1',
+          text: 'The streamer (Blind_Gamer) is playing on his Minecraft Server. I join the server and start playing with him.',
+        },
+        {
+          id: 3,
+          date: 'Day 13',
+          text: 'On the Server I meet new people. Like Marcel (Kemikali) and Eric. We build together.',
+        },
+        {
+          id: 4,
+          date: 'Day 21',
+          text: 'After not playing for a Week I come back to them having a lot new people.',
+        },
+        {
+          id: 5,
+          date: 'Day 23',
+          text: 'One of the guys is DannyTheRaven. They bully him and he leaves crying. I chase after him.',
+        },
+        {
+          id: 6,
+          date: 'Day 24',
+          text: 'Me and Dani leave the other to build Pythonia',
+        },
+        {
+          id: 7,
+          date: 'Day 29',
+          text: 'Dani invites his friends to the server. Lenn10, Masterkamek and TheIceWolf.',
+        },
+        {
+          id: 7,
+          date: 'Day 29',
+          text: 'Dani invites his friends to the server. Lenn10, Masterkamek and TheIceWolf.',
+        },
+        {
+          id: 8,
+          date: 'Day 37',
+          text: 'Masterkamek teaches me base level economics and great grammer.',
+        },
+        {
+          id: 9,
+          date: 'Day 73',
+          text: 'The Minecraft Project is finished. All that remains is our Discord Server "Rice".',
+        },
+        {
+          id: 10,
+          date: 'Day 256',
+          text: 'Two from my School make a Minecraft Server. Johannes and Oliver (ImGajeed)',
+        },
+        {
+          id: 11,
+          date: 'Day 261',
+          text: 'War breaks out and I need people. I ask Dani to join me. He brings also Sombrero (Paul).',
+        },
+        {
+          id: 12,
+          date: 'Day 273',
+          text: 'Dani brings his friends Tobi (Trayzz) and Nelson (HrNilson) on the Server.',
+        },
+        {
+          id: 13,
+          date: 'Day 275',
+          text: 'Tobi adds Clara (MamaMeinung) to the Server, they invite me to their Discord (IdiotenServer).',
+        },
+        {
+          id: 14,
+          date: 'Day 311',
+          text: 'I have a fight with Carmel (YoxiQ) from the IdiotenServer',
+        },
+        {
+          id: 15,
+          date: 'Day 314',
+          text: 'Oliver no longer wants to pay for the Server, YoxiQ from the IdiotenServer steps up and overtakes.',
+        },
+        {
+          id: 16,
+          date: 'Day 315',
+          text: 'The Server I once loved now taken by a guy I hate. As the most active player I talk with him again.',
+        },
+        {
+          id: 17,
+          date: 'Day 316',
+          text: 'We found common ground becoming friends.',
+        },
+        {
+          id: 18,
+          date: 'Day 371',
+          text: 'Free World is dead. I leave Discord for 6Months.',
+        },
+        {
+          id: 19,
+          date: 'Day 552',
+          text: 'I return after Clara wrote me. She and YoxiQ are a couple now.',
+        },
+        {
+          id: 20,
+          date: 'Day 552',
+          text: 'We play RDR2, Minecraft, GTA together. I become friends with YoxiQ and Clara.',
+        },
+        {
+          id: 21,
+          date: 'Day 612',
+          text: 'YoxiQ teaches me Java after waking my interest for Coding.',
+        },
+        {
+          id: 22,
+          date: 'Day 800',
+          text: 'I decide to become a Software Developer instead of high school.',
+        },
+        {
+          id: 23,
+          date: 'Day 913',
+          text: 'I start playing League with YoxiQ.',
+        },
+        {
+          id: 24,
+          date: 'Day 1001',
+          text: 'I start my Apprenticeship @ Swisscom.',
+        },
+        {
+          id: 25,
+          date: 'Day 1132',
+          text: 'I stumble upon a GuteFrage.net post about a coding problem I am trying to solve.',
+        },
+        {
+          id: 26,
+          date: 'Day 1132',
+          text: 'I open an account and start answering questions.',
+        },
+        {
+          id: 27,
+          date: 'Day 1200',
+          text: 'While playing League I always read out some questions since they can be quite amusing.',
+        },
+        {
+          id: 28,
+          date: 'Day 1314',
+          text: 'I discover Omnism.',
+        },
+        {
+          id: 29,
+          date: 'Day 1400',
+          text: 'I am trying to change. Meet new people, learn new things.',
+        },
+        {
+          id: 30,
+          date: 'Day 1401',
+          text: 'Due to my work friends having longer before lunch I decide to answer someone on GuteFrage.',
+        },
+        {
+          id: 31,
+          date: 'Day 1401',
+          text: 'I help a Girl (Aminia) with a league config problem.',
+        },
+        {
+          id: 32,
+          date: 'Day 1402',
+          text: 'Aminia doesnt block me and we call.',
+        },
+        {
+          id: 33,
+          date: 'Day 1406',
+          text: 'Me and Aminia become friends.',
+        },
+        {
+          id: 34,
+          date: 'Day 1424',
+          text: 'We notice that we both like MBTI, she shows me pdb.',
+        },
+        {
+          id: 35,
+          date: 'Day 1443',
+          text: 'I meet new people on pdb. (Irene, Shiro, Lisa, Dario, etc.)',
+        },
+        {
+          id: 36,
+          date: 'Day 1453',
+          text: 'I leave YoxiQ (Toxic Manipulative Psycho) I join the "emos" Discord Server.',
+        },
+        {
+          id: 37,
+          date: 'Day 1460',
+          text: 'Today. I am here. I met you along the way. Thank you for being here.',
+        },
+        {
+          id: 38,
+          date: 'Future',
+          text: 'All pieces matter and decided a course. This is the Butterfly Effect. This is Fate.',
+        },
+      ];
+
+      function createEventNode(event, index) {
+        const node = document.createElement('div');
+        node.className = 'event-node';
+        node.style.animationDelay = `${index * 0.2}s`;
+
+        const dateDiv = document.createElement('div');
+        dateDiv.className = 'event-date';
+        dateDiv.textContent = event.date;
+
+        const textP = document.createElement('p');
+        textP.className = 'event-text';
+        textP.textContent = event.text;
+
+        node.appendChild(dateDiv);
+        node.appendChild(textP);
+
+        return node;
+      }
+
+      function initializeVisualization() {
+        const container = document.getElementById('eventsContainer');
+        events.forEach((event, index) => {
+          container.appendChild(createEventNode(event, index));
+        });
+      }
+
+      window.addEventListener('load', initializeVisualization);
+    </script>
+  </body>
+</html>
