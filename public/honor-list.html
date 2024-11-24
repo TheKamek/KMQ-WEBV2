@@ -11,7 +11,6 @@
         --accent: #2563eb;
         --accent-light: #60a5fa;
 
-        /* Category Colors */
         --cat-mentor: #3b82f6;
         --cat-family: #ec4899;
         --cat-friend: #8b5cf6;
@@ -299,16 +298,13 @@
       </div>
 
       <div class="categories" id="categories">
-        <!-- Categories will be generated here -->
       </div>
 
       <div class="honor-grid" id="honorGrid">
-        <!-- Honor cards will be generated here -->
       </div>
     </div>
 
     <script>
-      // Honor list data - Edit this to add your people
       const honorList = [
         {
           name: 'Matthias Zurflüh',
@@ -351,7 +347,6 @@
           highlights: ['Friend', 'Therapy', 'Actually listens'],
           yearMet: 2024,
         },
-        // Add more people here...
       ];
 
       const categories = [
@@ -443,7 +438,6 @@
         renderPeople(category);
       }
 
-      // Initialize
       function init() {
         renderCategories();
         renderPeople();

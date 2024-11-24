@@ -3,7 +3,6 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-      /* Previous styles remain the same... */
       :root {
         --bg-primary: #f8fafc;
         --bg-secondary: #ffffff;
@@ -282,7 +281,6 @@
           </p>
         </section>
 
-        <!-- Optional: Key Points Section -->
         <section class="content-section" id="keyPoints">
           <h2 class="section-title">🔑 Key Points</h2>
           <ul class="content-list">
@@ -294,7 +292,6 @@
           </ul>
         </section>
 
-        <!-- Optional: Code Section -->
         <section class="content-section" id="codeExample">
           <h2 class="section-title">💻 Code Example</h2>
           <div class="code-block">
@@ -303,7 +300,6 @@
           </div>
         </section>
 
-        <!-- Optional: Image Section -->
         <section class="content-section" id="imageSection">
           <h2 class="section-title">📸 Visual Example</h2>
           <div class="image-section">
@@ -312,19 +308,16 @@
           </div>
         </section>
 
-        <!-- Optional: Warning Box -->
         <section class="content-section">
           <div class="warning-box">
             ⚠️ Important warning or note about implementation
           </div>
         </section>
 
-        <!-- Optional: Info Box -->
         <section class="content-section">
           <div class="info-box">ℹ️ Additional information or context</div>
         </section>
 
-        <!-- Optional: Tip Box -->
         <section class="content-section">
           <div class="tip-box">💡 Helpful tip or best practice</div>
         </section>
@@ -332,9 +325,7 @@
     </div>
 
     <script>
-      // Example resource data object with optional modules
       const resourceData = {
-        // Required fields
         type: 'Book',
         icon: '📖',
         title: 'Atomic Habits: Key Takeaways and Implementation Guide',
@@ -345,7 +336,6 @@
         summary:
           'Atomic Habits is a comprehensive guide about building good habits and breaking bad ones...',
 
-        // Optional modules - comment out or remove any you don't need
         keyPoints: [
           'Habits are the compound interest of self-improvement',
           'Focus on systems instead of goals',
@@ -373,9 +363,7 @@ function demo() {
         tips: ['💡 Helpful tip or best practice'],
       };
 
-      // You can use this function to conditionally render sections based on data
       function renderSections() {
-        // Add your rendering logic here
         if (!resourceData.keyPoints) {
           document.getElementById('keyPoints').style.display = 'none';
         }

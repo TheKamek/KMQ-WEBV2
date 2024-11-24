@@ -11,7 +11,6 @@
         --accent: #2563eb;
         --accent-light: #60a5fa;
 
-        /* Category Colors */
         --cat-books: #3b82f6;
         --cat-notes: #8b5cf6;
         --cat-tools: #10b981;
@@ -41,7 +40,6 @@
         line-height: 1.6;
       }
 
-      /* Header Styles */
       .nav-header {
         position: sticky;
         top: 0;
@@ -107,7 +105,6 @@
         margin: 0 auto;
       }
 
-      /* Resources specific styles */
       .categories {
         display: flex;
         gap: 15px;
@@ -320,16 +317,13 @@
       />
 
       <div class="categories" id="categories">
-        <!-- Categories will be generated here -->
       </div>
 
       <div class="resources-grid" id="resourcesGrid">
-        <!-- Resources will be generated here -->
       </div>
     </div>
 
     <script>
-      // Resources data - Edit this to add your content
       const resources = [
         {
           type: 'book',
@@ -490,7 +484,6 @@
         });
       }
 
-      // Sort functionality
       function sortResources(criteria = 'date') {
         const sortedResources = [...resources].sort((a, b) => {
           switch (criteria) {
@@ -519,7 +512,6 @@
           .join('');
       }
 
-      // Add resource function
       function addResource(resource) {
         resources.unshift(resource);
         renderResources(
@@ -530,7 +522,6 @@
         );
       }
 
-      // Export resources
       function exportResources() {
         const dataStr =
           'data:text/json;charset=utf-8,' +
@@ -543,7 +534,6 @@
         downloadAnchorNode.remove();
       }
 
-      // Tag filtering
       function filterByTag(tag) {
         const cards = document.querySelectorAll('.resource-card');
         cards.forEach((card) => {
@@ -554,12 +544,10 @@
         });
       }
 
-      // Initialize everything
       function init() {
         renderCategories();
         renderResources();
 
-        // Add sort button to categories
         const sortBtn = document.createElement('button');
         sortBtn.className = 'category-btn';
         sortBtn.innerHTML = '🔄 Sort';
@@ -569,7 +557,6 @@
         };
         document.getElementById('categories').appendChild(sortBtn);
 
-        // Add export button
         const exportBtn = document.createElement('button');
         exportBtn.className = 'category-btn';
         exportBtn.innerHTML = '📤 Export';
@@ -577,7 +564,6 @@
         document.getElementById('categories').appendChild(exportBtn);
       }
 
-      // Add quick resource function
       function quickAdd() {
         const newResource = {
           type: 'note',
@@ -597,7 +583,6 @@
         }
       }
 
-      // Add quick add button
       document.addEventListener('DOMContentLoaded', () => {
         const quickAddBtn = document.createElement('button');
         quickAddBtn.className = 'category-btn';
@@ -606,7 +591,6 @@
         document.getElementById('categories').appendChild(quickAddBtn);
       });
 
-      // Start the app
       init();
     </script>
   </body>

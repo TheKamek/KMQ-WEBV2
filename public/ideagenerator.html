@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      :root {
+        --accent: #7c3aed;
+        --background: #ffffff;
+        --text: #1a1a1a;
+        --shadow: rgba(0, 0, 0, 0.1);
+        --card-bg: rgba(124, 58, 237, 0.03);
+        --line: #d1d5db;
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--text);
+        font-family: system-ui, -apple-system, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+      }
+
+      .nav-header {
+        padding: 1rem;
+        background: rgba(124, 58, 237, 0.1);
+        border-bottom: 1px solid var(--line);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+      }
+
+      .back-btn {
+        color: var(--text);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .title {
+        font-size: 2.5rem;
+        text-align: center;
+        color: var(--accent);
+        margin-bottom: 1rem;
+        position: relative;
+        display: inline-block;
+        width: 100%;
+      }
+
+      .subtitle {
+        text-align: center;
+        color: #666;
+        margin-bottom: 3rem;
+      }
+
+      .generator-container {
+        background: var(--card-bg);
+        border-radius: 16px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px var(--shadow);
+      }
+
+      .controls {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .category-select {
+        padding: 0.75rem 1.5rem;
+        border: 2px solid var(--accent);
+        border-radius: 12px;
+        background: white;
+        color: var(--accent);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+        min-width: 200px;
+      }
+
+      .category-select:hover {
+        background: var(--accent);
+        color: white;
+      }
+
+      .generate-btn {
+        padding: 0.75rem 2rem;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .generate-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+      }
+
+      .generate-btn::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(45deg);
+        transition: all 0.3s ease;
+      }
+
+      .idea-display {
+        background: white;
+        padding: 2rem;
+        border-radius: 12px;
+        margin-top: 2rem;
+        text-align: center;
+        font-size: 1.25rem;
+        min-height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        transition: all 0.3s ease;
+      }
+
+      .combinations-count {
+        text-align: center;
+        margin-top: 1rem;
+        color: #666;
+        font-size: 0.9rem;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .history {
+        margin-top: 2rem;
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+
+      .history-item {
+        background: white;
+        padding: 1.5rem;
+        border-radius: 12px;
+        border: 1px solid var(--line);
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        opacity: 0;
+        animation: slideIn 0.5s ease forwards;
+      }
+
+      .history-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px var(--shadow);
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .sparkle {
+        position: absolute;
+        pointer-events: none;
+        animation: sparkleFloat 1s ease-out forwards;
+      }
+
+      @keyframes sparkleFloat {
+        0% {
+          transform: translate(0, 0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translate(var(--tx), var(--ty)) rotate(360deg);
+          opacity: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">← Back to Home</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1 class="title">Infinite Idea Generator</h1>
+      <p class="subtitle">Transform your thoughts into endless possibilities</p>
+
+      <div class="generator-container">
+        <div class="controls">
+          <select id="categorySelect" class="category-select">
+            <option value="business">Business Ideas</option>
+            <option value="story">Story Concepts</option>
+            <option value="product">Product Names</option>
+            <option value="app">App Ideas</option>
+            <option value="invention">Invention Ideas</option>
+          </select>
+          <button id="generateBtn" class="generate-btn">
+            Generate Idea ✨
+          </button>
+        </div>
+
+        <div id="ideaDisplay" class="idea-display">
+          Click 'Generate Idea' to start
+        </div>
+
+        <div class="combinations-count">
+          Possible unique combinations: <span id="combinationCount">0</span>
+        </div>
+
+        <div id="history" class="history"></div>
+      </div>
+    </div>
+
+    <script>
+      const words = {
+        adjectives: [
+          'Smart',
+          'Digital',
+          'Eco-friendly',
+          'Innovative',
+          'Automated',
+          'Social',
+          'Creative',
+          'Virtual',
+          'Sustainable',
+          'Advanced',
+          'Connected',
+          'Dynamic',
+          'Interactive',
+          'Portable',
+          'Efficient',
+          'Customizable',
+          'Intelligent',
+          'Flexible',
+          'Modern',
+          'Premium',
+          'Adaptive',
+          'Revolutionary',
+          'User-friendly',
+          'Groundbreaking',
+          'Reliable',
+          'Modular',
+          'Compact',
+          'Progressive',
+          'Cutting-edge',
+          'Pioneering',
+          'Elegant',
+          'Secure',
+          'Seamless',
+          'Optimized',
+          'Unique',
+          'Collaborative',
+          'Transparent',
+          'Vibrant',
+          'Versatile',
+          'Sophisticated',
+          'Refined',
+          'Scalable',
+          'Accessible',
+          'Holistic',
+          'Enlightened',
+          'Bold',
+          'Green',
+          'Transformative',
+          'Trustworthy',
+          'Imaginative',
+          'Empathetic',
+          'Streamlined',
+          'Resilient',
+          'Ethical',
+          'Immersive',
+          'Creative',
+          'Sleek',
+          'Responsive',
+          'Eco-conscious',
+          'Future-proof',
+          'Compact',
+          'Predictive',
+          'Engaging',
+          'Aesthetic',
+          'Inclusive',
+          'Playful',
+          'Smart-enabled',
+          'Dynamic',
+          'Automotive',
+          'Hybrid',
+          'Precise',
+          'Minimalist',
+          'Resilient',
+          'Augmented',
+          'Proactive',
+          'Discrete',
+          'Self-sustaining',
+          'Streamlined',
+          'Exquisite',
+          'Sophisticated',
+          'Unified',
+          'Experimental',
+          'Robust',
+          'High-tech',
+          'Multifunctional',
+          'Sleek',
+          'Reliable',
+          'Collaborative',
+          'Ergonomic',
+          'Reinforced',
+          'Eco-focused',
+          'Personalized',
+          'Analytical',
+          'Holistic',
+          'Symbiotic',
+          'Pragmatic',
+        ],
+        nouns: [
+          'Platform',
+          'Solution',
+          'System',
+          'Device',
+          'Assistant',
+          'Network',
+          'Hub',
+          'Tool',
+          'Service',
+          'App',
+          'Technology',
+          'Framework',
+          'Interface',
+          'Product',
+          'Engine',
+          'Module',
+          'Companion',
+          'Suite',
+          'Station',
+          'Portal',
+          'Ecosystem',
+          'Marketplace',
+          'Program',
+          'Feature',
+          'Instrument',
+          'Channel',
+          'API',
+          'Dashboard',
+          'Package',
+          'Database',
+          'Manager',
+          'Algorithm',
+          'Machine',
+          'Controller',
+          'Prototype',
+          'Blueprint',
+          'Function',
+          'Console',
+          'Algorithm',
+          'Environment',
+          'Cluster',
+          'Gadget',
+          'Artifact',
+          'Core',
+          'Console',
+          'Workshop',
+          'Module',
+          'Framework',
+          'Platform',
+          'Pipeline',
+          'Server',
+          'Dataset',
+          'Toolkit',
+          'Network',
+          'Monitor',
+          'Stream',
+          'Brain',
+          'Processing Unit',
+          'Overlay',
+          'Terminal',
+          'Pulse',
+          'Fabric',
+          'Dimension',
+          'Architecture',
+          'Interface',
+          'Grid',
+          'Array',
+          'Generator',
+          'Compiler',
+          'Navigator',
+          'Orchestrator',
+          'Beacon',
+          'Tracker',
+          'Machine',
+          'Repository',
+          'Processor',
+          'Analyst',
+          'Node',
+          'Integrator',
+          'Relay',
+          'Balancer',
+          'Interconnector',
+          'Pod',
+          'Package',
+          'Mirror',
+          'AI System',
+          'Scheduler',
+          'Hub',
+        ],
+        verbs: [
+          'Transform',
+          'Optimize',
+          'Enhance',
+          'Streamline',
+          'Revolutionize',
+          'Innovate',
+          'Accelerate',
+          'Empower',
+          'Simplify',
+          'Automate',
+          'Connect',
+          'Integrate',
+          'Generate',
+          'Facilitate',
+          'Amplify',
+          'Elevate',
+          'Maximize',
+          'Harmonize',
+          'Modernize',
+          'Upgrade',
+          'Augment',
+          'Expand',
+          'Reimagine',
+          'Perfect',
+          'Revolutionize',
+          'Advance',
+          'Boost',
+          'Refine',
+          'Optimize',
+          'Energize',
+          'Catalyze',
+          'Refactor',
+          'Launch',
+          'Improve',
+          'Reinforce',
+          'Resolve',
+          'Streamline',
+          'Construct',
+          'Design',
+          'Power',
+          'Deliver',
+          'Simplify',
+          'Enhance',
+          'Discover',
+          'Lead',
+          'Hone',
+          'Transform',
+          'Craft',
+          'Empower',
+          'Construct',
+          'Motivate',
+          'Boost',
+          'Energize',
+          'Drive',
+          'Achieve',
+          'Cultivate',
+          'Create',
+          'Generate',
+          'Rebuild',
+          'Adapt',
+          'Transform',
+          'Change',
+          'Learn',
+          'Deliver',
+          'Streamline',
+          'Optimize',
+          'Analyze',
+          'Supercharge',
+          'Synchronize',
+          'Stimulate',
+          'Organize',
+          'Guide',
+          'Automate',
+          'Bring to life',
+          'Bring to life',
+        ],
+        domains: [
+          'Healthcare',
+          'Education',
+          'Finance',
+          'Transportation',
+          'Entertainment',
+          'Communication',
+          'Retail',
+          'Security',
+          'Productivity',
+          'Lifestyle',
+          'Fitness',
+          'Gaming',
+          'Business',
+          'Travel',
+          'Social Media',
+          'Environment',
+          'Agriculture',
+          'Manufacturing',
+          'Energy',
+          'Sports',
+          'E-commerce',
+          'Data Science',
+          'Logistics',
+          'Wellness',
+          'Real Estate',
+          'AI',
+          'Robotics',
+          'Augmented Reality',
+          'Virtual Reality',
+          'Space Exploration',
+          'Public Safety',
+          'Smart Cities',
+          'Nanotechnology',
+          'Biotechnology',
+          'Legal Tech',
+          'Cybersecurity',
+          'Cloud Computing',
+          'Green Energy',
+          'Renewables',
+          'IoT',
+          'Autonomous Vehicles',
+          'Quantum Computing',
+          'Creative Arts',
+          'Food Tech',
+          'Hospitality',
+          'Media',
+          'Healthcare IT',
+          'Genomics',
+          'Sustainable Living',
+          'Pharmaceuticals',
+          'Crowdsourcing',
+          'Music',
+          'Performing Arts',
+          'AI Ethics',
+          'Supply Chain',
+          'Customer Service',
+          'Luxury Goods',
+          'Education Tech',
+          'Telemedicine',
+          'Elder Care',
+          'Ocean Conservation',
+          'Disaster Management',
+          'Clean Water',
+          'Waste Management',
+          'Digital Transformation',
+          'Freight',
+          'Pet Tech',
+          'Outdoor Living',
+          'Mobility',
+          'Fitness Tech',
+          'Personal Finance',
+          'Elder Tech',
+          'Insurance Tech',
+          'HR Tech',
+          'eSports',
+          'Streaming',
+          'Mental Health',
+          'Renewable Materials',
+          'Wearables',
+          'DIY Solutions',
+          'Content Creation',
+          'Open Source',
+          'Humanitarian Tech',
+          'Resource Management',
+          'Wildlife Conservation',
+          '3D Printing',
+          'Agritech',
+          'Solar Power',
+          'Battery Tech',
+          'AI Applications',
+        ],
+        benefits: [
+          'Efficiency',
+          'Sustainability',
+          'Convenience',
+          'Innovation',
+          'Connectivity',
+          'Accessibility',
+          'Security',
+          'Performance',
+          'Quality',
+          'Reliability',
+          'Flexibility',
+          'Scalability',
+          'Simplicity',
+          'Productivity',
+          'Affordability',
+          'Durability',
+          'Compatibility',
+          'Functionality',
+          'Usability',
+          'Adaptability',
+          'Empowerment',
+          'Creativity',
+          'Growth',
+          'Collaboration',
+          'Energy Saving',
+          'Cost-Effectiveness',
+          'User Engagement',
+          'Personalization',
+          'Seamlessness',
+          'Speed',
+          'Precision',
+          'Transparency',
+          'Data-Driven Insights',
+          'Automation',
+          'Resilience',
+          'Future-Readiness',
+          'Empathy',
+          'Eco-Consciousness',
+          'Streamlined Processes',
+          'Problem-Solving',
+          'Enhanced Communication',
+          'Green Innovation',
+          'Knowledge Expansion',
+          'Mindfulness',
+          'Environmental Care',
+          'Cutting-edge Development',
+          'Better Connectivity',
+          'Modern Aesthetics',
+          'Workflow Optimization',
+          'Behavioral Insights',
+          'Human-Centric Design',
+          'Scalable Solutions',
+          'Customer Delight',
+          'Trustworthiness',
+          'Long-Term Value',
+          'Lower Emissions',
+          'Reduced Waste',
+          'Faster Results',
+          'Streamlined Logistics',
+          'Increased Productivity',
+          'Empathetic Design',
+          'Shared Learning',
+          'Inclusive Solutions',
+          'Sustainable Growth',
+          'Data Security',
+          'User Safety',
+          'Eco-Friendly Impact',
+          'Time Efficiency',
+          'Enhanced Mobility',
+          'Better Problem-Solving',
+          'Reduced Friction',
+          'Customer Loyalty',
+          'Empowered Users',
+          'Custom Solutions',
+          'Global Accessibility',
+          'Enhanced Privacy',
+          'Mindful Innovation',
+          'Smarter Workflows',
+          'Data Transparency',
+          'More Opportunities',
+          'Wider Reach',
+          'Actionable Results',
+          'Optimized Energy Use',
+          'Augmented Experiences',
+        ],
+      };
+      const templates = {
+        business: [
+          '{verb} {domain} through {adjective} {noun}',
+          '{adjective} {domain} {noun} for {benefit}',
+          'The {adjective} {noun} for {domain} {benefit}',
+          '{domain} {noun} that {verb}s {benefit}',
+        ],
+        story: [
+          'A {adjective} {noun} in the world of {domain}',
+          'The {noun} that {verb}ed {domain}',
+          '{verb}ing {domain} with a {adjective} {noun}',
+          'The {adjective} quest for {domain} {benefit}',
+        ],
+        product: [
+          '{adjective}{noun}',
+          '{verb}{noun}',
+          '{domain}{noun}',
+          '{benefit}{noun}',
+        ],
+        app: [
+          '{adjective} {domain} {noun}',
+          '{verb} {benefit} App',
+          '{domain} {benefit} Assistant',
+          'My{domain}{noun}',
+        ],
+        invention: [
+          'The {adjective} {noun} for {domain}',
+          'A {benefit}-focused {domain} {noun}',
+          '{adjective} {domain} {verb}er',
+          'The {domain} {benefit} {noun}',
+        ],
+      };
+
+      function createSparkles(x, y) {
+        const sparkles = '✨💫⭐';
+        for (let i = 0; i < 5; i++) {
+          const sparkle = document.createElement('span');
+          sparkle.className = 'sparkle';
+          sparkle.textContent =
+            sparkles[Math.floor(Math.random() * sparkles.length)];
+          sparkle.style.left = `${x}px`;
+          sparkle.style.top = `${y}px`;
+          sparkle.style.setProperty('--tx', `${(Math.random() - 0.5) * 100}px`);
+          sparkle.style.setProperty('--ty', `${-50 - Math.random() * 50}px`);
+          document.body.appendChild(sparkle);
+
+          setTimeout(() => sparkle.remove(), 1000);
+        }
+      }
+
+      function getRandomItem(array) {
+        return array[Math.floor(Math.random() * array.length)];
+      }
+
+      function generateIdea(template) {
+        return template
+          .replace(/{adjective}/g, getRandomItem(words.adjectives))
+          .replace(/{noun}/g, getRandomItem(words.nouns))
+          .replace(/{verb}/g, getRandomItem(words.verbs))
+          .replace(/{domain}/g, getRandomItem(words.domains))
+          .replace(/{benefit}/g, getRandomItem(words.benefits));
+      }
+
+      function calculateCombinations() {
+        const baseCount = Object.values(words).reduce(
+          (acc, curr) => acc * curr.length,
+          1
+        );
+        const templatesCount = Object.values(templates).reduce(
+          (acc, curr) => acc + curr.length,
+          0
+        );
+        return baseCount * templatesCount;
+      }
+
+      document.getElementById('combinationCount').textContent =
+        calculateCombinations().toLocaleString();
+
+      document.getElementById('generateBtn').addEventListener('click', (e) => {
+        const rect = e.target.getBoundingClientRect();
+        createSparkles(rect.left + rect.width / 2, rect.top);
+
+        const category = document.getElementById('categorySelect').value;
+        const template = getRandomItem(templates[category]);
+        const idea = generateIdea(template);
+
+        const display = document.getElementById('ideaDisplay');
+        display.style.opacity = '0';
+
+        setTimeout(() => {
+          display.textContent = idea;
+          display.style.opacity = '1';
+        }, 200);
+
+        const history = document.getElementById('history');
+        const historyItem = document.createElement('div');
+        historyItem.className = 'history-item';
+        historyItem.textContent = idea;
+
+        if (history.children.length >= 12) {
+          history.removeChild(history.lastChild);
+        }
+
+        history.insertBefore(historyItem, history.firstChild);
+      });
+    </script>
+  </body>
+</html>

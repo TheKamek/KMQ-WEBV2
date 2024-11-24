@@ -11,7 +11,6 @@
         --accent: #2563eb;
         --accent-light: #60a5fa;
 
-        /* Category Colors */
         --cat-skills: #3b82f6;
         --cat-interests: #8b5cf6;
         --cat-achievements: #10b981;
@@ -39,7 +38,6 @@
         line-height: 1.6;
       }
 
-      /* Header Styles */
       .nav-header {
         position: sticky;
         top: 0;
@@ -311,9 +309,7 @@
             >
             <h2 class="card-title">Skills</h2>
           </div>
-          <div class="skills-grid">
-            <!-- Skills will be generated here -->
-          </div>
+          <div class="skills-grid"></div>
         </div>
 
         <div class="about-card">
@@ -328,9 +324,7 @@
             >
             <h2 class="card-title">Journey</h2>
           </div>
-          <div class="timeline">
-            <!-- Timeline will be generated here -->
-          </div>
+          <div class="timeline"></div>
         </div>
 
         <div class="about-card">
@@ -345,9 +339,7 @@
             >
             <h2 class="card-title">Interests</h2>
           </div>
-          <div class="interests-list">
-            <!-- Interests will be generated here -->
-          </div>
+          <div class="interests-list"></div>
         </div>
       </div>
 
@@ -357,7 +349,6 @@
     </div>
 
     <script>
-      // Personal data - Edit this to add your information
       const personalData = {
         name: 'Kamek Ivo Krämer',
         title: 'Software Developer & Overthinker',
@@ -382,6 +373,12 @@
           { name: 'Python', level: 75 },
           { name: 'UI/UX', level: 70 },
           { name: 'DevOps', level: 65 },
+          { name: 'Spigot API', level: 60 },
+          { name: 'Java', level: 55 },
+          { name: 'Lua', level: 50 },
+          { name: 'MicroScript', level: 45 },
+          { name: 'Web-Development', level: 40 },
+          { name: 'HTML/CSS', level: 35 },
         ],
         journey: [
           {
@@ -411,6 +408,25 @@
           'Psychology',
           'Biology',
           'Piano',
+          'Philosophy',
+          'Reading',
+          'Writing',
+          'Typograpy',
+          'Gaming',
+          'Painting',
+          'Cosplay',
+          '3D Printing',
+          'Electronics',
+          'Music',
+          'Medicine',
+          'Data Science',
+          'Mathematics',
+          'Physics',
+          'Astronomy',
+          'Space',
+          'History',
+          'Languages',
+          'Drawing',
         ],
         quote:
           'The smarter someone is the faster they realize that they will never be happy.',
@@ -472,7 +488,6 @@
           .join('');
       }
 
-      // Initialize
       function init() {
         updateProfile();
         renderSkills();
@@ -480,7 +495,6 @@
         renderInterests();
       }
 
-      // Start the app
       init();
     </script>
   </body>

@@ -288,17 +288,14 @@
 
     <div class="container" id="voidContainer">
       <h1 class="title">The Void</h1>
-      <!-- Phase cards will be inserted here -->
     </div>
 
     <div class="timeline" id="timeline">
-      <!-- Timeline dots will be inserted here -->
     </div>
 
     <div class="hidden-quote" id="quoteDisplay"></div>
 
     <script>
-      // Content Data Structure
       const voidData = {
         phases: [
           {
@@ -441,18 +438,14 @@ So to list my Problems:<br>
         ],
       };
 
-      // Initialize page
       function initializeVoid() {
         const container = document.getElementById('voidContainer');
         const timeline = document.getElementById('timeline');
 
-        // Create phase cards
         voidData.phases.forEach((phase, index) => {
-          // Create phase card
           const card = createPhaseCard(phase);
           container.appendChild(card);
 
-          // Create timeline dot
           const dot = document.createElement('div');
           dot.className = 'timeline-dot';
           dot.setAttribute('data-phase', phase.id);
@@ -464,7 +457,6 @@ So to list my Problems:<br>
           timeline.appendChild(dot);
         });
 
-        // Initialize particles
         createParticles();
         initializeScrollObserver();
       }
@@ -566,7 +558,6 @@ So to list my Problems:<br>
         });
       }
 
-      // Initialize on load
       window.onload = function () {
         setTimeout(() => {
           document.querySelector('.void-entrance').style.opacity = '0';

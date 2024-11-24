@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      :root {
+        --accent: #7c3aed;
+        --background: #ffffff;
+        --text: #1a1a1a;
+        --shadow: rgba(0, 0, 0, 0.1);
+        --card-bg: rgba(124, 58, 237, 0.03);
+        --line: #d1d5db;
+      }
+
+      body {
+        background-color: var(--background);
+        color: var(--text);
+        font-family: system-ui, -apple-system, sans-serif;
+        margin: 0;
+        padding: 0;
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      .nav-header {
+        padding: 1rem;
+        background: rgba(124, 58, 237, 0.1);
+        border-bottom: 1px solid var(--line);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+      }
+
+      .back-btn {
+        color: var(--text);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 500;
+      }
+
+      .container {
+        max-width: 1000px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+
+      .title {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        text-align: center;
+        color: var(--accent);
+        font-weight: 800;
+      }
+
+      .subtitle {
+        text-align: center;
+        font-size: 1.25rem;
+        color: #666;
+        margin-bottom: 3rem;
+      }
+
+      .intro {
+        font-size: 1.1rem;
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-bottom: 3rem;
+        box-shadow: 0 4px 6px var(--shadow);
+      }
+
+      .infinite-personas {
+        position: relative;
+        height: 300px;
+        margin: 2rem 0;
+        overflow: hidden;
+        border-radius: 12px;
+        background: linear-gradient(
+          to right,
+          rgba(124, 58, 237, 0.1),
+          rgba(124, 58, 237, 0.05),
+          rgba(124, 58, 237, 0.1)
+        );
+      }
+
+      .persona {
+        position: absolute;
+        font-size: 2.5rem;
+        opacity: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 4px 6px var(--shadow);
+        animation: float 20s linear infinite;
+        will-change: transform;
+      }
+
+      .persona-trail {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        filter: blur(8px);
+        opacity: 0.3;
+        z-index: -1;
+      }
+
+      @keyframes float {
+        0% {
+          opacity: 0;
+          transform: translate(-100px, 0) rotate(0deg);
+        }
+        5% {
+          opacity: 1;
+        }
+        95% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: translate(calc(100vw + 100px), 0) rotate(360deg);
+        }
+      }
+
+      .components {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
+        margin-bottom: 3rem;
+      }
+
+      .component-card {
+        background: white;
+        border-radius: 12px;
+        padding: 2rem;
+        box-shadow: 0 4px 6px var(--shadow);
+        border: 1px solid var(--line);
+        transition: transform 0.3s ease;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .component-card::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(124, 58, 237, 0.1),
+          transparent
+        );
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+      }
+
+      .component-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .component-card:hover::after {
+        transform: translateX(100%);
+      }
+
+      .component-title {
+        font-size: 1.5rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .component-letter {
+        font-size: 2rem;
+        font-weight: 800;
+      }
+
+      .learning-tips {
+        background: var(--card-bg);
+        padding: 2rem;
+        border-radius: 12px;
+        margin-top: 3rem;
+      }
+
+      .tip {
+        margin-bottom: 1.5rem;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+
+      .tip::before {
+        content: '💡';
+        position: absolute;
+        left: 0;
+      }
+
+      .progress-bar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background: var(--accent);
+        transform-origin: 0%;
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+        z-index: 101;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .animate {
+        animation: fadeIn 0.6s ease forwards;
+        opacity: 0;
+      }
+
+      .persona-container {
+        text-align: center;
+        margin: 2rem 0;
+        font-size: 1.2rem;
+        color: var(--accent);
+      }
+
+      @media (max-width: 768px) {
+        .components {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress-bar"></div>
+    <div class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">← Back to Home</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <h1 class="title animate">Omnism</h1>
+      <p class="subtitle animate">The Philosophy of Infinite Perspectives</p>
+
+      <div class="infinite-personas"></div>
+      <div class="persona-container">∞ Infinite Possibilities of Self ∞</div>
+
+      <div class="intro animate">
+        <p>
+          Every person experiences the world around as a matter of their current
+          biology mixed with memories. No one lives in true reality—it is a
+          fantasy of emotions, opinions, and hormones that make up our world.
+          Omnism stretches into the past, present, and future of an individual,
+          analyzing potential trauma, personal development, and future goals.
+        </p>
+        <p>
+          Omnism is a system built into the human mind. It takes great
+          understanding of those around you and a deeper wish for change inside
+          yourself. The system is built on a four-way model, each part needing
+          to be exactly right for Omnism to seize existence.
+        </p>
+      </div>
+
+      <div class="components">
+        <div class="component-card animate" style="animation-delay: 0.2s">
+          <div class="component-title">
+            <span class="component-letter">O</span>
+            The Over
+          </div>
+          <p>
+            The Over represents the past—all that you as an individual have
+            surpassed and survived. Omnism requires you to unbound from what you
+            once were. Only with great trauma or a big hole in your heart to
+            fill can the Over make its appearance.
+          </p>
+        </div>
+
+        <div class="component-card animate" style="animation-delay: 0.4s">
+          <div class="component-title">
+            <span class="component-letter">M</span>
+            The Main
+          </div>
+          <p>
+            The Main is your core, the basis of nature—a creature born to
+            achieve its goals to serve evolutionary nature. You must find your
+            own Main in great depression, unleashed from mortal emotions. The
+            Main is invulnerable to emotions; it is the truth of Omnism.
+          </p>
+        </div>
+
+        <div class="component-card animate" style="animation-delay: 0.6s">
+          <div class="component-title">
+            <span class="component-letter">N</span>
+            The Next
+          </div>
+          <p>
+            The Next is who you are in the moment. The Main builds a Next onto
+            your physical appearance, overwriting the current Next. It makes you
+            who you are in the moment, able to fully comprehend new perspectives
+            and feel the emotions that come with them.
+          </p>
+        </div>
+
+        <div class="component-card animate" style="animation-delay: 0.8s">
+          <div class="component-title">
+            <span class="component-letter">I</span>
+            The Infinity
+          </div>
+          <p>
+            The Infinity represents the permanence and vastness of Omnism. Once
+            inside the system of being everything, there is no found way out.
+            "Once you've seen the truth, you can't keep living the lie." You
+            have access to an infinite number of individuals you can be.
+          </p>
+        </div>
+      </div>
+
+      <div class="learning-tips animate" style="animation-delay: 1s">
+        <h2>Learning Tips for Omnism</h2>
+        <div class="tip">
+          Start with self-reflection: Before diving into Omnism, spend time
+          understanding your own past experiences, traumas, and patterns of
+          behavior.
+        </div>
+        <div class="tip">
+          Practice emotional awareness: Learn to distinguish between different
+          emotional states and understand their triggers and impacts.
+        </div>
+        <div class="tip">
+          Study human behavior: Observe how others react in different situations
+          and try to understand their perspectives without judgment.
+        </div>
+        <div class="tip">
+          Develop adaptability: Practice taking on different viewpoints and
+          roles while maintaining awareness of your Main core.
+        </div>
+        <div class="tip">
+          Journal your journey: Document your experiences with different "Next"
+          states and how they affect your interactions.
+        </div>
+        <div class="tip">
+          Remember the balance: While exploring different perspectives, maintain
+          awareness of your Main to avoid losing yourself.
+        </div>
+      </div>
+    </div>
+
+    <script>
+      window.addEventListener('scroll', () => {
+        const totalHeight = document.body.scrollHeight - window.innerHeight;
+        const progress = window.scrollY / totalHeight;
+        document.querySelector(
+          '.progress-bar'
+        ).style.transform = `scaleX(${progress})`;
+      });
+
+      const personaEmojis = [
+        '👨',
+        '👩',
+        '🧑',
+        '👱',
+        '👨‍💼',
+        '👩‍💼',
+        '🧑‍🎨',
+        '👨‍🎤',
+        '👩‍🎤',
+        '🧑‍🏫',
+        '👨‍🔬',
+        '👩‍🔬',
+        '🧑‍🚀',
+        '👨‍🚒',
+        '👩‍🚒',
+        '🧑‍✈️',
+        '👨‍🌾',
+        '👩‍🌾',
+          '👨‍⚕️',
+          '👩‍⚕️',
+          '🧑‍🍳',
+          '👨‍🍳',
+         '👩‍🍳',
+               '🧑‍🔧',
+  '👨‍🔧',
+        '👩‍🔧',
+          '👨‍🏭',
+          '👩‍🏭',
+          '🧑‍💻',
+          '👨‍💻',
+        '👩‍💻'
+
+      ];
+      const colors = [
+        '#FF6B6B',
+        '#4ECDC4',
+        '#45B7D1',
+        '#96CEB4',
+        '#FFEEAD',
+        '#D4A5A5',
+        '#9B5DE5',
+        '#FF99C8',
+      ];
+
+      function createPersona() {
+        const container = document.querySelector('.infinite-personas');
+        const persona = document.createElement('div');
+        persona.className = 'persona';
+
+        const yPos = Math.random() * 80;
+        const delay = Math.random() * 5;
+        const emoji =
+          personaEmojis[Math.floor(Math.random() * personaEmojis.length)];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+
+        persona.style.top = `${yPos}%`;
+        persona.style.animationDelay = `${delay}s`;
+        persona.innerHTML = emoji;
+
+        const trail = document.createElement('div');
+        trail.className = 'persona-trail';
+        trail.style.background = color;
+        persona.appendChild(trail);
+
+        container.appendChild(persona);
+
+        setTimeout(() => {
+          if (persona.parentNode === container) {
+            container.removeChild(persona);
+          }
+        }, 20000 + delay * 1000);
+      }
+
+      setInterval(createPersona, 300);
+
+      for (let i = 0; i < 5; i++) {
+        createPersona();
+      }
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = '1';
+              entry.target.style.transform = 'translateY(0)';
+            }
+          });
+        },
+        {
+          threshold: 0.1,
+        }
+      );
+
+      document
+        .querySelectorAll('.animate')
+        .forEach((el) => observer.observe(el));
+    </script>
+  </body>
+</html>

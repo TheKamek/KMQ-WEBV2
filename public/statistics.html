@@ -11,7 +11,6 @@
         --accent: #2563eb;
         --accent-hover: #1d4ed8;
 
-        /* Category Colors */
         --cat-personal: #3b82f6;
         --cat-health: #10b981;
         --cat-finance: #f59e0b;
@@ -274,7 +273,6 @@
     </header>
     <div class="dashboard">
       <div class="category-nav" id="categoryNav">
-        <!-- Categories will be generated here -->
       </div>
 
       <div class="search-container" id="searchContainer" style="display: none">
@@ -287,16 +285,13 @@
       </div>
 
       <div class="filter-container" id="filterContainer" style="display: none">
-        <!-- Filters will be generated here -->
       </div>
 
       <div id="statsContainer">
-        <!-- Stats will be generated here -->
       </div>
     </div>
 
     <script>
-      // Add your personalStats object here
       const personalStats = {
         personal: {
           title: 'Personal',
@@ -462,7 +457,6 @@
         },
       };
 
-      // Add "All Stats" category
       personalStats.all = {
         title: 'All Stats',
         icon: '📊',
@@ -470,7 +464,6 @@
         stats: {},
       };
 
-      // Populate all stats
       Object.entries(personalStats).forEach(([category, data]) => {
         if (category !== 'all') {
           Object.entries(data.stats).forEach(([statKey, stat]) => {
