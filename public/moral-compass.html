@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --accent: #2563eb;
+        --accent-light: #60a5fa;
+        --good-color: #2563eb;
+        --evil-color: #ef4444;
+        --card-transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        --scale-transition: 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      [data-theme='dark'] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        transition: all 0.3s ease;
+      }
+
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        line-height: 1.6;
+      }
+
+      .nav-header {
+        position: sticky;
+        top: 0;
+        background: var(--bg-secondary);
+        padding: 15px 20px;
+        box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
+        z-index: 100;
+        border-bottom: 1px solid rgba(100, 116, 139, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .page-title {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 1.25rem;
+      }
+
+      .page-title span:first-child {
+        display: inline-block;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      .back-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--text-primary);
+        font-weight: 500;
+        padding: 10px 20px;
+        border-radius: 12px;
+        background: var(--bg-primary);
+        border: 1px solid rgba(100, 116, 139, 0.15);
+        transition: all var(--card-transition);
+      }
+
+      .back-btn:hover {
+        transform: translateX(-5px);
+        background: rgba(37, 99, 235, 0.1);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 40px 20px;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 50px;
+      }
+
+      .title {
+        font-size: clamp(2rem, 5vw, 3rem);
+        margin-bottom: 15px;
+        background: linear-gradient(
+          135deg,
+          var(--good-color),
+          var(--evil-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .subtitle {
+        color: var(--text-secondary);
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .filters {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .filter-btn {
+        padding: 8px 16px;
+        border-radius: 20px;
+        border: 1px solid var(--text-secondary);
+        background: var(--bg-secondary);
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all var(--card-transition);
+      }
+
+      .filter-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .filter-btn.active {
+        background: var(--accent);
+        color: white;
+        border-color: var(--accent);
+      }
+
+      .moral-scale {
+        background: var(--bg-secondary);
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        transform-style: preserve-3d;
+        transition: transform var(--card-transition);
+      }
+
+      .moral-scale:hover {
+        transform: translateY(-5px);
+      }
+
+      .scale-container {
+        height: 40px;
+        background: linear-gradient(
+          90deg,
+          var(--evil-color),
+          var(--good-color)
+        );
+        border-radius: 20px;
+        position: relative;
+        margin: 20px 0;
+        box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .scale-marker {
+        width: 20px;
+        height: 40px;
+        background: var(--bg-secondary);
+        border: 3px solid var(--text-primary);
+        border-radius: 10px;
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        transition: left var(--scale-transition);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .deeds-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+      }
+
+      .deed-card {
+        background: var(--bg-secondary);
+        border-radius: 15px;
+        padding: 20px;
+        border-left: 5px solid var(--good-color);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        transition: all var(--card-transition);
+        animation: cardAppear 0.5s ease forwards;
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      @keyframes cardAppear {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .deed-card:hover {
+        transform: translateY(-5px) scale(1.02);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .deed-card.evil {
+        border-left-color: var(--evil-color);
+      }
+
+      .deed-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .deed-value {
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 15px;
+        background: var(--good-color);
+        color: white;
+      }
+
+      .deed-value.negative {
+        background: var(--evil-color);
+      }
+
+      .deed-date {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-secondary);
+        display: none;
+      }
+
+      .empty-state.visible {
+        display: block;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .filters {
+          padding: 0 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">
+          <span>←</span>
+          <span>Back to Home</span>
+        </a>
+        <h1 class="page-title">
+          <span>⚖️</span>
+          <span>Moral Compass</span>
+        </h1>
+      </div>
+    </header>
+
+    <div class="container">
+      <div class="header">
+        <h1 class="title">Your Moral Balance</h1>
+        <p class="subtitle">A record of your good deeds and misdeeds</p>
+      </div>
+
+      <div class="moral-scale">
+        <h2>Your Moral Alignment</h2>
+        <div class="scale-container">
+          <div class="scale-marker"></div>
+        </div>
+        <p id="alignmentText">Neutral (0)</p>
+      </div>
+
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All Deeds</button>
+        <button class="filter-btn" data-filter="good">Good Deeds</button>
+        <button class="filter-btn" data-filter="evil">Evil Deeds</button>
+      </div>
+
+      <div class="deeds-list" id="deedsList"></div>
+      <div class="empty-state" id="emptyState">
+        No deeds found for this filter
+      </div>
+    </div>
+
+    <script>
+      const deeds = [
+        {
+          description: 'Coding Class',
+          type: 'good',
+          value: 5,
+          date: '2024-11-21',
+        },
+        {
+          description: 'Teaching Gifted Kids',
+          type: 'good',
+          value: 20,
+          date: '2023-01-14',
+        },
+        {
+          description: '2x Abandoned someone in love',
+          type: 'evil',
+          value: -40,
+          date: '2024-03-13',
+        },
+        {
+          description: 'Apologized to people I hurt',
+          type: 'good',
+          value: 20,
+          date: '2024-11-16',
+        },
+        {
+          description: 'Was not there for suicidal friend',
+          type: 'evil',
+          value: -6,
+          date: '2023-07-11',
+        },
+        {
+          description: 'Unpaid Volunteer Work',
+          type: 'good',
+          value: 8,
+          date: '2024-04-14',
+        },
+        {
+          description: 'Stole private data',
+          type: 'evil',
+          value: -15,
+          date: '2023-05-10',
+        },
+        {
+          description: 'Helped blind woman find the bus',
+          type: 'good',
+          value: 5,
+          date: '2024-02-10',
+        },
+        {
+          description: 'Taught new apprentices to work',
+          type: 'good',
+          value: 8,
+          date: '2024-08-02',
+        },
+        {
+          description: 'Helped people on GuteFrage.net',
+          type: 'good',
+          value: 10,
+          date: '2024-08-02',
+        },
+        {
+          description: '12x Builded self confidence and self esteem',
+          type: 'good',
+          value: 25,
+          date: '2024-01-01',
+        },
+      ];
+
+      function renderDeeds(filter = 'all') {
+        const deedsList = document.getElementById('deedsList');
+        const emptyState = document.getElementById('emptyState');
+
+        const filteredDeeds =
+          filter === 'all'
+            ? deeds
+            : deeds.filter((deed) => deed.type === filter);
+
+        if (filteredDeeds.length === 0) {
+          deedsList.innerHTML = '';
+          emptyState.classList.add('visible');
+          return;
+        }
+
+        emptyState.classList.remove('visible');
+        deedsList.innerHTML = filteredDeeds
+          .map(
+            (deed, index) => `
+        <div class="deed-card ${deed.type === 'evil' ? 'evil' : ''}" 
+             style="animation-delay: ${index * 0.1}s">
+          <div class="deed-header">
+            <span class="deed-date">${new Date(
+              deed.date
+            ).toLocaleDateString()}</span>
+            <span class="deed-value ${deed.value < 0 ? 'negative' : ''}">${
+              deed.value > 0 ? '+' : ''
+            }${deed.value}</span>
+          </div>
+          <p>${deed.description}</p>
+        </div>
+      `
+          )
+          .join('');
+
+        const totalAlignment = deeds.reduce((sum, deed) => sum + deed.value, 0);
+
+        const marker = document.querySelector('.scale-marker');
+        const maxRange = 100;
+        const position = ((totalAlignment + maxRange) / (maxRange * 2)) * 100;
+        marker.style.left = `${Math.max(0, Math.min(100, position))}%`;
+
+        const alignmentText = document.getElementById('alignmentText');
+        let alignment = 'Neutral';
+        if (totalAlignment > 30) alignment = 'Lawful Good';
+        else if (totalAlignment > 10) alignment = 'Good';
+        else if (totalAlignment < -30) alignment = 'Chaotic Evil';
+        else if (totalAlignment < -10) alignment = 'Evil';
+        alignmentText.textContent = `${alignment} (${totalAlignment})`;
+      }
+
+      document.querySelectorAll('.filter-btn').forEach((btn) => {
+        btn.addEventListener('click', (e) => {
+          document
+            .querySelectorAll('.filter-btn')
+            .forEach((b) => b.classList.remove('active'));
+          e.target.classList.add('active');
+          renderDeeds(e.target.dataset.filter);
+        });
+      });
+
+      renderDeeds();
+    </script>
+  </body>
+</html>
