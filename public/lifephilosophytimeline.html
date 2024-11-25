@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      :root {
+        --accent: #7c3aed;
+        --background: #fafafa;
+        --card-bg: #ffffff;
+        --text: #1f2937;
+        --timeline-line: #e5e7eb;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--background);
+        color: var(--text);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+      }
+
+      .nav-header {
+        padding: 1rem;
+        background: var(--card-bg);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+      }
+
+      .back-btn {
+        text-decoration: none;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        position: relative;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 4rem;
+      }
+
+      .title {
+        font-size: 2.5rem;
+        color: var(--text);
+        margin-bottom: 1rem;
+      }
+
+      .subtitle {
+        color: #6b7280;
+        font-size: 1.2rem;
+      }
+
+      .timeline {
+        position: relative;
+        padding: 2rem 0;
+      }
+
+      .timeline::before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: var(--timeline-line);
+      }
+
+      .timeline-entry {
+        margin: 4rem 0;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
+        position: relative;
+      }
+
+      .timeline-entry.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .timeline-content {
+        width: 45%;
+        padding: 2rem;
+        background: var(--card-bg);
+        border-radius: 1rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        position: relative;
+        margin-left: auto;
+        transition: transform 0.3s ease;
+      }
+
+      .timeline-entry:nth-child(odd) .timeline-content {
+        margin-left: 0;
+        margin-right: auto;
+      }
+
+      .timeline-content:hover {
+        transform: translateY(-5px);
+      }
+
+      .age {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        transform: translate(-50%, -50%);
+        background: var(--accent);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 2rem;
+        font-weight: bold;
+      }
+
+      .timeline-entry:nth-child(odd) .age {
+        left: 100%;
+      }
+
+      .philosophy-name {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: var(--accent);
+      }
+
+      .philosophy-description {
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .key-points {
+        background: rgba(124, 58, 237, 0.1);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+      }
+
+      .key-points-title {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: var(--accent);
+      }
+
+      .key-points-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .key-points-list li {
+        margin: 0.5rem 0;
+        padding-left: 1.5rem;
+        position: relative;
+      }
+
+      .key-points-list li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+      }
+
+      @media (max-width: 768px) {
+        .timeline::before {
+          left: 2rem;
+        }
+
+        .timeline-content {
+          width: calc(100% - 4rem);
+          margin-left: 4rem !important;
+        }
+
+        .age {
+          left: 2rem !important;
+        }
+      }
+
+      @keyframes gradientFlow {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .timeline-content::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        border-radius: 1rem;
+        background: linear-gradient(
+          45deg,
+          rgba(124, 58, 237, 0) 0%,
+          rgba(124, 58, 237, 0.1) 50%,
+          rgba(124, 58, 237, 0) 100%
+        );
+        background-size: 200% 200%;
+        animation: gradientFlow 3s ease infinite;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-header">
+      <div class="nav-content">
+        <a href="./index.html" class="back-btn">← Back to Home</a>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="header">
+        <h1 class="title">My Philosophical Journey</h1>
+        <p class="subtitle">
+          Tracing the evolution of thought and understanding
+        </p>
+      </div>
+
+      <div class="timeline" id="timeline"></div>
+    </div>
+
+    <script>
+      const philosophyData = [
+        {
+          age: 5,
+          name: 'Naive Realism',
+          description:
+            'Innocent belief in the world as it appears, without questioning the nature of reality.',
+          keyPoints: [
+            'Belief in the external world',
+            'Direct perception of objects',
+            'No distinction between appearance and reality',
+          ],
+        },
+        {
+          age: 14,
+          name: 'Existential Seeking',
+          description:
+            'Questioned the purpose of life and the nature of existence, leading to a search for meaning and understanding.',
+          keyPoints: [
+            'Meaning of life',
+            'Freedom and responsibility',
+            'Authenticity and self-awareness',
+          ],
+        },
+        {
+          age: 15,
+          name: 'Absurdism',
+          description:
+            'Encountered the philosophy of Albert Camus, embracing the absurdity of life and the search for meaning in an indifferent universe.',
+          keyPoints: [
+            'The absurdity of existence',
+            'Rebellion against meaninglessness',
+            'Creation of personal meaning',
+          ],
+        },
+        {
+          age: 17,
+          name: 'Optimistic Nihilism',
+          description:
+            'Embraced the philosophy of optimistic nihilism, finding freedom in the absence of inherent meaning and creating one’s own purpose.',
+          keyPoints: [
+            'Absence of inherent meaning',
+            'Freedom to create personal meaning',
+            'Embracing the void with optimism',
+          ],
+        },
+        {
+          age: 17,
+          name: 'Self-Omnism',
+          description:
+            'Explored the philosophy of omnism, embracing the interconnectedness of all beliefs and the unity of diverse perspectives.',
+          keyPoints: [
+            'Unity of diverse beliefs',
+            'Interconnectedness of all perspectives',
+            'Respect for all paths to truth',
+          ],
+        },
+      ];
+
+      function renderTimeline() {
+        const timeline = document.getElementById('timeline');
+        timeline.innerHTML = '';
+
+        philosophyData.forEach((entry, index) => {
+          const html = `
+                    <div class="timeline-entry" data-index="${index}">
+                        <div class="timeline-content">
+                            <span class="age">${entry.age}</span>
+                            <div class="philosophy-name">${entry.name}</div>
+                            <div class="philosophy-description">${
+                              entry.description
+                            }</div>
+                            <div class="key-points">
+                                <div class="key-points-title">Key Points</div>
+                                <ul class="key-points-list">
+                                    ${entry.keyPoints
+                                      .map((point) => `<li>${point}</li>`)
+                                      .join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+          timeline.insertAdjacentHTML('beforeend', html);
+        });
+
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+              }
+            });
+          },
+          {
+            threshold: 0.1,
+          }
+        );
+
+        document.querySelectorAll('.timeline-entry').forEach((entry) => {
+          observer.observe(entry);
+        });
+      }
+
+      renderTimeline();
+    </script>
+  </body>
+</html>
