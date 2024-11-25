@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Life Goals & Habits</title>
+    <title>Life Goals Tracker</title>
     <style>
       * {
         margin: 0;
@@ -15,14 +15,7 @@
 
       :root {
         --primary: #3b82f6;
-        --primary-dark: #2563eb;
         --primary-light: #93c5fd;
-        --success: #22c55e;
-        --success-light: #86efac;
-        --warning: #f59e0b;
-        --danger: #ef4444;
-        --purple: #8b5cf6;
-        --pink: #ec4899;
         --gray-50: #f9fafb;
         --gray-100: #f3f4f6;
         --gray-200: #e5e7eb;
@@ -30,13 +23,11 @@
         --gray-600: #4b5563;
         --shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         --shadow-lg: 0 4px 6px rgba(0, 0, 0, 0.1);
-        --shadow-xl: 0 10px 15px rgba(0, 0, 0, 0.1);
       }
 
       body {
         background: var(--gray-50);
         min-height: 100vh;
-        overflow-x: hidden;
       }
 
       .container {
@@ -45,69 +36,18 @@
         padding: 2rem;
       }
 
-      .bg-animation {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: -1;
-        background: linear-gradient(120deg, #f0f9ff, #e0f2fe, #f0f9ff);
-        background-size: 400% 400%;
-        animation: gradientBG 15s ease infinite;
-      }
-
-      @keyframes gradientBG {
-        0% {
-          background-position: 0% 50%;
-        }
-        50% {
-          background-position: 100% 50%;
-        }
-        100% {
-          background-position: 0% 50%;
-        }
-      }
-
-      .back-button {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background: var(--primary);
-        color: white;
-        text-decoration: none;
-        border-radius: 1rem;
-        margin-bottom: 1.5rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        font-weight: 500;
-        box-shadow: var(--shadow);
-      }
-
-      .back-button:hover {
-        background: var(--primary-dark);
-        transform: translateX(-5px) translateY(-2px);
-        box-shadow: var(--shadow-lg);
-      }
-
       .page-header {
         background: white;
         border-radius: 1.5rem;
         padding: 2rem;
         margin-bottom: 2rem;
         box-shadow: var(--shadow-lg);
-        position: relative;
-        overflow: hidden;
-        transform-style: preserve-3d;
-        transform: translateZ(0);
       }
 
       .header-content {
         display: flex;
         justify-content: space-between;
         align-items: center;
-        position: relative;
-        z-index: 1;
       }
 
       .header-title {
@@ -118,50 +58,7 @@
 
       .header-title h1 {
         font-size: 2rem;
-        background: linear-gradient(120deg, var(--primary), var(--purple));
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: titleGlow 2s ease-in-out infinite;
-      }
-
-      @keyframes titleGlow {
-        0%,
-        100% {
-          text-shadow: 0 0 10px rgba(59, 130, 246, 0.5);
-        }
-        50% {
-          text-shadow: 0 0 20px rgba(59, 130, 246, 0.8);
-        }
-      }
-
-      .quote-section {
-        text-align: center;
-        margin: 2rem 0;
-        padding: 2rem;
-        background: white;
-        border-radius: 1rem;
-        box-shadow: var(--shadow);
-        position: relative;
-        overflow: hidden;
-      }
-
-      .quote-text {
-        font-size: 1.25rem;
-        color: var(--gray-600);
-        font-style: italic;
-        line-height: 1.6;
-        position: relative;
-        animation: quoteFloat 3s ease-in-out infinite;
-      }
-
-      @keyframes quoteFloat {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
+        color: var(--primary);
       }
 
       .goals-grid {
@@ -176,14 +73,11 @@
         border-radius: 1.5rem;
         padding: 2rem;
         box-shadow: var(--shadow-lg);
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
+        transition: transform 0.3s ease;
       }
 
       .category-section:hover {
         transform: translateY(-5px);
-        box-shadow: var(--shadow-xl);
       }
 
       .category-header {
@@ -204,20 +98,7 @@
         border-radius: 1rem;
         font-size: 1.5rem;
         background: var(--primary-light);
-        color: var(--primary-dark);
-        animation: iconPulse 2s infinite;
-      }
-
-      @keyframes iconPulse {
-        0% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.1);
-        }
-        100% {
-          transform: scale(1);
-        }
+        color: var(--primary);
       }
 
       .goal-item {
@@ -225,15 +106,11 @@
         border-radius: 1rem;
         padding: 1.5rem;
         margin-bottom: 1rem;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        position: relative;
-        overflow: hidden;
-        animation: slideIn 0.5s ease-out forwards;
+        transition: transform 0.3s ease;
       }
 
       .goal-item:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: var(--shadow-lg);
+        transform: translateY(-3px);
       }
 
       .goal-header {
@@ -255,93 +132,21 @@
         font-size: 0.75rem;
         font-weight: 500;
         background: var(--primary-light);
-        color: var(--primary-dark);
+        color: var(--primary);
       }
 
-      .progress-ring {
-        width: 60px;
-        height: 60px;
-        position: relative;
+      .progress-bar {
+        height: 8px;
+        background: var(--gray-200);
+        border-radius: 4px;
+        overflow: hidden;
         margin: 1rem 0;
       }
 
-      .progress-ring circle {
-        fill: none;
-        stroke-width: 8;
-        transform: rotate(-90deg);
-        transform-origin: 50% 50%;
-        transition: all 0.3s ease;
-      }
-
-      .progress-ring .background {
-        stroke: var(--gray-200);
-      }
-
-      .progress-ring .progress {
-        stroke: var(--primary);
-        stroke-linecap: round;
-        animation: progressRing 1.5s ease-out forwards;
-      }
-
-      @keyframes progressRing {
-        from {
-          stroke-dashoffset: 339.292;
-        }
-      }
-
-      .streak-counter {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-top: 1rem;
-        font-size: 0.875rem;
-        color: var(--gray-600);
-      }
-
-      .streak-flame {
-        color: var(--warning);
-        animation: flameFlicker 1s ease-in-out infinite;
-      }
-
-      @keyframes flameFlicker {
-        0%,
-        100% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.2);
-        }
-      }
-
-      @keyframes slideIn {
-        from {
-          opacity: 0;
-          transform: translateX(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-        }
-        to {
-          opacity: 1;
-        }
-      }
-
-      @keyframes scaleIn {
-        from {
-          transform: scale(0.9);
-          opacity: 0;
-        }
-        to {
-          transform: scale(1);
-          opacity: 1;
-        }
+      .progress-fill {
+        height: 100%;
+        background: var(--primary);
+        transition: width 0.3s ease;
       }
 
       @media (max-width: 768px) {
@@ -357,94 +162,22 @@
         .goals-grid {
           grid-template-columns: 1fr;
         }
-
-        .category-section {
-          padding: 1.5rem;
-        }
-      }
-
-      .achievement-badge {
-        position: absolute;
-        top: -10px;
-        right: -10px;
-        width: 40px;
-        height: 40px;
-        background: var(--success);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 1.2rem;
-        box-shadow: var(--shadow);
-        animation: badgePop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-      }
-
-      @keyframes badgePop {
-        0% {
-          transform: scale(0) rotate(-180deg);
-        }
-        100% {
-          transform: scale(1) rotate(0);
-        }
-      }
-
-      .particles {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-      }
-
-      .particle {
-        position: absolute;
-        background: var(--primary-light);
-        border-radius: 50%;
-        pointer-events: none;
-        animation: particleFade 1s ease-out forwards;
-      }
-
-      @keyframes particleFade {
-        0% {
-          transform: scale(0) translateY(0);
-          opacity: 1;
-        }
-        100% {
-          transform: scale(1) translateY(-50px);
-          opacity: 0;
-        }
       }
     </style>
   </head>
   <body>
-    <div class="bg-animation"></div>
     <div class="container">
-      <a href="./index.html" class="back-button">
-        <span>←</span>
-        Back to Dashboard
-      </a>
-
       <header class="page-header">
         <div class="header-content">
           <div class="header-title">
-            <span style="font-size: 2.5rem">✨</span>
-            <h1>Life Goals & Habits</h1>
-          </div>
-          <div class="header-stats">
+            <span style="font-size: 2.5rem">🎯</span>
+            <h1>Life Goals Tracker</h1>
           </div>
         </div>
       </header>
 
-      <section class="quote-section">
-        <p class="quote-text" id="motivationalQuote">
-          "The only way to do great work is to love what you do." - Steve Jobs
-        </p>
-      </section>
-
-      <div class="goals-grid" id="goalsContainer">
-      </div>
+      <div class="goals-grid" id="goalsContainer"></div>
     </div>
-
 
     <script>
       const lifeGoals = {
@@ -453,93 +186,58 @@
           title: 'Health & Fitness',
           goals: [
             {
-              id: 1,
-              title: 'Workout Routine',
-              type: 'recurring',
-              frequency: '3x per week',
-              progress: 66,
-              streak: 4,
-              checkpoints: [
-                { day: 'Monday', completed: true },
-                { day: 'Wednesday', completed: true },
-                { day: 'Friday', completed: false },
-              ],
+              title: 'Complete Marathon Training',
+              type: 'In Progress',
+              progress: 45,
             },
+            { title: 'Maintain Healthy Diet', type: 'Ongoing', progress: 70 },
+            { title: 'Master Olympic Lifts', type: 'Skill', progress: 35 },
             {
-              id: 2,
-              title: '10,000 Daily Steps',
-              type: 'daily',
-              progress: 80,
-              streak: 7,
-              today: 8234,
+              title: 'Achieve Split Position',
+              type: 'Flexibility',
+              progress: 60,
             },
+            { title: 'Learn Swimming Technique', type: 'Skill', progress: 80 },
+            { title: 'Master Handstand', type: 'Skill', progress: 25 },
             {
-              id: 3,
-              title: 'Healthy Meal Prep',
-              type: 'weekly',
-              progress: 100,
-              streak: 3,
-              completed: true,
-            },
-          ],
-        },
-        mindfulness: {
-          icon: '🧘',
-          title: 'Mindfulness',
-          goals: [
-            {
-              id: 4,
-              title: 'Daily Meditation',
-              type: 'daily',
+              title: 'Complete 30-Day Yoga Challenge',
+              type: 'Challenge',
               progress: 90,
-              streak: 12,
-              duration: '15 minutes',
             },
-            {
-              id: 5,
-              title: 'Gratitude Journal',
-              type: 'daily',
-              progress: 100,
-              streak: 30,
-              achieved: true,
-            },
-            {
-              id: 6,
-              title: 'Evening Reflection',
-              type: 'daily',
-              progress: 75,
-              streak: 5,
-              duration: '10 minutes',
-            },
+            { title: 'Rock Climbing Skills', type: 'Sport', progress: 40 },
+            { title: 'Perfect Push-up Form', type: 'Technique', progress: 85 },
+            { title: 'Complete Triathlon', type: 'Event', progress: 15 },
           ],
         },
         learning: {
           icon: '📚',
           title: 'Learning & Growth',
           goals: [
+            { title: 'Master JavaScript', type: 'Programming', progress: 60 },
+            { title: 'Read 12 Books', type: 'Annual Goal', progress: 25 },
             {
-              id: 7,
-              title: 'Read 24 Books in 2024',
-              type: 'yearly',
-              progress: 35,
-              current: 8,
-              target: 24,
+              title: 'Learn Machine Learning',
+              type: 'Technical',
+              progress: 30,
             },
             {
-              id: 8,
-              title: 'Learn Spanish',
-              type: 'ongoing',
+              title: 'Master Cloud Architecture',
+              type: 'Professional',
               progress: 45,
-              streak: 60,
-              dailyGoal: '30 minutes',
             },
+            { title: 'Study System Design', type: 'Technical', progress: 55 },
+            { title: 'Complete MBA Courses', type: 'Education', progress: 70 },
+            { title: 'Learn Public Speaking', type: 'Skill', progress: 40 },
             {
-              id: 9,
-              title: 'Online Courses',
-              type: 'quarterly',
-              progress: 60,
-              completed: 2,
-              target: 4,
+              title: 'Master Data Structures',
+              type: 'Programming',
+              progress: 65,
+            },
+            { title: 'Study Psychology', type: 'Knowledge', progress: 20 },
+            {
+              title: 'Learn Digital Marketing',
+              type: 'Professional',
+              progress: 50,
             },
           ],
         },
@@ -548,175 +246,147 @@
           title: 'Career Growth',
           goals: [
             {
-              id: 10,
               title: 'Complete AWS Certification',
-              type: 'project',
-              progress: 70,
-              deadline: '2024-12-31',
+              type: 'Certification',
+              progress: 80,
+            },
+            { title: 'Build Portfolio Website', type: 'Project', progress: 90 },
+            {
+              title: 'Launch Side Business',
+              type: 'Entrepreneurship',
+              progress: 30,
             },
             {
-              id: 11,
-              title: 'Networking Events',
-              type: 'monthly',
-              progress: 50,
-              attended: 1,
-              target: 2,
-            },
-            {
-              id: 12,
-              title: 'Portfolio Projects',
-              type: 'quarterly',
-              progress: 40,
-              completed: 2,
-              target: 5,
-            },
-          ],
-        },
-        relationships: {
-          icon: '❤️',
-          title: 'Relationships',
-          goals: [
-            {
-              id: 13,
-              title: 'Family Time',
-              type: 'weekly',
-              progress: 85,
-              streak: 6,
-              frequency: '2x per week',
-            },
-            {
-              id: 14,
-              title: 'Friend Catchups',
-              type: 'monthly',
-              progress: 75,
-              completed: 3,
-              target: 4,
-            },
-          ],
-        },
-        creativity: {
-          icon: '🎨',
-          title: 'Creative Projects',
-          goals: [
-            {
-              id: 15,
-              title: 'Writing Practice',
-              type: 'daily',
+              title: 'Develop Leadership Skills',
+              type: 'Soft Skills',
               progress: 65,
-              streak: 8,
-              wordCount: 500,
             },
+            { title: 'Network Expansion', type: 'Professional', progress: 45 },
+            { title: 'Create Online Course', type: 'Project', progress: 25 },
+            { title: 'Write Technical Book', type: 'Publishing', progress: 15 },
+            { title: 'Mentoring Program', type: 'Leadership', progress: 70 },
+            { title: 'Industry Speaking', type: 'Visibility', progress: 40 },
+            { title: 'Patent Application', type: 'Innovation', progress: 55 },
+          ],
+        },
+        personal: {
+          icon: '🎨',
+          title: 'Personal Projects',
+          goals: [
+            { title: 'Learn Piano', type: 'Music', progress: 30 },
+            { title: 'Write Short Story', type: 'Creative', progress: 15 },
+            { title: 'Master Photography', type: 'Art', progress: 45 },
+            { title: 'Learn Oil Painting', type: 'Art', progress: 20 },
+            { title: 'Start Podcast', type: 'Media', progress: 10 },
+            { title: 'Garden Design', type: 'Hobby', progress: 60 },
+            { title: 'Learn Pottery', type: 'Craft', progress: 25 },
+            { title: 'Compose Music', type: 'Creative', progress: 35 },
+            { title: 'Documentary Film', type: 'Project', progress: 5 },
             {
-              id: 16,
-              title: 'Art Projects',
-              type: 'monthly',
-              progress: 25,
-              completed: 1,
-              target: 4,
+              title: 'Write Poetry Collection',
+              type: 'Creative',
+              progress: 40,
             },
+          ],
+        },
+        financial: {
+          icon: '💰',
+          title: 'Financial Goals',
+          goals: [
+            { title: 'Emergency Fund', type: 'Saving', progress: 75 },
+            { title: 'Investment Portfolio', type: 'Investment', progress: 45 },
+            { title: 'Real Estate Investment', type: 'Property', progress: 20 },
+            { title: 'Retirement Planning', type: 'Long-term', progress: 55 },
+            { title: 'Debt Reduction', type: 'Financial', progress: 80 },
+            { title: 'Passive Income Streams', type: 'Income', progress: 30 },
+            { title: 'Tax Planning', type: 'Financial', progress: 65 },
+            { title: 'College Fund', type: 'Saving', progress: 40 },
+            { title: 'Stock Portfolio', type: 'Investment', progress: 50 },
+            {
+              title: 'Business Investment',
+              type: 'Entrepreneurship',
+              progress: 15,
+            },
+          ],
+        },
+        travel: {
+          icon: '✈️',
+          title: 'Travel & Adventure',
+          goals: [
+            { title: 'Visit Japan', type: 'International', progress: 20 },
+            {
+              title: 'Cross-Country Road Trip',
+              type: 'Domestic',
+              progress: 35,
+            },
+            { title: 'Learn Scuba Diving', type: 'Adventure', progress: 60 },
+            { title: 'Hiking Pacific Trail', type: 'Adventure', progress: 10 },
+            { title: 'European Tour', type: 'International', progress: 45 },
+            { title: 'Visit National Parks', type: 'Nature', progress: 70 },
+            { title: 'Mountain Climbing', type: 'Adventure', progress: 25 },
+            { title: 'Cultural Exchange', type: 'Experience', progress: 40 },
+            { title: 'Safari Adventure', type: 'Wildlife', progress: 5 },
+            { title: 'Island Hopping', type: 'Travel', progress: 30 },
+          ],
+        },
+        sustainability: {
+          icon: '🌱',
+          title: 'Sustainability',
+          goals: [
+            { title: 'Zero Waste Home', type: 'Lifestyle', progress: 55 },
+            { title: 'Solar Installation', type: 'Energy', progress: 25 },
+            { title: 'Sustainable Garden', type: 'Agriculture', progress: 70 },
+            {
+              title: 'Reduce Carbon Footprint',
+              type: 'Environmental',
+              progress: 45,
+            },
+            { title: 'Composting System', type: 'Waste', progress: 85 },
+            {
+              title: 'Electric Vehicle Switch',
+              type: 'Transport',
+              progress: 30,
+            },
+            { title: 'Water Conservation', type: 'Resource', progress: 60 },
+            { title: 'Plastic-Free Living', type: 'Lifestyle', progress: 40 },
+            { title: 'Green Energy Switch', type: 'Utility', progress: 20 },
+            { title: 'Local Food Sources', type: 'Food', progress: 75 },
+          ],
+        },
+        community: {
+          icon: '🤝',
+          title: 'Community Involvement',
+          goals: [
+            { title: 'Local Volunteering', type: 'Service', progress: 65 },
+            { title: 'Mentor Program', type: 'Education', progress: 45 },
+            { title: 'Community Garden', type: 'Project', progress: 30 },
+            { title: 'Food Bank Support', type: 'Charity', progress: 80 },
+            { title: 'Youth Sports Coaching', type: 'Sports', progress: 55 },
+            { title: 'Local Politics', type: 'Civic', progress: 25 },
+            { title: 'Animal Shelter Work', type: 'Volunteer', progress: 70 },
+            { title: 'Community Events', type: 'Organization', progress: 40 },
+            { title: 'Literacy Program', type: 'Education', progress: 50 },
+            { title: 'Neighborhood Watch', type: 'Safety', progress: 60 },
           ],
         },
       };
-
-      const motivationalQuotes = [
-        'The only way to do great work is to love what you do. - Steve Jobs',
-        'Success is not final, failure is not fatal: it is the courage to continue that counts. - Winston Churchill',
-        'The future depends on what you do today. - Mahatma Gandhi',
-        "Don't watch the clock; do what it does. Keep going. - Sam Levenson",
-        "Believe you can and you're halfway there. - Theodore Roosevelt",
-      ];
-
-      function createProgressRing(progress) {
-        const radius = 30;
-        const circumference = 2 * Math.PI * radius;
-        const offset = circumference - (progress / 100) * circumference;
-
-        return `
-          <svg class="progress-ring" width="70" height="70" viewBox="0 0 70 70">
-              <circle class="background"
-                  r="${radius}"
-                  cx="35"
-                  cy="35"
-                  stroke-dasharray="${circumference} ${circumference}"
-              />
-              <circle class="progress"
-                  r="${radius}"
-                  cx="35"
-                  cy="35"
-                  stroke-dasharray="${circumference} ${circumference}"
-                  stroke-dashoffset="${offset}"
-              />
-              <text x="35" y="35" text-anchor="middle" dominant-baseline="middle" fill="#4b5563">
-                  ${progress}%
-              </text>
-          </svg>
-      `;
-      }
-
-      function createParticleEffect() {
-        const particles = document.createElement('div');
-        particles.className = 'particles';
-
-        for (let i = 0; i < 10; i++) {
-          const particle = document.createElement('div');
-          particle.className = 'particle';
-          particle.style.left = Math.random() * 100 + '%';
-          particle.style.width = Math.random() * 10 + 5 + 'px';
-          particle.style.height = particle.style.width;
-          particles.appendChild(particle);
-        }
-
-        return particles;
-      }
 
       function renderGoal(goal) {
         const goalElement = document.createElement('div');
         goalElement.className = 'goal-item';
 
-        let statusClass =
-          goal.progress >= 100
-            ? 'success'
-            : goal.progress >= 70
-            ? 'primary'
-            : goal.progress >= 30
-            ? 'warning'
-            : 'danger';
-
         goalElement.innerHTML = `
-          <div class="goal-header">
-              <h3 class="goal-title">${goal.title}</h3>
-              <span class="goal-tag">${goal.type}</span>
-              ${
-                goal.progress >= 100
-                  ? '<div class="achievement-badge">✨</div>'
-                  : ''
-              }
-          </div>
-          ${createProgressRing(goal.progress)}
-          ${
-            goal.streak
-              ? `
-              <div class="streak-counter">
-                  <span class="streak-flame">🔥</span>
-                  ${goal.streak} day streak
-              </div>
-          `
-              : ''
-          }
-          ${
-            goal.deadline
-              ? `
-              <div class="deadline">
-                  Due: ${new Date(goal.deadline).toLocaleDateString()}
-              </div>
-          `
-              : ''
-          }
-      `;
-
-        if (goal.progress >= 100) {
-          goalElement.appendChild(createParticleEffect());
-        }
+                <div class="goal-header">
+                    <h3 class="goal-title">${goal.title}</h3>
+                    <span class="goal-tag">${goal.type}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${goal.progress}%"></div>
+                </div>
+                <div style="color: var(--gray-600); font-size: 0.9rem;">
+                    Progress: ${goal.progress}%
+                </div>
+            `;
 
         return goalElement;
       }
@@ -725,17 +395,16 @@
         const container = document.getElementById('goalsContainer');
         container.innerHTML = '';
 
-        Object.entries(lifeGoals).forEach(([key, category], index) => {
+        Object.entries(lifeGoals).forEach(([key, category]) => {
           const section = document.createElement('section');
           section.className = 'category-section';
-          section.style.animationDelay = `${index * 0.1}s`;
 
           section.innerHTML = `
-              <div class="category-header">
-                  <span class="category-icon">${category.icon}</span>
-                  <h2>${category.title}</h2>
-              </div>
-          `;
+                    <div class="category-header">
+                        <span class="category-icon">${category.icon}</span>
+                        <h2>${category.title}</h2>
+                    </div>
+                `;
 
           const goalsContainer = document.createElement('div');
           category.goals.forEach((goal) => {
@@ -747,33 +416,7 @@
         });
       }
 
-      function updateQuote() {
-        const quoteElement = document.getElementById('motivationalQuote');
-        const randomQuote =
-          motivationalQuotes[
-            Math.floor(Math.random() * motivationalQuotes.length)
-          ];
-        quoteElement.textContent = randomQuote;
-      }
-
-      function initialize() {
-        renderGoals();
-        updateQuote();
-
-        setInterval(updateQuote, 24 * 60 * 60 * 1000);
-      }
-
-      initialize();
-
-      document.addEventListener('click', function (e) {
-        if (e.target.closest('.goal-item')) {
-          const goalItem = e.target.closest('.goal-item');
-          goalItem.style.transform = 'scale(1.02)';
-          setTimeout(() => {
-            goalItem.style.transform = '';
-          }, 200);
-        }
-      });
+      renderGoals();
     </script>
   </body>
 </html>
