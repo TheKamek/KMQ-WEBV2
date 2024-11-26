@@ -8,6 +8,9 @@
         --card-bg: #ffffff;
         --text: #1f2937;
         --border: #e5e7eb;
+        --fiction: #3b82f6;
+        --non-fiction: #10b981;
+        --to-read: #f59e0b;
       }
 
       body {
@@ -97,7 +100,7 @@
 
       .reading-stats {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: repeat(4, 1fr);
         gap: 1.5rem;
         margin-bottom: 3rem;
       }
@@ -133,6 +136,9 @@
       }
       .stat-card:nth-child(3) {
         animation: slideUp 0.6s ease-out 1.2s forwards;
+      }
+      .stat-card:nth-child(4) {
+        animation: slideUp 0.6s ease-out 1.4s forwards;
       }
 
       .stat-number {
@@ -182,6 +188,39 @@
         animation: expandHeight 0.6s ease-out 2s forwards;
       }
 
+      .category-tabs {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .category-tab {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        font-weight: 500;
+      }
+
+      .category-tab.fiction {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--fiction);
+      }
+
+      .category-tab.non-fiction {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--non-fiction);
+      }
+
+      .category-tab.active {
+        background: var(--fiction);
+        color: white;
+      }
+
+      .category-tab.active.non-fiction {
+        background: var(--non-fiction);
+      }
+
       .book-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -198,28 +237,36 @@
         transition: all 0.4s;
       }
 
-      .section:nth-child(1) .book-card:nth-child(1) {
-        animation: cardAppear 0.6s ease-out 1.8s forwards;
-      }
-      .section:nth-child(1) .book-card:nth-child(2) {
-        animation: cardAppear 0.6s ease-out 2s forwards;
-      }
-      .section:nth-child(2) .book-card:nth-child(1) {
-        animation: cardAppear 0.6s ease-out 2.2s forwards;
-      }
-      .section:nth-child(2) .book-card:nth-child(2) {
-        animation: cardAppear 0.6s ease-out 2.4s forwards;
-      }
-
       .book-card:hover {
         transform: translateY(-4px);
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      }
+
+      .book-type-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        padding: 0.25rem 0.75rem;
+        border-radius: 1rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+      }
+
+      .book-type-badge.fiction {
+        background: rgba(59, 130, 246, 0.1);
+        color: var(--fiction);
+      }
+
+      .book-type-badge.non-fiction {
+        background: rgba(16, 185, 129, 0.1);
+        color: var(--non-fiction);
       }
 
       .book-title {
         font-size: 1.2rem;
         font-weight: bold;
         margin-bottom: 0.5rem;
+        padding-right: 4rem;
       }
 
       .book-author {
@@ -239,10 +286,21 @@
 
       .progress-fill {
         height: 100%;
-        background: var(--accent);
         border-radius: 4px;
         width: 0;
         transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .progress-fill.fiction {
+        background: var(--fiction);
+      }
+
+      .progress-fill.non-fiction {
+        background: var(--non-fiction);
+      }
+
+      .progress-fill.to-read {
+        background: var(--to-read);
       }
 
       .book-meta {
@@ -257,33 +315,40 @@
         margin-top: 1rem;
         padding-top: 1rem;
         border-top: 1px solid var(--border);
-        position: relative;
-        z-index: 1;
-        visibility: visible;
       }
 
       .takeaway-item {
         margin-bottom: 0.8rem;
         padding: 0.8rem 1rem;
-        border-left: 3px solid var(--accent);
+        border-left: 3px solid;
         background: var(--card-bg);
         border-radius: 0 4px 4px 0;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         transition: all 0.3s ease;
         font-size: 0.95rem;
         color: var(--text);
-        position: relative;
-        display: block;
-        visibility: visible;
-        transform: translateX(0);
-        opacity: 1;
+      }
+
+      .takeaway-item.fiction {
+        border-color: var(--fiction);
+      }
+
+      .takeaway-item.non-fiction {
+        border-color: var(--non-fiction);
       }
 
       .takeaway-item:hover {
         padding-left: 1.5rem;
-        background: rgba(124, 58, 237, 0.08);
         transform: translateX(4px);
-        box-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      .takeaway-item.fiction:hover {
+        background: rgba(59, 130, 246, 0.08);
+      }
+
+      .takeaway-item.non-fiction:hover {
+        background: rgba(16, 185, 129, 0.08);
       }
 
       @keyframes unfold {
@@ -340,28 +405,6 @@
           height: 24px;
         }
       }
-
-      @keyframes cardAppear {
-        0% {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
-      @keyframes slideInTakeaway {
-        0% {
-          opacity: 0;
-          transform: translateX(-10px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateX(0);
-        }
-      }
     </style>
   </head>
   <body>
@@ -384,6 +427,10 @@
           <div class="stat-card">
             <div class="stat-number" id="booksCompleted"></div>
             <div>Books Completed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="toRead"></div>
+            <div>To Read</div>
           </div>
           <div class="stat-card">
             <div class="stat-number" id="totalPages"></div>
@@ -410,90 +457,13 @@
             booksCompleted:
               this.sections.find((s) => s.id === 'completed')?.books.length ||
               0,
+            toRead:
+              this.sections.find((s) => s.id === 'to-read')?.books.length || 0,
             totalPages: allBooks.reduce(
-              (sum, book) => sum + book.currentPage,
+              (sum, book) => sum + (book.currentPage || 0),
               0
             ),
           };
-        }
-
-        addBook(sectionId, book) {
-          const section = this.sections.find((s) => s.id === sectionId);
-          if (section) {
-            const newBook = {
-              id:
-                Math.max(
-                  0,
-                  ...this.sections.flatMap((s) => s.books.map((b) => b.id))
-                ) + 1,
-              ...book,
-            };
-            section.books.push(newBook);
-            this.calculateStats();
-          }
-        }
-
-        updateBook(sectionId, bookId, updates) {
-          const section = this.sections.find((s) => s.id === sectionId);
-          if (section) {
-            const bookIndex = section.books.findIndex((b) => b.id === bookId);
-            if (bookIndex !== -1) {
-              section.books[bookIndex] = {
-                ...section.books[bookIndex],
-                ...updates,
-              };
-              this.calculateStats();
-            }
-          }
-        }
-
-        removeBook(sectionId, bookId) {
-          const section = this.sections.find((s) => s.id === sectionId);
-          if (section) {
-            section.books = section.books.filter((b) => b.id !== bookId);
-            this.calculateStats();
-          }
-        }
-
-        moveBook(fromSectionId, toSectionId, bookId) {
-          const fromSection = this.sections.find((s) => s.id === fromSectionId);
-          const toSection = this.sections.find((s) => s.id === toSectionId);
-
-          if (fromSection && toSection) {
-            const bookIndex = fromSection.books.findIndex(
-              (b) => b.id === bookId
-            );
-            if (bookIndex !== -1) {
-              const book = fromSection.books[bookIndex];
-              fromSection.books.splice(bookIndex, 1);
-              toSection.books.push(book);
-              this.calculateStats();
-            }
-          }
-        }
-
-        updateProgress(sectionId, bookId, newPage) {
-          this.updateBook(sectionId, bookId, { currentPage: newPage });
-        }
-
-        addTakeaway(sectionId, bookId, takeaway) {
-          const section = this.sections.find((s) => s.id === sectionId);
-          if (section) {
-            const book = section.books.find((b) => b.id === bookId);
-            if (book) {
-              if (!book.takeaways) book.takeaways = [];
-              book.takeaways.push(takeaway);
-              this.calculateStats();
-            }
-          }
-        }
-
-        getSectionBooks(sectionId) {
-          return this.sections.find((s) => s.id === sectionId)?.books || [];
-        }
-
-        getAllBooks() {
-          return this.sections.flatMap((section) => section.books);
         }
       }
 
@@ -511,6 +481,7 @@
                 totalPages: 350,
                 currentPage: 212,
                 startDate: 'Nov 12',
+                type: 'non-fiction',
                 takeaways: [
                   'Pomodoro technique for focus',
                   'Memory techniques/Chunking',
@@ -523,6 +494,7 @@
                 totalPages: 240,
                 currentPage: 31,
                 startDate: 'Jan 5',
+                type: 'non-fiction',
                 takeaways: ['Philosophy of morality', 'Master-slave morality'],
               },
             ],
@@ -538,6 +510,7 @@
                 author: 'Philip Zimbardo',
                 totalPages: 400,
                 currentPage: 400,
+                type: 'non-fiction',
                 takeaways: [
                   'Time perspectives',
                   'Procrastination and time management',
@@ -549,6 +522,7 @@
                 author: 'Isabel Briggs Myers',
                 totalPages: 256,
                 currentPage: 256,
+                type: 'non-fiction',
                 takeaways: [
                   'MBTI personality types',
                   'Understanding cognitive functions',
@@ -560,6 +534,7 @@
                 author: 'Rolf Dobelli',
                 totalPages: 272,
                 currentPage: 272,
+                type: 'non-fiction',
                 takeaways: ['Cognitive biases', 'Decision-making strategies'],
               },
               {
@@ -568,6 +543,7 @@
                 author: 'Thomas Erikson',
                 totalPages: 304,
                 currentPage: 304,
+                type: 'non-fiction',
                 takeaways: ['DISC personality model', 'Communication styles'],
               },
               {
@@ -576,6 +552,7 @@
                 author: 'Anthony Reynolds',
                 totalPages: 480,
                 currentPage: 480,
+                type: 'fiction',
                 takeaways: ['Grief and loss', 'Coping with tragedy'],
               },
               {
@@ -584,6 +561,7 @@
                 author: 'Scarlett Kennedy',
                 totalPages: 144,
                 currentPage: 144,
+                type: 'non-fiction',
                 takeaways: [
                   'Psychological triggers',
                   'Influence and persuasion',
@@ -595,6 +573,7 @@
                 author: 'Scarlett Kennedy',
                 totalPages: 98,
                 currentPage: 98,
+                type: 'non-fiction',
                 takeaways: ['Reading body language', 'Detecting lies'],
               },
               {
@@ -603,6 +582,7 @@
                 author: 'Philipp Dettmer',
                 totalPages: 368,
                 currentPage: 368,
+                type: 'non-fiction',
                 takeaways: ['Immunology', 'Vaccines and immunity'],
               },
               {
@@ -611,7 +591,42 @@
                 author: 'Nicolò Machiavelli',
                 totalPages: 82,
                 currentPage: 82,
+                type: 'non-fiction',
                 takeaways: ['Political philosophy', 'Leadership strategies'],
+              },
+            ],
+          },
+          {
+            id: 'to-read',
+            title: 'To Read',
+            icon: '📋',
+            books: [
+              {
+                id: 12,
+                title: 'Atomic Habits',
+                author: 'James Clear',
+                totalPages: 319,
+                currentPage: 0,
+                type: 'non-fiction',
+                takeaways: [],
+              },
+              {
+                id: 13,
+                title: 'Thinking Fast and Slow',
+                author: 'Daniel Kahneman',
+                totalPages: 499,
+                currentPage: 0,
+                type: 'non-fiction',
+                takeaways: [],
+              },
+              {
+                id: 14,
+                title: 'A brief history of mankind',
+                author: 'Noah Yuval Harari',
+                totalPages: 443,
+                currentPage: 0,
+                type: 'non-fiction',
+                takeaways: [],
               },
             ],
           },
@@ -619,40 +634,76 @@
       });
 
       function createBookCard(book, sectionId) {
-        const progress = (book.currentPage / book.totalPages) * 100;
-        const dateLabel = sectionId === 'current' ? 'Started: ' : ' ';
-        const dateValue = sectionId === 'current' ? book.startDate : '';
+        const progress = ((book.currentPage || 0) / book.totalPages) * 100;
+        const dateLabel = sectionId === 'current' ? 'Started: ' : '';
+        const dateValue = sectionId === 'current' ? book.startDate || '' : '';
+        const takeaways = book.takeaways || [];
 
         return `
           <div class="book-card">
+            <div class="book-type-badge ${book.type}">${book.type}</div>
             <div class="book-title">${book.title}</div>
             <div class="book-author">by ${book.author}</div>
             <div class="progress-bar">
-              <div class="progress-fill" style="width: ${progress}%"></div>
+              <div class="progress-fill ${
+                book.type
+              }" style="width: ${progress}%"></div>
             </div>
             <div class="book-meta">
-              <span>Page ${book.currentPage} of ${book.totalPages}</span>
+              <span>Page ${book.currentPage || 0} of ${book.totalPages}</span>
               <span>${dateLabel}${dateValue}</span>
             </div>
-            <div class="takeaways">
-              ${book.takeaways
-                .map(
-                  (takeaway, index) => `
-                <div class="takeaway-item" style="--delay: ${
-                  index + 1
-                }">${takeaway}</div>
-              `
-                )
-                .join('')}
-            </div>
+            ${
+              takeaways.length > 0
+                ? `
+              <div class="takeaways">
+                ${takeaways
+                  .map(
+                    (takeaway) => `
+                  <div class="takeaway-item ${book.type}">${takeaway}</div>
+                `
+                  )
+                  .join('')}
+              </div>
+            `
+                : ''
+            }
           </div>
         `;
       }
 
       function createSection(section) {
+        const fictionBooks = section.books.filter(
+          (book) => book.type === 'fiction'
+        );
+        const nonFictionBooks = section.books.filter(
+          (book) => book.type === 'non-fiction'
+        );
+
+        if (section.id === 'to-read') {
+          return `
+            <section class="section">
+              <h2 class="section-title">${section.icon} ${section.title}</h2>
+              <div class="book-grid">
+                ${section.books
+                  .map((book) => createBookCard(book, section.id))
+                  .join('')}
+              </div>
+            </section>
+          `;
+        }
+
         return `
           <section class="section">
             <h2 class="section-title">${section.icon} ${section.title}</h2>
+            <div class="category-tabs">
+              <div class="category-tab fiction active">Fiction (${
+                fictionBooks.length
+              })</div>
+              <div class="category-tab non-fiction">Non-Fiction (${
+                nonFictionBooks.length
+              })</div>
+            </div>
             <div class="book-grid">
               ${section.books
                 .map((book) => createBookCard(book, section.id))
@@ -667,6 +718,7 @@
           tracker.stats.currentlyReading;
         document.getElementById('booksCompleted').textContent =
           tracker.stats.booksCompleted;
+        document.getElementById('toRead').textContent = tracker.stats.toRead;
         document.getElementById('totalPages').textContent =
           tracker.stats.totalPages.toLocaleString();
 
@@ -675,53 +727,36 @@
           .map(createSection)
           .join('');
 
+        // Add event listeners for category tabs
+        document.querySelectorAll('.category-tab').forEach((tab) => {
+          tab.addEventListener('click', () => {
+            const section = tab.closest('.section');
+            const tabs = section.querySelectorAll('.category-tab');
+            const bookCards = section.querySelectorAll('.book-card');
+            const type = tab.classList.contains('fiction')
+              ? 'fiction'
+              : 'non-fiction';
+
+            tabs.forEach((t) => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            bookCards.forEach((card) => {
+              const badge = card.querySelector('.book-type-badge');
+              if (badge.classList.contains(type)) {
+                card.style.display = 'block';
+              } else {
+                card.style.display = 'none';
+              }
+            });
+          });
+        });
+
+        // Initialize progress bars with transition
         setTimeout(() => {
           document.querySelectorAll('.progress-fill').forEach((fill) => {
             fill.style.transition = 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
           });
-        }, 2000);
-      }
-
-      function addNewBook(title, author, totalPages, sectionId = 'current') {
-        readingTracker.addBook(sectionId, {
-          title,
-          author,
-          totalPages,
-          currentPage: 0,
-          startDate: new Date().toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-          }),
-          takeaways: [],
-        });
-        initializePage(readingTracker);
-      }
-
-      function updateBookProgress(sectionId, bookId, newPage) {
-        readingTracker.updateProgress(sectionId, bookId, newPage);
-        initializePage(readingTracker);
-      }
-
-      function completeBook(bookId) {
-        const book = readingTracker
-          .getSectionBooks('current')
-          .find((b) => b.id === bookId);
-        if (book) {
-          readingTracker.moveBook('current', 'completed', bookId);
-          readingTracker.updateBook('completed', bookId, {
-            completionDate: new Date().toLocaleDateString('en-US', {
-              month: 'short',
-              day: 'numeric',
-            }),
-            currentPage: book.totalPages,
-          });
-          initializePage(readingTracker);
-        }
-      }
-
-      function addBookTakeaway(sectionId, bookId, takeaway) {
-        readingTracker.addTakeaway(sectionId, bookId, takeaway);
-        initializePage(readingTracker);
+        }, 100);
       }
 
       document.addEventListener('DOMContentLoaded', () => {
