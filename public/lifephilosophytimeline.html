@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       :root {
         --accent: #7c3aed;
@@ -10,6 +11,12 @@
         --timeline-line: #e5e7eb;
       }
 
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       body {
         font-family: system-ui, -apple-system, sans-serif;
         background: var(--background);
@@ -17,16 +24,20 @@
         margin: 0;
         padding: 0;
         min-height: 100vh;
+        overflow-x: hidden;
       }
 
       .nav-header {
         padding: 1rem;
         background: var(--card-bg);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
       }
 
       .nav-content {
-        max-width: 1200px;
+        max-width: min(1200px, 90vw);
         margin: 0 auto;
         display: flex;
         align-items: center;
@@ -38,10 +49,17 @@
         display: flex;
         align-items: center;
         gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+      }
+
+      .back-btn:hover {
+        background: rgba(124, 58, 237, 0.1);
       }
 
       .container {
-        max-width: 1200px;
+        max-width: min(1200px, 90vw);
         margin: 2rem auto;
         padding: 0 1rem;
         position: relative;
@@ -49,18 +67,21 @@
 
       .header {
         text-align: center;
-        margin-bottom: 4rem;
+        margin-bottom: clamp(2rem, 6vw, 4rem);
       }
 
       .title {
-        font-size: 2.5rem;
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
         color: var(--text);
-        margin-bottom: 1rem;
+        margin-bottom: clamp(0.5rem, 2vw, 1rem);
+        line-height: 1.2;
       }
 
       .subtitle {
         color: #6b7280;
-        font-size: 1.2rem;
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        max-width: 600px;
+        margin: 0 auto;
       }
 
       .timeline {
@@ -79,7 +100,7 @@
       }
 
       .timeline-entry {
-        margin: 4rem 0;
+        margin: clamp(2rem, 6vw, 4rem) 0;
         opacity: 0;
         transform: translateY(20px);
         transition: all 0.6s ease-out;
@@ -93,7 +114,7 @@
 
       .timeline-content {
         width: 45%;
-        padding: 2rem;
+        padding: clamp(1.5rem, 4vw, 2rem);
         background: var(--card-bg);
         border-radius: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -121,6 +142,8 @@
         padding: 0.5rem 1rem;
         border-radius: 2rem;
         font-weight: bold;
+        white-space: nowrap;
+        z-index: 1;
       }
 
       .timeline-entry:nth-child(odd) .age {
@@ -128,7 +151,7 @@
       }
 
       .philosophy-name {
-        font-size: 1.5rem;
+        font-size: clamp(1.2rem, 4vw, 1.5rem);
         font-weight: bold;
         margin-bottom: 1rem;
         color: var(--accent);
@@ -137,6 +160,7 @@
       .philosophy-description {
         line-height: 1.6;
         margin-bottom: 1.5rem;
+        font-size: clamp(0.9rem, 2vw, 1rem);
       }
 
       .key-points {
@@ -150,6 +174,7 @@
         font-weight: bold;
         margin-bottom: 0.5rem;
         color: var(--accent);
+        font-size: clamp(0.9rem, 2vw, 1rem);
       }
 
       .key-points-list {
@@ -162,6 +187,7 @@
         margin: 0.5rem 0;
         padding-left: 1.5rem;
         position: relative;
+        font-size: clamp(0.85rem, 2vw, 0.95rem);
       }
 
       .key-points-list li::before {
@@ -173,28 +199,58 @@
 
       @media (max-width: 768px) {
         .timeline::before {
-          left: 2rem;
+          left: 1rem;
         }
 
         .timeline-content {
-          width: calc(100% - 4rem);
-          margin-left: 4rem !important;
+          width: calc(100% - 3rem);
+          margin-left: 3rem !important;
+          padding: 1.25rem;
         }
 
         .age {
-          left: 2rem !important;
+          left: 1rem !important;
+          padding: 0.4rem 0.8rem;
+          font-size: 0.9rem;
+        }
+
+        .key-points {
+          padding: 0.875rem;
         }
       }
 
-      @keyframes gradientFlow {
-        0% {
-          background-position: 0% 50%;
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 0.75rem;
         }
-        50% {
-          background-position: 100% 50%;
+
+        .timeline-content {
+          width: calc(100% - 2.5rem);
+          margin-left: 2.5rem !important;
         }
-        100% {
-          background-position: 0% 50%;
+
+        .age {
+          left: 0.75rem !important;
+          padding: 0.3rem 0.6rem;
+          font-size: 0.8rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .timeline-entry {
+          transition: none;
+        }
+
+        .timeline-content {
+          transition: none;
+        }
+
+        .timeline-content:hover {
+          transform: none;
+        }
+
+        .timeline-content::after {
+          animation: none;
         }
       }
 
@@ -215,6 +271,18 @@
         background-size: 200% 200%;
         animation: gradientFlow 3s ease infinite;
         pointer-events: none;
+      }
+
+      @keyframes gradientFlow {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
       }
     </style>
   </head>
@@ -241,8 +309,7 @@
         {
           age: 5,
           name: 'Naive Realism',
-          description:
-            'Innocent belief in the world as it appears, without questioning the nature of reality.',
+          description: 'Innocent belief in the world as it appears, without questioning the nature of reality.',
           keyPoints: [
             'Belief in the external world',
             'Direct perception of objects',
@@ -252,8 +319,7 @@
         {
           age: 14,
           name: 'Existential Seeking',
-          description:
-            'Questioned the purpose of life and the nature of existence, leading to a search for meaning and understanding.',
+          description: 'Questioned the purpose of life and the nature of existence, leading to a search for meaning and understanding.',
           keyPoints: [
             'Meaning of life',
             'Freedom and responsibility',
@@ -263,8 +329,7 @@
         {
           age: 15,
           name: 'Absurdism',
-          description:
-            'Encountered the philosophy of Albert Camus, embracing the absurdity of life and the search for meaning in an indifferent universe.',
+          description: 'Encountered the philosophy of Albert Camus, embracing the absurdity of life and the search for meaning in an indifferent universe.',
           keyPoints: [
             'The absurdity of existence',
             'Rebellion against meaninglessness',
@@ -274,8 +339,7 @@
         {
           age: 17,
           name: 'Optimistic Nihilism',
-          description:
-            'Embraced the philosophy of optimistic nihilism, finding freedom in the absence of inherent meaning and creating one’s own purpose.',
+          description: 'Embraced the philosophy of optimistic nihilism, finding freedom in the absence of inherent meaning and creating one\'s own purpose.',
           keyPoints: [
             'Absence of inherent meaning',
             'Freedom to create personal meaning',
@@ -285,8 +349,7 @@
         {
           age: 17,
           name: 'Self-Omnism',
-          description:
-            'Explored the philosophy of omnism, embracing the interconnectedness of all beliefs and the unity of diverse perspectives.',
+          description: 'Explored the philosophy of omnism, embracing the interconnectedness of all beliefs and the unity of diverse perspectives.',
           keyPoints: [
             'Unity of diverse beliefs',
             'Interconnectedness of all perspectives',
@@ -301,24 +364,20 @@
 
         philosophyData.forEach((entry, index) => {
           const html = `
-                    <div class="timeline-entry" data-index="${index}">
-                        <div class="timeline-content">
-                            <span class="age">${entry.age}</span>
-                            <div class="philosophy-name">${entry.name}</div>
-                            <div class="philosophy-description">${
-                              entry.description
-                            }</div>
-                            <div class="key-points">
-                                <div class="key-points-title">Key Points</div>
-                                <ul class="key-points-list">
-                                    ${entry.keyPoints
-                                      .map((point) => `<li>${point}</li>`)
-                                      .join('')}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                `;
+            <div class="timeline-entry" data-index="${index}">
+              <div class="timeline-content">
+                <span class="age">${entry.age}</span>
+                <div class="philosophy-name">${entry.name}</div>
+                <div class="philosophy-description">${entry.description}</div>
+                <div class="key-points">
+                  <div class="key-points-title">Key Points</div>
+                  <ul class="key-points-list">
+                    ${entry.keyPoints.map(point => `<li>${point}</li>`).join('')}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          `;
           timeline.insertAdjacentHTML('beforeend', html);
         });
 
@@ -332,6 +391,7 @@
           },
           {
             threshold: 0.1,
+            rootMargin: '50px',
           }
         );
 

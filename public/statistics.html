@@ -49,15 +49,6 @@
         margin: 0 auto;
         padding: 20px;
       }
-      .nav-center {
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        display: flex;
-        align-items: center;
-        gap: 15px;
-      }
-
       .nav-header {
         position: sticky;
         top: 0;
@@ -65,34 +56,57 @@
         padding: 15px 20px;
         box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
         z-index: 100;
-        border-bottom: 1px solid var(--text-secondary) 10;
+        border-bottom: 1px solid rgba(100, 116, 139, 0.1);
         backdrop-filter: blur(10px);
       }
 
       .nav-content {
         max-width: 1200px;
         margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         align-items: center;
       }
 
-      .back-btn {
+      .nav-left {
+        justify-self: start;
+      }
+
+      .nav-center {
+        justify-self: center;
+        text-align: center;
+      }
+
+      .nav-right {
+        justify-self: end;
+      }
+      .page-title {
+        font-size: 1.5rem;
+        font-weight: 780;
+        margin: 0;
+        white-space: nowrap;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
         text-decoration: none;
         color: var(--text-primary);
         font-weight: 500;
-        padding: 10px 20px;
+        padding: 8px 16px;
         border-radius: 12px;
         background: var(--bg-primary);
-        border: 1px solid var(--text-secondary) 15;
+        border: 1px solid rgba(100, 116, 139, 0.15);
+        transition: all 0.3s ease;
       }
 
       .back-btn:hover {
         transform: translateX(-5px);
-        background: var(--accent) 15;
+        background: rgba(37, 99, 235, 0.1);
         border-color: var(--accent);
         color: var(--accent);
       }
@@ -233,7 +247,6 @@
         color: var(--text-secondary);
       }
 
-
       @keyframes fadeIn {
         from {
           opacity: 0;
@@ -251,6 +264,25 @@
         }
         .stats-grid {
           grid-template-columns: 1fr;
+        }
+      }
+      @media (max-width: 640px) {
+        .nav-content {
+          grid-template-columns: auto 1fr auto;
+          gap: 10px;
+        }
+
+        .back-btn {
+          padding: 6px 12px;
+          font-size: 1.2rem;
+        }
+
+        .back-btn span:last-child {
+          display: none;
+        }
+
+        .page-title {
+          font-size: 1.1rem;
         }
       }
     </style>
@@ -272,8 +304,7 @@
       </div>
     </header>
     <div class="dashboard">
-      <div class="category-nav" id="categoryNav">
-      </div>
+      <div class="category-nav" id="categoryNav"></div>
 
       <div class="search-container" id="searchContainer" style="display: none">
         <input
@@ -284,11 +315,13 @@
         />
       </div>
 
-      <div class="filter-container" id="filterContainer" style="display: none">
-      </div>
+      <div
+        class="filter-container"
+        id="filterContainer"
+        style="display: none"
+      ></div>
 
-      <div id="statsContainer">
-      </div>
+      <div id="statsContainer"></div>
     </div>
 
     <script>
@@ -305,12 +338,12 @@
               subtext: 'Born in 2007',
             },
             weight: {
-              value: 73,
+              value: 72,
               unit: 'kg',
               icon: '⚖️',
               subtext: 'In the green zone',
             },
-            height: { value: 175, unit: 'cm', icon: '📏' },
+            height: { value: 176, unit: 'cm', icon: '📏' },
             sleep: {
               value: 8,
               unit: 'hrs/day',
@@ -343,13 +376,13 @@
           color: 'var(--cat-health)',
           stats: {
             workouts: {
-              value: 2,
+              value: 4,
               unit: 'this year',
               icon: '🏋️',
               subtext: 'rarely',
             },
             runDistance: {
-              value: 20,
+              value: 22,
               unit: 'km',
               icon: '🏃',
               subtext: 'This year',
@@ -419,12 +452,11 @@
           color: 'var(--cat-skills)',
           stats: {
             courses: { value: 12, unit: 'completed', icon: '📚' },
-            readBooks: { value: 7, unit: 'this year', icon: '📖' },
             tutorials: { value: 12, unit: 'watched', icon: '🎓' },
             skills: { value: 9, unit: 'mastered', icon: '⭐' },
             articles: { value: 4, unit: 'written', icon: '✍️' },
             learning: { value: 200, unit: 'hours', icon: '🧠' },
-            teaching: { value: 50, unit: 'hours', icon: '👨‍🏫' },
+            teaching: { value: 52, unit: 'hours', icon: '👨‍🏫' },
           },
         },
         travel: {

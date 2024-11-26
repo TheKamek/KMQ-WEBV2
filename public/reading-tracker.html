@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      :root {
+        --accent: #7c3aed;
+        --bg: #fafafa;
+        --card-bg: #ffffff;
+        --text: #1f2937;
+        --border: #e5e7eb;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        margin: 0;
+        padding: 20px;
+        overflow-x: hidden;
+        perspective: 1000px;
+      }
+
+      .nav-header {
+        margin-bottom: 2rem;
+        position: relative;
+        z-index: 10;
+        opacity: 0;
+        animation: slideInLeft 0.8s ease-out 0.2s forwards;
+      }
+
+      .back-btn {
+        text-decoration: none;
+        color: var(--text);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        transition: all 0.3s;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .back-btn:after {
+        content: '←';
+        margin-right: 0.5rem;
+        transition: transform 0.3s;
+      }
+
+      .back-btn:hover:after {
+        transform: translateX(-4px);
+      }
+
+      .back-btn:hover {
+        transform: translateX(-4px);
+        box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+        color: var(--accent);
+      }
+
+      .page-content {
+        transform-origin: top;
+        animation: unfold 1.2s ease-out forwards;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .header {
+        text-align: center;
+        margin-bottom: 3rem;
+        opacity: 0;
+        animation: fadeIn 0.8s ease-out 0.5s forwards;
+      }
+
+      .title {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+        position: relative;
+      }
+
+      .title:after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        width: 0;
+        height: 3px;
+        background: var(--accent);
+        animation: expandWidth 0.8s ease-out 1s forwards;
+      }
+
+      .reading-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-bottom: 3rem;
+      }
+
+      @media (max-width: 768px) {
+        .reading-stats {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .stat-card {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        text-align: center;
+        opacity: 0;
+        transform: translateY(20px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .stat-card:nth-child(1) {
+        animation: slideUp 0.6s ease-out 0.8s forwards;
+      }
+      .stat-card:nth-child(2) {
+        animation: slideUp 0.6s ease-out 1s forwards;
+      }
+      .stat-card:nth-child(3) {
+        animation: slideUp 0.6s ease-out 1.2s forwards;
+      }
+
+      .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--accent);
+        margin-bottom: 0.5rem;
+        opacity: 0;
+        transform: scale(0.8);
+        animation: popIn 0.6s ease-out 1.4s forwards;
+      }
+
+      .reading-sections {
+        display: grid;
+        gap: 2rem;
+      }
+
+      .section {
+        background: var(--card-bg);
+        border-radius: 1rem;
+        border: 1px solid var(--border);
+        padding: 2rem;
+        opacity: 0;
+        transform: translateY(20px);
+        animation: slideUp 0.8s ease-out 1.6s forwards;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        position: relative;
+        padding-left: 1rem;
+      }
+
+      .section-title:before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 0;
+        background: var(--accent);
+        animation: expandHeight 0.6s ease-out 2s forwards;
+      }
+
+      .book-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .book-card {
+        background: var(--card-bg);
+        padding: 1.5rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--border);
+        position: relative;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        transition: all 0.4s;
+      }
+
+      .section:nth-child(1) .book-card:nth-child(1) {
+        animation: cardAppear 0.6s ease-out 1.8s forwards;
+      }
+      .section:nth-child(1) .book-card:nth-child(2) {
+        animation: cardAppear 0.6s ease-out 2s forwards;
+      }
+      .section:nth-child(2) .book-card:nth-child(1) {
+        animation: cardAppear 0.6s ease-out 2.2s forwards;
+      }
+      .section:nth-child(2) .book-card:nth-child(2) {
+        animation: cardAppear 0.6s ease-out 2.4s forwards;
+      }
+
+      .book-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+      }
+
+      .book-title {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+
+      .book-author {
+        color: #666;
+        margin-bottom: 1rem;
+        font-style: italic;
+      }
+
+      .progress-bar {
+        width: 100%;
+        height: 8px;
+        background: #eee;
+        border-radius: 4px;
+        overflow: hidden;
+        margin: 1rem 0;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: var(--accent);
+        border-radius: 4px;
+        width: 0;
+        transition: width 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .book-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 0.5rem;
+      }
+
+      .takeaways {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        position: relative;
+        z-index: 1;
+        visibility: visible;
+      }
+
+      .takeaway-item {
+        margin-bottom: 0.8rem;
+        padding: 0.8rem 1rem;
+        border-left: 3px solid var(--accent);
+        background: var(--card-bg);
+        border-radius: 0 4px 4px 0;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+        color: var(--text);
+        position: relative;
+        display: block;
+        visibility: visible;
+        transform: translateX(0);
+        opacity: 1;
+      }
+
+      .takeaway-item:hover {
+        padding-left: 1.5rem;
+        background: rgba(124, 58, 237, 0.08);
+        transform: translateX(4px);
+        box-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
+      }
+
+      @keyframes unfold {
+        0% {
+          transform: rotateX(90deg);
+          opacity: 0;
+        }
+        100% {
+          transform: rotateX(0deg);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      @keyframes fadeIn {
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes popIn {
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @keyframes expandWidth {
+        to {
+          width: 60px;
+          left: calc(50% - 30px);
+        }
+      }
+
+      @keyframes expandHeight {
+        to {
+          height: 24px;
+        }
+      }
+
+      @keyframes cardAppear {
+        0% {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes slideInTakeaway {
+        0% {
+          opacity: 0;
+          transform: translateX(-10px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="nav-header">
+      <a href="./index.html" class="back-btn">Back to Home</a>
+    </div>
+
+    <div class="page-content">
+      <div class="container">
+        <div class="header">
+          <h1 class="title">📚 Reading Journey</h1>
+          <p>Track my reading progress and insights</p>
+        </div>
+
+        <div class="reading-stats">
+          <div class="stat-card">
+            <div class="stat-number" id="currentlyReading"></div>
+            <div>Currently Reading</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="booksCompleted"></div>
+            <div>Books Completed</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-number" id="totalPages"></div>
+            <div>Pages Read</div>
+          </div>
+        </div>
+
+        <div class="reading-sections" id="readingSections"></div>
+      </div>
+    </div>
+    <script>
+      class ReadingTracker {
+        constructor(data) {
+          this.sections = data.sections;
+          this.calculateStats();
+        }
+
+        calculateStats() {
+          const allBooks = this.sections.flatMap((section) => section.books);
+
+          this.stats = {
+            currentlyReading:
+              this.sections.find((s) => s.id === 'current')?.books.length || 0,
+            booksCompleted:
+              this.sections.find((s) => s.id === 'completed')?.books.length ||
+              0,
+            totalPages: allBooks.reduce(
+              (sum, book) => sum + book.currentPage,
+              0
+            ),
+          };
+        }
+
+        addBook(sectionId, book) {
+          const section = this.sections.find((s) => s.id === sectionId);
+          if (section) {
+            const newBook = {
+              id:
+                Math.max(
+                  0,
+                  ...this.sections.flatMap((s) => s.books.map((b) => b.id))
+                ) + 1,
+              ...book,
+            };
+            section.books.push(newBook);
+            this.calculateStats();
+          }
+        }
+
+        updateBook(sectionId, bookId, updates) {
+          const section = this.sections.find((s) => s.id === sectionId);
+          if (section) {
+            const bookIndex = section.books.findIndex((b) => b.id === bookId);
+            if (bookIndex !== -1) {
+              section.books[bookIndex] = {
+                ...section.books[bookIndex],
+                ...updates,
+              };
+              this.calculateStats();
+            }
+          }
+        }
+
+        removeBook(sectionId, bookId) {
+          const section = this.sections.find((s) => s.id === sectionId);
+          if (section) {
+            section.books = section.books.filter((b) => b.id !== bookId);
+            this.calculateStats();
+          }
+        }
+
+        moveBook(fromSectionId, toSectionId, bookId) {
+          const fromSection = this.sections.find((s) => s.id === fromSectionId);
+          const toSection = this.sections.find((s) => s.id === toSectionId);
+
+          if (fromSection && toSection) {
+            const bookIndex = fromSection.books.findIndex(
+              (b) => b.id === bookId
+            );
+            if (bookIndex !== -1) {
+              const book = fromSection.books[bookIndex];
+              fromSection.books.splice(bookIndex, 1);
+              toSection.books.push(book);
+              this.calculateStats();
+            }
+          }
+        }
+
+        updateProgress(sectionId, bookId, newPage) {
+          this.updateBook(sectionId, bookId, { currentPage: newPage });
+        }
+
+        addTakeaway(sectionId, bookId, takeaway) {
+          const section = this.sections.find((s) => s.id === sectionId);
+          if (section) {
+            const book = section.books.find((b) => b.id === bookId);
+            if (book) {
+              if (!book.takeaways) book.takeaways = [];
+              book.takeaways.push(takeaway);
+              this.calculateStats();
+            }
+          }
+        }
+
+        getSectionBooks(sectionId) {
+          return this.sections.find((s) => s.id === sectionId)?.books || [];
+        }
+
+        getAllBooks() {
+          return this.sections.flatMap((section) => section.books);
+        }
+      }
+
+      const readingTracker = new ReadingTracker({
+        sections: [
+          {
+            id: 'current',
+            title: 'Currently Reading',
+            icon: '📖',
+            books: [
+              {
+                id: 1,
+                title: 'A Mind for Numbers',
+                author: 'Barbara Oakley',
+                totalPages: 350,
+                currentPage: 212,
+                startDate: 'Nov 12',
+                takeaways: [
+                  'Pomodoro technique for focus',
+                  'Memory techniques/Chunking',
+                ],
+              },
+              {
+                id: 2,
+                title: 'Beyond Good and Evil',
+                author: 'Friedrich Nietzsche',
+                totalPages: 240,
+                currentPage: 31,
+                startDate: 'Jan 5',
+                takeaways: ['Philosophy of morality', 'Master-slave morality'],
+              },
+            ],
+          },
+          {
+            id: 'completed',
+            title: 'Completed',
+            icon: '✓',
+            books: [
+              {
+                id: 3,
+                title: 'The Time-Paradox',
+                author: 'Philip Zimbardo',
+                totalPages: 400,
+                currentPage: 400,
+                takeaways: [
+                  'Time perspectives',
+                  'Procrastination and time management',
+                ],
+              },
+              {
+                id: 4,
+                title: 'Gifts Differing',
+                author: 'Isabel Briggs Myers',
+                totalPages: 256,
+                currentPage: 256,
+                takeaways: [
+                  'MBTI personality types',
+                  'Understanding cognitive functions',
+                ],
+              },
+              {
+                id: 5,
+                title: 'The Art of thinking clearly',
+                author: 'Rolf Dobelli',
+                totalPages: 272,
+                currentPage: 272,
+                takeaways: ['Cognitive biases', 'Decision-making strategies'],
+              },
+              {
+                id: 6,
+                title: 'Surrounded by Idiots',
+                author: 'Thomas Erikson',
+                totalPages: 304,
+                currentPage: 304,
+                takeaways: ['DISC personality model', 'Communication styles'],
+              },
+              {
+                id: 7,
+                title: 'Ruination',
+                author: 'Anthony Reynolds',
+                totalPages: 480,
+                currentPage: 480,
+                takeaways: ['Grief and loss', 'Coping with tragedy'],
+              },
+              {
+                id: 8,
+                title: 'How to make someone obsessed with you',
+                author: 'Scarlett Kennedy',
+                totalPages: 144,
+                currentPage: 144,
+                takeaways: [
+                  'Psychological triggers',
+                  'Influence and persuasion',
+                ],
+              },
+              {
+                id: 9,
+                title: 'How to psychoanalyze someone',
+                author: 'Scarlett Kennedy',
+                totalPages: 98,
+                currentPage: 98,
+                takeaways: ['Reading body language', 'Detecting lies'],
+              },
+              {
+                id: 10,
+                title: 'Immune',
+                author: 'Philipp Dettmer',
+                totalPages: 368,
+                currentPage: 368,
+                takeaways: ['Immunology', 'Vaccines and immunity'],
+              },
+              {
+                id: 11,
+                title: 'The Prince',
+                author: 'Nicolò Machiavelli',
+                totalPages: 82,
+                currentPage: 82,
+                takeaways: ['Political philosophy', 'Leadership strategies'],
+              },
+            ],
+          },
+        ],
+      });
+
+      function createBookCard(book, sectionId) {
+        const progress = (book.currentPage / book.totalPages) * 100;
+        const dateLabel = sectionId === 'current' ? 'Started: ' : ' ';
+        const dateValue = sectionId === 'current' ? book.startDate : '';
+
+        return `
+          <div class="book-card">
+            <div class="book-title">${book.title}</div>
+            <div class="book-author">by ${book.author}</div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${progress}%"></div>
+            </div>
+            <div class="book-meta">
+              <span>Page ${book.currentPage} of ${book.totalPages}</span>
+              <span>${dateLabel}${dateValue}</span>
+            </div>
+            <div class="takeaways">
+              ${book.takeaways
+                .map(
+                  (takeaway, index) => `
+                <div class="takeaway-item" style="--delay: ${
+                  index + 1
+                }">${takeaway}</div>
+              `
+                )
+                .join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      function createSection(section) {
+        return `
+          <section class="section">
+            <h2 class="section-title">${section.icon} ${section.title}</h2>
+            <div class="book-grid">
+              ${section.books
+                .map((book) => createBookCard(book, section.id))
+                .join('')}
+            </div>
+          </section>
+        `;
+      }
+
+      function initializePage(tracker) {
+        document.getElementById('currentlyReading').textContent =
+          tracker.stats.currentlyReading;
+        document.getElementById('booksCompleted').textContent =
+          tracker.stats.booksCompleted;
+        document.getElementById('totalPages').textContent =
+          tracker.stats.totalPages.toLocaleString();
+
+        const sectionsContainer = document.getElementById('readingSections');
+        sectionsContainer.innerHTML = tracker.sections
+          .map(createSection)
+          .join('');
+
+        setTimeout(() => {
+          document.querySelectorAll('.progress-fill').forEach((fill) => {
+            fill.style.transition = 'width 1.5s cubic-bezier(0.4, 0, 0.2, 1)';
+          });
+        }, 2000);
+      }
+
+      function addNewBook(title, author, totalPages, sectionId = 'current') {
+        readingTracker.addBook(sectionId, {
+          title,
+          author,
+          totalPages,
+          currentPage: 0,
+          startDate: new Date().toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+          }),
+          takeaways: [],
+        });
+        initializePage(readingTracker);
+      }
+
+      function updateBookProgress(sectionId, bookId, newPage) {
+        readingTracker.updateProgress(sectionId, bookId, newPage);
+        initializePage(readingTracker);
+      }
+
+      function completeBook(bookId) {
+        const book = readingTracker
+          .getSectionBooks('current')
+          .find((b) => b.id === bookId);
+        if (book) {
+          readingTracker.moveBook('current', 'completed', bookId);
+          readingTracker.updateBook('completed', bookId, {
+            completionDate: new Date().toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+            }),
+            currentPage: book.totalPages,
+          });
+          initializePage(readingTracker);
+        }
+      }
+
+      function addBookTakeaway(sectionId, bookId, takeaway) {
+        readingTracker.addTakeaway(sectionId, bookId, takeaway);
+        initializePage(readingTracker);
+      }
+
+      document.addEventListener('DOMContentLoaded', () => {
+        initializePage(readingTracker);
+      });
+    </script>
+  </body>
+</html>

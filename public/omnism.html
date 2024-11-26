@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
       :root {
         --accent: #7c3aed;
@@ -11,6 +12,12 @@
         --line: #d1d5db;
       }
 
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
       body {
         background-color: var(--background);
         color: var(--text);
@@ -19,15 +26,18 @@
         padding: 0;
         line-height: 1.6;
         overflow-x: hidden;
+        -webkit-font-smoothing: antialiased;
       }
 
       .nav-header {
-        padding: 1rem;
+        padding: 0.75rem;
         background: rgba(124, 58, 237, 0.1);
         border-bottom: 1px solid var(--line);
         position: sticky;
         top: 0;
         z-index: 100;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
       }
 
       .nav-content {
@@ -35,6 +45,7 @@
         margin: 0 auto;
         display: flex;
         align-items: center;
+        padding: 0 1rem;
       }
 
       .back-btn {
@@ -44,41 +55,49 @@
         align-items: center;
         gap: 0.5rem;
         font-weight: 500;
+        font-size: 0.9rem;
+        padding: 0.5rem 0;
       }
 
       .container {
         max-width: 1000px;
-        margin: 2rem auto;
-        padding: 0 1rem;
+        margin: 1rem auto;
+        padding: 0 1.25rem;
       }
 
       .title {
-        font-size: 3rem;
+        font-size: clamp(2rem, 5vw, 3rem);
         margin-bottom: 1rem;
         text-align: center;
         color: var(--accent);
         font-weight: 800;
+        line-height: 1.2;
       }
 
       .subtitle {
         text-align: center;
-        font-size: 1.25rem;
+        font-size: clamp(1rem, 3vw, 1.25rem);
         color: #666;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
+        padding: 0 1rem;
       }
 
       .intro {
-        font-size: 1.1rem;
+        font-size: clamp(1rem, 2vw, 1.1rem);
         background: var(--card-bg);
-        padding: 2rem;
+        padding: 1.5rem;
         border-radius: 12px;
-        margin-bottom: 3rem;
+        margin-bottom: 2rem;
         box-shadow: 0 4px 6px var(--shadow);
+      }
+
+      .intro p + p {
+        margin-top: 1rem;
       }
 
       .infinite-personas {
         position: relative;
-        height: 300px;
+        height: clamp(200px, 40vw, 300px);
         margin: 2rem 0;
         overflow: hidden;
         border-radius: 12px;
@@ -92,13 +111,13 @@
 
       .persona {
         position: absolute;
-        font-size: 2.5rem;
+        font-size: clamp(1.5rem, 4vw, 2.5rem);
         opacity: 0;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 80px;
-        height: 80px;
+        width: clamp(50px, 10vw, 80px);
+        height: clamp(50px, 10vw, 80px);
         border-radius: 50%;
         background: white;
         box-shadow: 0 4px 6px var(--shadow);
@@ -134,16 +153,20 @@
       }
 
       .components {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2rem;
-        margin-bottom: 3rem;
+          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+
+        gap: 1.5rem;
+
+         margin-bottom: 2rem;
+
+        gap: 1.5rem;
+        margin-bottom: 2rem;
       }
 
       .component-card {
         background: white;
         border-radius: 12px;
-        padding: 2rem;
+        padding: 1.5rem;
         box-shadow: 0 4px 6px var(--shadow);
         border: 1px solid var(--line);
         transition: transform 0.3s ease;
@@ -177,7 +200,7 @@
       }
 
       .component-title {
-        font-size: 1.5rem;
+        font-size: clamp(1.25rem, 3vw, 1.5rem);
         color: var(--accent);
         margin-bottom: 1rem;
         display: flex;
@@ -186,27 +209,39 @@
       }
 
       .component-letter {
-        font-size: 2rem;
+        font-size: clamp(1.5rem, 4vw, 2rem);
         font-weight: 800;
       }
 
       .learning-tips {
         background: var(--card-bg);
-        padding: 2rem;
+        padding: 1.5rem;
         border-radius: 12px;
-        margin-top: 3rem;
+        margin-top: 2rem;
+      }
+
+      .learning-tips h2 {
+        font-size: clamp(1.25rem, 3vw, 1.5rem);
+        margin-bottom: 1.5rem;
+        color: var(--accent);
       }
 
       .tip {
-        margin-bottom: 1.5rem;
-        padding-left: 1.5rem;
+        margin-bottom: 1.25rem;
+        padding-left: 1.75rem;
         position: relative;
+        font-size: clamp(0.9rem, 2vw, 1rem);
       }
 
       .tip::before {
         content: '💡';
         position: absolute;
         left: 0;
+        font-size: 1.1em;
+      }
+
+      .tip:last-child {
+        margin-bottom: 0;
       }
 
       .progress-bar {
@@ -240,14 +275,65 @@
 
       .persona-container {
         text-align: center;
-        margin: 2rem 0;
-        font-size: 1.2rem;
+        margin: 1.5rem 0;
+        font-size: clamp(1rem, 2.5vw, 1.2rem);
         color: var(--accent);
       }
 
       @media (max-width: 768px) {
-        .components {
-          grid-template-columns: 1fr;
+        .container {
+          margin: 1rem auto;
+        }
+
+        .intro {
+          padding: 1.25rem;
+        }
+
+        .component-card {
+          padding: 1.25rem;
+        }
+
+        .learning-tips {
+          padding: 1.25rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 0 1rem;
+        }
+
+        .nav-content {
+          padding: 0 0.75rem;
+        }
+
+        .back-btn {
+          font-size: 0.85rem;
+        }
+
+        .persona {
+          font-size: 1.75rem;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .persona {
+          animation: none;
+          display: none;
+        }
+
+        .component-card {
+          transition: none;
+        }
+
+        .component-card:hover {
+          transform: none;
+        }
+
+        .animate {
+          animation: none;
+          opacity: 1;
+          transform: none;
         }
       }
     </style>
@@ -370,6 +456,9 @@
 
     <script>
       window.addEventListener('scroll', () => {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+          return;
+
         const totalHeight = document.body.scrollHeight - window.innerHeight;
         const progress = window.scrollY / totalHeight;
         document.querySelector(
@@ -410,6 +499,7 @@
         '👨‍💻',
         '👩‍💻',
       ];
+
       const colors = [
         '#FF6B6B',
         '#4ECDC4',
@@ -422,27 +512,36 @@
       ];
 
       function createPersona() {
+        // Check if user prefers reduced motion
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+          return;
+
         const container = document.querySelector('.infinite-personas');
         const persona = document.createElement('div');
         persona.className = 'persona';
 
+        // Calculate random position and animation parameters
         const yPos = Math.random() * 80;
         const delay = Math.random() * 5;
         const emoji =
           personaEmojis[Math.floor(Math.random() * personaEmojis.length)];
         const color = colors[Math.floor(Math.random() * colors.length)];
 
+        // Set styles
         persona.style.top = `${yPos}%`;
         persona.style.animationDelay = `${delay}s`;
         persona.innerHTML = emoji;
 
+        // Create and append trail element
         const trail = document.createElement('div');
         trail.className = 'persona-trail';
         trail.style.background = color;
         persona.appendChild(trail);
 
+        // Add to container
         container.appendChild(persona);
 
+        // Clean up after animation
         setTimeout(() => {
           if (persona.parentNode === container) {
             container.removeChild(persona);
@@ -450,29 +549,95 @@
         }, 20000 + delay * 1000);
       }
 
-      setInterval(createPersona, 300);
+      // Initialize personas with throttling to prevent performance issues
+      let lastCreationTime = 0;
+      const creationInterval = 300; // Minimum time between creation attempts
 
-      for (let i = 0; i < 5; i++) {
-        createPersona();
+      function initializePersonas() {
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+          return;
+
+        const now = Date.now();
+        if (now - lastCreationTime >= creationInterval) {
+          createPersona();
+          lastCreationTime = now;
+        }
       }
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.style.opacity = '1';
-              entry.target.style.transform = 'translateY(0)';
-            }
-          });
-        },
-        {
-          threshold: 0.1,
-        }
-      );
+      // Initial creation of personas
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => initializePersonas(), i * creationInterval);
+      }
 
-      document
-        .querySelectorAll('.animate')
-        .forEach((el) => observer.observe(el));
+      // Continue creating personas at intervals
+      setInterval(initializePersonas, creationInterval);
+
+      // Intersection Observer for animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '50px',
+      };
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            // Unobserve after animation
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      // Observe all animated elements
+      document.querySelectorAll('.animate').forEach((el) => {
+        observer.observe(el);
+      });
+
+      // Handle window resize for responsive adjustments
+      let resizeTimeout;
+      window.addEventListener('resize', () => {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(() => {
+          const container = document.querySelector('.infinite-personas');
+          const personas = container.querySelectorAll('.persona');
+
+          // Adjust existing personas for new viewport size
+          personas.forEach((persona) => {
+            const yPos = Math.random() * 80;
+            persona.style.top = `${yPos}%`;
+          });
+        }, 250);
+      });
+
+      // Handle visibility change to pause/resume animations
+      document.addEventListener('visibilitychange', () => {
+        const container = document.querySelector('.infinite-personas');
+        if (document.hidden) {
+          container.style.animationPlayState = 'paused';
+          container.querySelectorAll('.persona').forEach((p) => {
+            p.style.animationPlayState = 'paused';
+          });
+        } else {
+          container.style.animationPlayState = 'running';
+          container.querySelectorAll('.persona').forEach((p) => {
+            p.style.animationPlayState = 'running';
+          });
+        }
+      });
+
+      // Handle page load
+      window.addEventListener('load', () => {
+        // Remove any loading states
+        document.body.classList.add('loaded');
+
+        // Initialize scroll position for progress bar
+        const progress =
+          window.scrollY / (document.body.scrollHeight - window.innerHeight);
+        document.querySelector(
+          '.progress-bar'
+        ).style.transform = `scaleX(${progress})`;
+      });
     </script>
   </body>
 </html>
