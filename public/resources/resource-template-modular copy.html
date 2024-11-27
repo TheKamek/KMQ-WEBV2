@@ -1,384 +1,305 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    :root {
-      --bg-primary: #f8fafc;
-      --bg-secondary: #ffffff;
-      --text-primary: #1a1a1a;
-      --text-secondary: #64748b;
-      --accent: #2563eb;
-      --accent-light: #60a5fa;
-      --code-bg: #1e293b;
-    }
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --accent: #2563eb;
+        --code-bg: #1e293b;
+      }
 
-    [data-theme='dark'] {
-      --bg-primary: #0f172a;
-      --bg-secondary: #1e293b;
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
-      --code-bg: #0f172a;
-    }
+      [data-theme='dark'] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --code-bg: #0f172a;
+      }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      transition: all 0.3s ease;
-    }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
 
-    body {
-      background: var(--bg-primary);
-      color: var(--text-primary);
-      font-family: system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-      line-height: 1.6;
-    }
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        line-height: 1.6;
+      }
 
-    .nav-header {
-      position: sticky;
-      top: 0;
-      background: var(--bg-secondary);
-      padding: 15px 20px;
-      box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-      z-index: 100;
-      border-bottom: 1px solid rgba(100, 116, 139, 0.1);
-      backdrop-filter: blur(10px);
-    }
-
-    .nav-content {
-      max-width: 900px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .back-btn {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-      color: var(--text-primary);
-      font-weight: 500;
-      padding: 10px 20px;
-      border-radius: 12px;
-      background: var(--bg-primary);
-      border: 1px solid rgba(100, 116, 139, 0.15);
-    }
-
-    .back-btn:hover {
-      transform: translateX(-5px);
-      background: rgba(37, 99, 235, 0.1);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 40px 20px;
-    }
-
-    .resource-header {
-      margin-bottom: 40px;
-    }
-
-    .resource-meta {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .resource-type {
-      padding: 5px 12px;
-      border-radius: 15px;
-      background: var(--accent)15;
-      color: var(--accent);
-      font-weight: 500;
-    }
-
-    .title {
-      font-size: clamp(2rem, 5vw, 2.5rem);
-      margin-bottom: 15px;
-      line-height: 1.2;
-    }
-
-    .tags {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-
-    .tag {
-      padding: 4px 12px;
-      border-radius: 15px;
-      background: var(--accent)15;
-      color: var(--accent);
-      font-size: 0.9rem;
-    }
-
-    .content-section {
-      background: var(--bg-secondary);
-      border-radius: 20px;
-      padding: 30px;
-      margin-bottom: 30px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-    }
-
-    .section-title {
-      font-size: 1.5rem;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .content-text {
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-    }
-
-    .content-list {
-      list-style: none;
-      margin-bottom: 20px;
-    }
-
-    .content-list li {
-      margin-bottom: 12px;
-      padding-left: 25px;
-      position: relative;
-    }
-
-    .content-list li::before {
-      content: '→';
-      position: absolute;
-      left: 0;
-      color: var(--accent);
-    }
-
-    .quote {
-      border-left: 4px solid var(--accent);
-      padding: 15px;
-      margin: 20px 0;
-      background: var(--accent)05;
-      border-radius: 0 10px 10px 0;
-    }
-
-    .code-block {
-      background: var(--code-bg);
-      padding: 20px;
-      border-radius: 10px;
-      margin: 20px 0;
-      overflow-x: auto;
-      color: #e2e8f0;
-      font-family: monospace;
-    }
-
-    .image-section {
-      margin: 20px 0;
-    }
-
-    .image-section img {
-      width: 100%;
-      height: auto;
-      border-radius: 10px;
-      margin-bottom: 10px;
-    }
-
-    .image-caption {
-      text-align: center;
-      color: var(--text-secondary);
-      font-size: 0.9rem;
-      margin-top: 8px;
-    }
-
-    .warning-box {
-      background: #fff5f5;
-      border-left: 4px solid #f56565;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 0 10px 10px 0;
-      color: #c53030;
-    }
-
-    .info-box {
-      background: #ebf8ff;
-      border-left: 4px solid #4299e1;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 0 10px 10px 0;
-      color: #2b6cb0;
-    }
-
-    .tip-box {
-      background: #f0fff4;
-      border-left: 4px solid #48bb78;
-      padding: 15px;
-      margin: 20px 0;
-      border-radius: 0 10px 10px 0;
-      color: #2f855a;
-    }
-
-    @media (max-width: 768px) {
       .container {
-        padding: 20px;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
       }
-      
-      .content-section {
-        padding: 20px;
+
+      .resource-header {
+        margin-bottom: 40px;
       }
-      
+
       .resource-meta {
-        flex-direction: column;
-        align-items: flex-start;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+        flex-wrap: wrap;
       }
-    }
-  </style>
-</head>
-<body>
-  <header class="nav-header">
-    <div class="nav-content">
-      <a href="../resources.html" class="back-btn">
-        <span>←</span>
-        <span>Back to Resources</span>
-      </a>
+
+      .resource-type {
+        padding: 5px 12px;
+        border-radius: 15px;
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      .title {
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        margin-bottom: 15px;
+        line-height: 1.2;
+      }
+
+      .tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .tag {
+        padding: 4px 12px;
+        border-radius: 15px;
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--accent);
+        font-size: 0.9rem;
+      }
+
+      .content-section {
+        background: var(--bg-secondary);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .content-text {
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+      }
+
+      .code-block {
+        background: var(--code-bg);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        overflow-x: auto;
+        color: #e2e8f0;
+        font-family: monospace;
+        white-space: pre;
+      }
+
+      .warning-box {
+        background: #fff5f5;
+        border-left: 4px solid #f56565;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 10px 10px 0;
+        color: #c53030;
+      }
+
+      .info-box {
+        background: #ebf8ff;
+        border-left: 4px solid #4299e1;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 10px 10px 0;
+        color: #2b6cb0;
+      }
+
+      .list-content {
+        list-style: none;
+      }
+
+      .list-content li {
+        margin-bottom: 12px;
+        padding-left: 25px;
+        position: relative;
+      }
+
+      .list-content li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+
+        .content-section {
+          padding: 20px;
+        }
+
+        .resource-meta {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <article class="resource-content">
+        <header class="resource-header">
+          <div class="resource-meta">
+            <span class="resource-type" id="resourceType"></span>
+            <span id="resourceAuthor"></span>
+            <span id="resourceDate"></span>
+          </div>
+
+          <h1 class="title" id="resourceTitle"></h1>
+          <div class="tags" id="resourceTags"></div>
+        </header>
+
+        <div id="contentSections"></div>
+      </article>
     </div>
-  </header>
 
-  <div class="container">
-    <article class="resource-content">
-      <header class="resource-header">
-        <div class="resource-meta">
-          <span class="resource-type">📖 Book</span>
-          <span>👤 James Clear</span>
-          <span>📅 March 15, 2024</span>
-          <span>⏱️ 15 min read</span>
-        </div>
+    <script>
+      // Function to create a section based on type
+      function createSection(sectionData) {
+        const section = document.createElement('section');
+        section.className = 'content-section';
 
-        <h1 class="title">Atomic Habits: Key Takeaways and Implementation Guide</h1>
+        switch (sectionData.type) {
+          case 'text':
+            section.innerHTML = `
+            <h2 class="section-title">${sectionData.title}</h2>
+            <p class="content-text">${sectionData.content}</p>
+          `;
+            break;
 
-        <div class="tags">
-          <span class="tag">Self-Development</span>
-          <span class="tag">Psychology</span>
-          <span class="tag">Productivity</span>
-        </div>
-      </header>
+          case 'code':
+            section.innerHTML = `
+            <h2 class="section-title">${sectionData.title}</h2>
+            <div class="code-block">${sectionData.content}</div>
+          `;
+            break;
 
-      <section class="content-section">
-        <h2 class="section-title">📝 Summary</h2>
-        <p class="content-text">
-          Atomic Habits is a comprehensive guide about building good habits and breaking bad ones. The book introduces a framework for habit formation based on four laws of behavior change.
-        </p>
-      </section>
+          case 'list':
+            const listItems = sectionData.items
+              .map((item) => `<li>${item}</li>`)
+              .join('');
+            section.innerHTML = `
+            <h2 class="section-title">${sectionData.title}</h2>
+            <ul class="list-content">${listItems}</ul>
+          `;
+            break;
 
-      <section class="content-section" id="keyPoints">
-        <h2 class="section-title">🔑 Key Points</h2>
-        <ul class="content-list">
-          <li>Habits are the compound interest of self-improvement</li>
-          <li>Focus on systems instead of goals</li>
-          <li>Identity-based habits are more effective than outcome-based habits</li>
-        </ul>
-      </section>
+          case 'warning':
+            section.innerHTML = `
+            <div class="warning-box">⚠️ ${sectionData.content}</div>
+          `;
+            break;
 
-      <section class="content-section" id="codeExample">
-        <h2 class="section-title">💻 Code Example</h2>
-        <div class="code-block">
-console.log("Example code block");
-function demo() {
-  return "This is a code example";
-}
-        </div>
-      </section>
+          case 'info':
+            section.innerHTML = `
+            <div class="info-box">ℹ️ ${sectionData.content}</div>
+          `;
+            break;
+        }
 
-      <section class="content-section" id="imageSection">
-        <h2 class="section-title">📸 Visual Example</h2>
-        <div class="image-section">
-          <img src="path-to-image.jpg" alt="Description">
-          <p class="image-caption">Image caption goes here</p>
-        </div>
-      </section>
-
-      <section class="content-section">
-        <div class="warning-box">
-          ⚠️ Important warning or note about implementation
-        </div>
-      </section>
-
-      <section class="content-section">
-        <div class="info-box">
-          ℹ️ Additional information or context
-        </div>
-      </section>
-
-      <section class="content-section">
-        <div class="tip-box">
-          💡 Helpful tip or best practice
-        </div>
-      </section>
-    </article>
-  </div>
-
-  <script>
-    const resourceData = {
-      type: "Book",
-      icon: "📖",
-      title: "Atomic Habits: Key Takeaways and Implementation Guide",
-      author: "James Clear",
-      date: "March 15, 2024",
-      readTime: "15 min read",
-      tags: ["Self-Development", "Psychology", "Productivity"],
-      summary: "Atomic Habits is a comprehensive guide about building good habits and breaking bad ones...",
-      
-      keyPoints: [
-        "Habits are the compound interest of self-improvement",
-        "Focus on systems instead of goals",
-        "Identity-based habits are more effective than outcome-based habits"
-      ],
-      
-      codeExample: {
-        language: "javascript",
-        code: `console.log("Example code block");
-function demo() {
-  return "This is a code example";
-}`
-      },
-      
-      image: {
-        url: "path-to-image.jpg",
-        caption: "Image caption goes here",
-        alt: "Description"
-      },
-      
-      warnings: [
-        "⚠️ Important warning or note about implementation"
-      ],
-      
-      infoBoxes: [
-        "ℹ️ Additional information or context"
-      ],
-      
-      tips: [
-        "💡 Helpful tip or best practice"
-      ]
-    };
-
-    function renderSections() {
-      if (!resourceData.keyPoints) {
-        document.getElementById('keyPoints').style.display = 'none';
+        return section;
       }
-      if (!resourceData.codeExample) {
-        document.getElementById('codeExample').style.display = 'none';
+
+      // Function to render the resource
+      function renderResource(data) {
+        // Set header content
+        document.getElementById(
+          'resourceType'
+        ).textContent = `${data.icon} ${data.type}`;
+        document.getElementById(
+          'resourceAuthor'
+        ).textContent = `👤 ${data.author}`;
+        document.getElementById('resourceDate').textContent = `📅 ${data.date}`;
+        document.getElementById('resourceTitle').textContent = data.title;
+
+        // Render tags
+        const tagsContainer = document.getElementById('resourceTags');
+        data.tags.forEach((tag) => {
+          const tagSpan = document.createElement('span');
+          tagSpan.className = 'tag';
+          tagSpan.textContent = tag;
+          tagsContainer.appendChild(tagSpan);
+        });
+
+        // Render content sections
+        const sectionsContainer = document.getElementById('contentSections');
+        data.sections.forEach((section) => {
+          sectionsContainer.appendChild(createSection(section));
+        });
       }
-      if (!resourceData.image) {
-        document.getElementById('imageSection').style.display = 'none';
-      }
-    }
-  </script>
-</body>
+
+      // Example usage:
+      const resourceData = {
+        type: 'Tutorial',
+        icon: '📚',
+        title: 'Your Resource Title',
+        author: 'Author Name',
+        date: 'March 27, 2024',
+        tags: ['Tag1', 'Tag2', 'Tag3'],
+        sections: [
+          {
+            type: 'text',
+            title: 'Introduction',
+            content: 'Your introduction text here...',
+          },
+          {
+            type: 'code',
+            title: 'Example Code',
+            content: "function example() {\n  return 'Hello World';\n}",
+          },
+          {
+            type: 'list',
+            title: 'Key Points',
+            items: ['Point 1', 'Point 2', 'Point 3'],
+          },
+          {
+            type: 'warning',
+            content: 'Important warning message',
+          },
+          {
+            type: 'info',
+            content: 'Useful information',
+          },
+          {
+            type: 'code',
+            title: 'Example Code',
+            content: "function example() {\n  return 'Hello World';\n}",
+          },
+        ],
+      };
+
+      // Initialize the page
+      renderResource(resourceData);
+    </script>
+  </body>
 </html>

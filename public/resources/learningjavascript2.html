@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg-primary: #f8fafc;
+        --bg-secondary: #ffffff;
+        --text-primary: #1a1a1a;
+        --text-secondary: #64748b;
+        --accent: #2563eb;
+        --code-bg: #1e293b;
+        --nav-width: 280px;
+      }
+
+      [data-theme='dark'] {
+        --bg-primary: #0f172a;
+        --bg-secondary: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --code-bg: #0f172a;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        font-family: system-ui, -apple-system, sans-serif;
+        min-height: 100vh;
+        line-height: 1.6;
+        display: flex;
+      }
+
+      .nav-sidebar {
+        width: var(--nav-width);
+        background: var(--bg-secondary);
+        height: 100vh;
+        position: fixed;
+        left: 0;
+        top: 0;
+        overflow-y: auto;
+        padding: 20px;
+        border-right: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-search {
+        margin-bottom: 20px;
+      }
+
+      .nav-search input {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid var(--text-secondary);
+        border-radius: 6px;
+        background: var(--bg-primary);
+        color: var(--text-primary);
+      }
+
+      .nav-menu {
+        list-style: none;
+      }
+
+      .nav-item {
+        margin-bottom: 10px;
+      }
+
+      .nav-link {
+        color: var(--text-primary);
+        text-decoration: none;
+        padding: 8px 12px;
+        display: block;
+        border-radius: 6px;
+        transition: background-color 0.2s;
+      }
+
+      .nav-link:hover {
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--accent);
+      }
+
+      .nav-link.active {
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 40px 20px;
+        margin-left: calc(var(--nav-width) + 20px);
+      }
+
+      .mobile-nav-toggle {
+        display: none;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 8px 12px;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      @media (max-width: 768px) {
+        .nav-sidebar {
+          transform: translateX(-100%);
+          transition: transform 0.3s ease;
+          z-index: 999;
+        }
+
+        .nav-sidebar.active {
+          transform: translateX(0);
+        }
+
+        .container {
+          margin-left: 20px;
+          padding: 20px;
+        }
+
+        .mobile-nav-toggle {
+          display: block;
+        }
+      }
+
+      /* Rest of your existing styles */
+      .resource-header {
+        margin-bottom: 40px;
+      }
+
+      .resource-meta {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+      }
+
+      .resource-type {
+        padding: 5px 12px;
+        border-radius: 15px;
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      .title {
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        margin-bottom: 15px;
+        line-height: 1.2;
+      }
+
+      .tags {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+
+      .tag {
+        padding: 4px 12px;
+        border-radius: 15px;
+        background: rgba(37, 99, 235, 0.1);
+        color: var(--accent);
+        font-size: 0.9rem;
+      }
+
+      .content-section {
+        background: var(--bg-secondary);
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .content-text {
+        color: var(--text-secondary);
+        margin-bottom: 20px;
+      }
+
+      .code-block {
+        margin: 20px 0;
+        border-radius: 10px;
+        overflow: hidden;
+      }
+
+      .warning-box {
+        background: #fff5f5;
+        border-left: 4px solid #f56565;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 10px 10px 0;
+        color: #c53030;
+      }
+
+      .info-box {
+        background: #ebf8ff;
+        border-left: 4px solid #4299e1;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 0 10px 10px 0;
+        color: #2b6cb0;
+      }
+
+      .list-content {
+        list-style: none;
+      }
+
+      .list-content li {
+        margin-bottom: 12px;
+        padding-left: 25px;
+        position: relative;
+      }
+
+      .list-content li::before {
+        content: '→';
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+      }
+      /* Add these styles */
+      .nav-header {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .back-button {
+        display: inline-block;
+        padding: 8px 16px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: background-color 0.2s;
+        text-decoration: none;
+      }
+
+      .back-button:hover {
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+  <body>
+    <button class="mobile-nav-toggle">Menu</button>
+
+    <nav class="nav-sidebar">
+      <div class="nav-header">
+        <a href="../resources.html">
+          <button class="back-button">← Back</button>
+        </a>
+      </div>
+      <div class="nav-search">
+        <input type="text" placeholder="Search..." id="searchInput" />
+      </div>
+      <ul class="nav-menu" id="navMenu">
+        <!-- Will be populated by JavaScript -->
+      </ul>
+    </nav>
+
+    <div class="container">
+      <article class="resource-content">
+        <header class="resource-header">
+          <div class="resource-meta">
+            <span class="resource-type" id="resourceType"></span>
+            <span id="resourceAuthor"></span>
+            <span id="resourceDate"></span>
+          </div>
+
+          <h1 class="title" id="resourceTitle"></h1>
+          <div class="tags" id="resourceTags"></div>
+        </header>
+
+        <div id="contentSections"></div>
+      </article>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
+    <script>
+      // Function to create a section based on type
+      // Function to create a section based on type
+      function createSection(sectionData) {
+        const section = document.createElement('section');
+        section.className = 'content-section';
+
+        // Only set ID if there's a title
+        if (sectionData.title) {
+          section.id = sectionData.title.toLowerCase().replace(/\s+/g, '-');
+        }
+
+        switch (sectionData.type) {
+          case 'text':
+            section.innerHTML = `
+        <h2 class="section-title">${sectionData.title}</h2>
+        <p class="content-text">${sectionData.content}</p>
+      `;
+            break;
+
+          case 'code':
+            section.innerHTML = `
+        <h2 class="section-title">${sectionData.title}</h2>
+        <div class="code-block">
+          <pre><code class="language-javascript">${sectionData.content}</code></pre>
+        </div>
+      `;
+            break;
+
+          case 'list':
+            const listItems = sectionData.items
+              .map((item) => `<li>${item}</li>`)
+              .join('');
+            section.innerHTML = `
+        <h2 class="section-title">${sectionData.title}</h2>
+        <ul class="list-content">${listItems}</ul>
+      `;
+            break;
+
+          case 'warning':
+          case 'info':
+            // These types don't need an ID or title
+            section.innerHTML = `
+        <div class="${sectionData.type}-box">⚠️ ${sectionData.content}</div>
+      `;
+            break;
+        }
+
+        return section;
+      }
+      // Function to populate navigation
+      function populateNavigation(sections) {
+        const navMenu = document.getElementById('navMenu');
+        sections.forEach((section) => {
+          if (section.title) {
+            const li = document.createElement('li');
+            li.className = 'nav-item';
+            const link = document.createElement('a');
+            link.href = `#${section.title.toLowerCase().replace(/\s+/g, '-')}`;
+            link.className = 'nav-link';
+            link.textContent = section.title;
+            li.appendChild(link);
+            navMenu.appendChild(li);
+          }
+        });
+      }
+
+      // Search functionality
+      function setupSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        searchInput.addEventListener('input', (e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          navLinks.forEach((link) => {
+            const text = link.textContent.toLowerCase();
+            link.parentElement.style.display = text.includes(searchTerm)
+              ? 'block'
+              : 'none';
+          });
+        });
+      }
+
+      // Mobile navigation
+      function setupMobileNav() {
+        const toggleBtn = document.querySelector('.mobile-nav-toggle');
+        const nav = document.querySelector('.nav-sidebar');
+
+        toggleBtn.addEventListener('click', () => {
+          nav.classList.toggle('active');
+        });
+
+        // Close nav when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
+            nav.classList.remove('active');
+          }
+        });
+      }
+
+      // Active link highlighting
+      function setupActiveLinks() {
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+          let current = '';
+          const sections = document.querySelectorAll('.content-section');
+
+          sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            if (window.pageYOffset >= sectionTop - 60) {
+              current = section.id;
+            }
+          });
+
+          navLinks.forEach((link) => {
+            link.classList.remove('active');
+            if (link.getAttribute('href').slice(1) === current) {
+              link.classList.add('active');
+            }
+          });
+        });
+      }
+
+      const resourceData = {
+        type: 'Tutorial',
+        icon: '📚',
+        title: 'JavaScript Learning Path',
+        author: 'Kamek',
+        date: 'November 27, 2024',
+        tags: ['JavaScript', 'Programming', 'Web Development', 'Intermediate'],
+        sections: [
+          {
+            type: 'text',
+            title: 'Introduction to JavaScript Variables',
+            content:
+              "Variables are containers for storing data values. In JavaScript, we have three ways to declare variables: var, let, and const. Modern JavaScript predominantly uses let for variables that will be reassigned and const for values that won't change.",
+          },
+          {
+            type: 'code',
+            title: 'Variable Declaration Examples',
+            content: `// Using let for variables that can be reassigned
+let age = 25;
+age = 26; // This is valid
+
+// Using const for values that won't change
+const pi = 3.14159;
+// pi = 3.14; // This would cause an error
+
+// Different types of variables
+let name = "John";          // String
+let isStudent = true;       // Boolean
+let height = 1.75;         // Number
+let grades = null;         // Null
+let futureValue;          // Undefined`,
+          },
+          {
+            type: 'info',
+            content:
+              "Always use meaningful variable names and prefer const over let when the value won't be reassigned. This helps prevent bugs and makes your code more maintainable.",
+          },
+          {
+            type: 'text',
+            title: 'Understanding Arrays',
+            content:
+              "Arrays are ordered collections of values. Think of them as lists where each item has a specific position (index). In JavaScript, arrays can store different types of values, and they're zero-indexed, meaning the first item is at position 0.",
+          },
+          {
+            type: 'code',
+            title: 'Working with Arrays',
+            content: `// Creating an array
+let fruits = ['apple', 'banana', 'orange'];
+
+// Accessing elements using index
+console.log(fruits[0]);  // 'apple'
+console.log(fruits[1]);  // 'banana'
+console.log(fruits[2]);  // 'orange'
+
+// Modifying elements
+fruits[1] = 'grape';
+
+// Array methods
+fruits.push('mango');     // Add to end
+fruits.pop();            // Remove from end
+fruits.unshift('pear');  // Add to beginning
+fruits.shift();          // Remove from beginning
+
+// Finding array length
+console.log(fruits.length);  // Number of items in array`,
+          },
+          {
+            type: 'text',
+            title: 'Iterating Over Arrays',
+            content:
+              'JavaScript provides several ways to iterate over arrays. Each method has its own use case and advantages. The most common methods are for loops, forEach(), and for...of loops.',
+          },
+          {
+            type: 'code',
+            title: 'Array Iteration Methods',
+            content: `// Traditional for loop
+let numbers = [1, 2, 3, 4, 5];
+for (let i = 0; i < numbers.length; i++) {
+    console.log(numbers[i]);
+}
+
+// forEach method
+numbers.forEach(function(number) {
+    console.log(number);
+});
+
+// for...of loop (modern and clean)
+for (let number of numbers) {
+    console.log(number);
+}
+
+// Array methods with callbacks
+numbers.map(num => num * 2);      // Creates new array with doubled values
+numbers.filter(num => num > 2);   // Creates new array with values > 2
+numbers.reduce((sum, num) => sum + num, 0);  // Sums all numbers`,
+          },
+          {
+            type: 'warning',
+            content:
+              'Be careful when modifying arrays while iterating over them. This can lead to unexpected behavior and bugs in your code.',
+          },
+          {
+            type: 'text',
+            title: 'Working with Objects',
+            content:
+              'Objects are collections of key-value pairs. They allow you to store related data and functionality together. Unlike arrays, objects use named properties instead of numbered indices.',
+          },
+          {
+            type: 'code',
+            title: 'Object Fundamentals',
+            content: `// Creating an object
+let person = {
+    name: 'John',
+    age: 30,
+    isStudent: false,
+    address: {
+        street: '123 Main St',
+        city: 'Boston'
+    },
+    hobbies: ['reading', 'music'],
+    greet: function() {
+        return 'Hello, ' + this.name + '!';
+    }
+};
+
+// Accessing object properties
+console.log(person.name);        // Dot notation
+console.log(person['age']);      // Bracket notation
+
+// Modifying properties
+person.age = 31;
+person.email = 'john@example.com';  // Adding new property
+
+// Object methods
+console.log(Object.keys(person));    // Get all property names
+console.log(Object.values(person));  // Get all values`,
+          },
+          {
+            type: 'text',
+            title: 'Understanding Conditions',
+            content:
+              'Conditions allow your code to make decisions. JavaScript provides several ways to implement conditional logic using if statements, switch cases, and ternary operators.',
+          },
+          {
+            type: 'code',
+            title: 'Conditional Statements',
+            content: `// if...else statements
+let age = 20;
+
+if (age >= 18) {
+    console.log('You can vote!');
+} else {
+    console.log('Too young to vote.');
+}
+
+// Multiple conditions
+let score = 85;
+
+if (score >= 90) {
+    console.log('A');
+} else if (score >= 80) {
+    console.log('B');
+} else if (score >= 70) {
+    console.log('C');
+} else {
+    console.log('F');
+}
+
+// Switch statement
+let day = 'Monday';
+switch (day) {
+    case 'Monday':
+        console.log('Start of work week');
+        break;
+    case 'Friday':
+        console.log('Weekend is coming');
+        break;
+    default:
+        console.log('Regular day');
+}
+
+// Ternary operator
+let isRaining = true;
+let action = isRaining ? 'Take umbrella' : 'Wear sunglasses';`,
+          },
+          {
+            type: 'info',
+            content:
+              'When working with conditions, always consider all possible scenarios and provide appropriate fallback cases to make your code more robust.',
+          },
+          {
+            type: 'text',
+            title: 'Understanding Comparisons',
+            content:
+              'JavaScript provides various comparison operators to compare values. Understanding the difference between loose (==) and strict (===) equality is crucial for writing reliable code.',
+          },
+          {
+            type: 'code',
+            title: 'Comparison Operators',
+            content: `// Greater than (>)
+console.log(5 > 3);    // result: true
+console.log(5 > 5);    // result: false
+
+// Greater than or equal (>=)
+console.log(5 >= 5);   // result: true
+console.log(4 >= 5);   // result: false
+
+// Less than (<)
+console.log(3 < 5);    // result: true
+console.log(5 < 5);    // result: false
+
+// Less than or equal (<=)
+console.log(5 <= 5);   // result: true
+console.log(6 <= 5);   // result: false
+
+// Loose equality (==) - compares value, performs type coercion
+console.log(5 == "5");     // result: true
+console.log(1 == true);    // result: true
+console.log(null == undefined);  // result: true
+
+// Strict equality (===) - compares value AND type
+console.log(5 === "5");    // result: false
+console.log(1 === true);   // result: false
+console.log(null === undefined);  // result: false
+
+// Not equal (!=) vs (!==)
+console.log(5 != "5");     // result: false (loose)
+console.log(5 !== "5");    // result: true (strict)`,
+          },
+          {
+            type: 'warning',
+            content:
+              'Always prefer === over == in your code. The strict equality operator prevents unexpected type coercion and makes your code more predictable.',
+          },
+          {
+            type: 'text',
+            title: 'Functions and Parameters',
+            content:
+              'Functions are reusable blocks of code that can accept parameters and return values. JavaScript offers various ways to define functions, each with its own use cases.',
+          },
+          {
+            type: 'code',
+            title: 'Function Declarations and Expressions',
+            content: `// Function Declaration
+function greet(name) {
+    return "Hello, " + name + "!";
+}
+console.log(greet("Alice"));  // result: Hello, Alice!
+
+// Function Expression
+const multiply = function(a, b) {
+    return a * b;
+};
+console.log(multiply(4, 3));  // result: 12
+
+// Arrow Function
+const add = (a, b) => a + b;
+console.log(add(5, 3));  // result: 8
+
+// Default Parameters
+function welcome(name = "Guest") {
+    return "Welcome, " + name;
+}
+console.log(welcome());  // result: Welcome, Guest
+console.log(welcome("John"));  // result: Welcome, John
+
+// Rest Parameters
+function sum(...numbers) {
+    return numbers.reduce((total, num) => total + num, 0);
+}
+console.log(sum(1, 2, 3, 4));  // result: 10
+
+// Function with multiple parameters
+function createUser(name, age, isAdmin = false) {
+    return {
+        name: name,
+        age: age,
+        isAdmin: isAdmin
+    };
+}
+console.log(createUser("Alice", 25));  // result: {name: "Alice", age: 25, isAdmin: false}`,
+          },
+          {
+            type: 'text',
+            title: 'String Methods and Conversions',
+            content:
+              'JavaScript provides numerous built-in methods for string manipulation and conversion between different data types.',
+          },
+          {
+            type: 'code',
+            title: 'String Operations and Type Conversions',
+            content: `// String Methods
+let text = "Hello, World!";
+console.log(text.toLowerCase());  // result: hello, world!
+console.log(text.toUpperCase());  // result: HELLO, WORLD!
+console.log(text.length);         // result: 13
+console.log(text.slice(0, 5));    // result: Hello
+console.log(text.split(","));     // result: ["Hello", " World!"]
+console.log(text.trim());         // removes whitespace
+console.log(text.replace("World", "JavaScript"));  // result: Hello, JavaScript!
+
+// Finding in strings
+console.log(text.indexOf("World"));  // result: 7
+console.log(text.includes("Hello")); // result: true
+console.log(text.startsWith("Hello")); // result: true
+console.log(text.endsWith("!")); // result: true
+
+// Type Conversion
+let num = 123;
+console.log(num.toString());  // result: "123"
+console.log(String(num));     // result: "123"
+
+let str = "456";
+console.log(Number(str));     // result: 456
+console.log(parseInt(str));   // result: 456
+console.log(parseFloat("3.14")); // result: 3.14
+
+// Template Literals
+let name = "Alice";
+let age = 25;
+console.log(\`\${name} is \${age} years old\`);  // result: Alice is 25 years old`,
+          },
+          {
+            type: 'text',
+            title: 'Advanced Array Methods',
+            content:
+              'Modern JavaScript provides powerful array methods for transforming and analyzing data.',
+          },
+          {
+            type: 'code',
+            title: 'Array Methods and Transformations',
+            content: `// Array map - transforms each element
+let numbers = [1, 2, 3, 4];
+let doubled = numbers.map(num => num * 2);
+console.log(doubled);  // result: [2, 4, 6, 8]
+
+// Array filter - creates new array with elements that pass test
+let filtered = numbers.filter(num => num > 2);
+console.log(filtered);  // result: [3, 4]
+
+// Array reduce - reduces array to single value
+let sum = numbers.reduce((total, num) => total + num, 0);
+console.log(sum);  // result: 10
+
+// Array find - returns first element that passes test
+let found = numbers.find(num => num > 2);
+console.log(found);  // result: 3
+
+// Array some - checks if at least one element passes test
+let hasEven = numbers.some(num => num % 2 === 0);
+console.log(hasEven);  // result: true
+
+// Array every - checks if all elements pass test
+let allPositive = numbers.every(num => num > 0);
+console.log(allPositive);  // result: true
+
+// Array includes - checks if array includes value
+console.log(numbers.includes(3));  // result: true
+
+// Array join - joins elements into string
+console.log(numbers.join("-"));  // result: "1-2-3-4"
+
+// Array sort
+let fruits = ["banana", "apple", "orange"];
+console.log(fruits.sort());  // result: ["apple", "banana", "orange"]
+
+// Sort numbers (requires compare function)
+let nums = [23, 5, 100, 56, 9, 1, 2, 6, 3];
+console.log(nums.sort((a, b) => a - b));  // result: [1, 2, 3, 5, 6, 9, 23, 56, 100]`,
+          },
+          {
+            type: 'info',
+            content:
+              'Array methods like map, filter, and reduce are powerful tools for functional programming in JavaScript. They help write cleaner, more maintainable code compared to traditional for loops.',
+          },
+          {
+            type: 'text',
+            title: 'Error Handling with Try-Catch',
+            content:
+              'Error handling is crucial for building robust applications. JavaScript provides try-catch blocks to handle runtime errors gracefully.',
+          },
+          {
+            type: 'code',
+            title: 'Try-Catch Examples',
+            content: `// Basic try-catch
+try {
+    nonExistentFunction();
+} catch (error) {
+    console.log(error.message);  // result: nonExistentFunction is not defined
+}
+
+// Try-catch with finally
+try {
+    let result = 10 / 0;
+    console.log(result);  // result: Infinity
+} catch (error) {
+    console.log(error.message);
+} finally {
+    console.log('This always runs');  // result: This always runs
+}
+
+// Throwing custom errors
+function divide(a, b) {
+    if (b === 0) {
+        throw new Error('Cannot divide by zero!');
+    }
+    return a / b;
+}
+
+try {
+    console.log(divide(10, 0));
+} catch (error) {
+    console.log(error.message);  // result: Cannot divide by zero!
+}`,
+          },
+          {
+            type: 'text',
+            title: 'Understanding Classes',
+            content:
+              'Classes are templates for creating objects. They encapsulate data and behavior, making code more organized and reusable.',
+          },
+          {
+            type: 'code',
+            title: 'Classes and Object-Oriented Programming',
+            content: `// Basic Class
+class Car {
+    constructor(brand, model) {
+        this.brand = brand;
+        this.model = model;
+    }
+
+    getInfo() {
+        return \`\${this.brand} \${this.model}\`;
+    }
+}
+
+let myCar = new Car('Toyota', 'Camry');
+console.log(myCar.getInfo());  // result: Toyota Camry
+
+// Inheritance
+class ElectricCar extends Car {
+    constructor(brand, model, batteryCapacity) {
+        super(brand, model);
+        this.batteryCapacity = batteryCapacity;
+    }
+
+    getDetails() {
+        return \`\${this.getInfo()} - \${this.batteryCapacity}kWh\`;
+    }
+}
+
+let tesla = new ElectricCar('Tesla', 'Model 3', 75);
+console.log(tesla.getDetails());  // result: Tesla Model 3 - 75kWh
+
+// Static Methods
+class MathOperations {
+    static square(x) {
+        return x * x;
+    }
+}
+
+console.log(MathOperations.square(5));  // result: 25`,
+          },
+          {
+            type: 'text',
+            title: 'Scope and Closures',
+            content:
+              'Understanding scope and closures is essential for JavaScript development. They determine variable accessibility and enable powerful programming patterns.',
+          },
+          {
+            type: 'code',
+            title: 'Scope and Closure Examples',
+            content: `// Global vs Local Scope
+let globalVar = 'I am global';
+
+function scopeTest() {
+    let localVar = 'I am local';
+    console.log(globalVar);  // result: I am global
+    console.log(localVar);   // result: I am local
+}
+
+// Closure Example
+function createCounter() {
+    let count = 0;
+    return {
+        increment: function() { return ++count; },
+        getCount: function() { return count; }
+    };
+}
+
+let counter = createCounter();
+console.log(counter.increment());  // result: 1
+console.log(counter.increment());  // result: 2
+console.log(counter.getCount());   // result: 2
+
+// Block Scope
+{
+    let blockScoped = 'only available in this block';
+    var functionScoped = 'available throughout function';
+}
+// console.log(blockScoped);     // would throw error
+console.log(functionScoped);   // result: available throughout function`,
+          },
+          {
+            type: 'warning',
+            content:
+              'Be careful with closures as they can lead to memory leaks if not used properly. Always be mindful of the scope of your variables.',
+          },
+          {
+            type: 'text',
+            title: 'Destructuring and Spread Operator',
+            content:
+              'Modern JavaScript provides elegant ways to work with arrays and objects through destructuring and the spread operator.',
+          },
+          {
+            type: 'code',
+            title: 'Destructuring and Spread Examples',
+            content: `// Array Destructuring
+let colors = ['red', 'green', 'blue'];
+let [firstColor, secondColor, thirdColor] = colors;
+console.log(firstColor);  // result: red
+
+// Object Destructuring
+let person = {
+    name: 'John',
+    age: 30,
+    city: 'New York'
+};
+let {name, age} = person;
+console.log(name);  // result: John
+
+// Spread Operator with Arrays
+let numbers = [1, 2, 3];
+let moreNumbers = [...numbers, 4, 5];
+console.log(moreNumbers);  // result: [1, 2, 3, 4, 5]
+
+// Spread Operator with Objects
+let basicInfo = {
+    name: 'John',
+    age: 30
+};
+let fullInfo = {
+    ...basicInfo,
+    city: 'New York',
+    occupation: 'Developer'
+};
+console.log(fullInfo);  
+// result: {name: 'John', age: 30, city: 'New York', occupation: 'Developer'}`,
+          },
+          {
+            type: 'text',
+            title: 'Date and Time Operations',
+            content:
+              'JavaScript provides built-in Date object for handling dates and times.',
+          },
+          {
+            type: 'code',
+            title: 'Working with Dates',
+            content: `// Creating Dates
+let now = new Date();
+console.log(now);  // result: current date and time
+
+// Creating specific date
+let specific = new Date('2024-03-27');
+console.log(specific);  // result: Wed Mar 27 2024
+
+// Date methods
+console.log(now.getFullYear());    // result: 2024
+console.log(now.getMonth());       // result: 2 (March, 0-based)
+console.log(now.getDate());        // result: day of month
+console.log(now.getDay());         // result: day of week (0-6)
+
+// Formatting dates
+console.log(now.toLocaleDateString());  // result: 3/27/2024
+console.log(now.toLocaleTimeString());  // result: current time
+console.log(now.toISOString());         // result: 2024-03-27T...
+
+// Date calculations
+let tomorrow = new Date();
+tomorrow.setDate(tomorrow.getDate() + 1);
+console.log(tomorrow);  // result: tomorrow's date`,
+          },
+          {
+            type: 'info',
+            content:
+              'When working with dates, be mindful of timezone differences and consider using libraries like Moment.js or Date-fns for more complex date manipulations.',
+          },
+          {
+            type: 'text',
+            title: 'Asynchronous JavaScript',
+            content:
+              'Understanding asynchronous programming is crucial for handling operations like API calls, file operations, and timers in JavaScript.',
+          },
+          {
+            type: 'code',
+            title: 'Promises and Async/Await',
+            content: `// Basic Promise
+const myPromise = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve("Operation completed!");
+        // reject("Something went wrong!");
+    }, 1000);
+});
+
+myPromise.then(result => {
+    console.log(result);  // result: Operation completed!
+}).catch(error => {
+    console.log(error);
+});
+
+// Async/Await
+async function fetchUserData() {
+    try {
+        const response = await fetch('https://api.example.com/user');
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.log('Error:', error);
+    }
+}
+
+// Promise.all
+const promise1 = Promise.resolve(3);
+const promise2 = new Promise(resolve => setTimeout(() => resolve('foo'), 2000));
+
+Promise.all([promise1, promise2]).then(values => {
+    console.log(values);  // result: [3, 'foo']
+});
+
+// Real-world example
+async function getWeather(city) {
+    try {
+        const response = await fetch(\`https://api.weather.com/\${city}\`);
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        throw new Error('Failed to fetch weather data');
+    }
+}`,
+          },
+          {
+            type: 'warning',
+            title: 'Web-Development Basics',
+            content:
+              'From here on out: Most content is used in web-development and not pure js like Discord Bots',
+          },
+          {
+            type: 'text',
+            title: 'DOM Manipulation',
+            content:
+              'The Document Object Model (DOM) is how JavaScript interacts with HTML and CSS to create dynamic web pages.',
+          },
+          {
+            type: 'code',
+            title: 'Working with the DOM',
+            content: `// Selecting elements
+const element = document.getElementById('myId');
+const elements = document.getElementsByClassName('myClass');
+const queryElement = document.querySelector('.myClass');
+const queryElements = document.querySelectorAll('.myClass');
+
+// Creating and adding elements
+const newDiv = document.createElement('div');
+newDiv.textContent = 'Hello World';
+document.body.appendChild(newDiv);
+
+// Modifying elements
+element.innerHTML = '<span>New content</span>';
+element.setAttribute('class', 'newClass');
+element.style.backgroundColor = 'blue';
+element.classList.add('active');
+element.classList.remove('inactive');
+element.classList.toggle('visible');
+
+// Removing elements
+element.remove();
+// or
+element.parentNode.removeChild(element);
+
+// Traversing the DOM
+const parent = element.parentNode;
+const children = element.children;
+const siblings = element.nextElementSibling;
+const previous = element.previousElementSibling;`,
+          },
+          {
+            type: 'text',
+            title: 'Event Handling',
+            content:
+              'Events allow you to create interactive web applications by responding to user actions and browser events.',
+          },
+          {
+            type: 'code',
+            title: 'Event Listeners and Handlers',
+            content: `// Adding event listeners
+document.getElementById('myButton').addEventListener('click', function(event) {
+    console.log('Button clicked!');
+    event.preventDefault();  // Prevent default behavior
+});
+
+// Different types of events
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM fully loaded');
+});
+
+window.addEventListener('resize', () => {
+    console.log('Window resized');
+});
+
+// Event delegation
+document.getElementById('parentList').addEventListener('click', function(event) {
+    if (event.target.tagName === 'LI') {
+        console.log('List item clicked:', event.target.textContent);
+    }
+});
+
+// Common events
+const input = document.getElementById('myInput');
+input.addEventListener('focus', () => console.log('Input focused'));
+input.addEventListener('blur', () => console.log('Input lost focus'));
+input.addEventListener('input', () => console.log('Input value changed'));
+input.addEventListener('submit', () => console.log('Form submitted'));
+
+// Mouse events
+element.addEventListener('mouseover', () => console.log('Mouse over'));
+element.addEventListener('mouseout', () => console.log('Mouse out'));
+element.addEventListener('mousemove', (e) => {
+    console.log(\`Mouse position: \${e.clientX}, \${e.clientY}\`);
+});`,
+          },
+          {
+            type: 'text',
+            title: 'Local Storage and Session Storage',
+            content:
+              "Browser storage allows you to save data locally in the user's browser.",
+          },
+          {
+            type: 'code',
+            title: 'Working with Storage',
+            content: `// Local Storage - persists even after browser is closed
+localStorage.setItem('username', 'John');
+const username = localStorage.getItem('username');
+console.log(username);  // result: John
+localStorage.removeItem('username');
+localStorage.clear();  // Clear all items
+
+// Session Storage - cleared when browser is closed
+sessionStorage.setItem('tempData', 'Some data');
+const data = sessionStorage.getItem('tempData');
+console.log(data);  // result: Some data
+
+// Storing objects
+const user = {
+    name: 'John',
+    age: 30
+};
+localStorage.setItem('user', JSON.stringify(user));
+const storedUser = JSON.parse(localStorage.getItem('user'));
+console.log(storedUser);  // result: {name: "John", age: 30}`,
+          },
+          {
+            type: 'text',
+            title: 'Regular Expressions',
+            content:
+              'Regular expressions (regex) are powerful tools for pattern matching and text manipulation.',
+          },
+          {
+            type: 'code',
+            title: 'RegExp Examples',
+            content: `// Basic patterns
+const emailPattern = /^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,4}$/;
+console.log(emailPattern.test('user@example.com'));  // result: true
+
+// String methods with regex
+const text = 'Hello, World! Hello, JavaScript!';
+console.log(text.match(/Hello/g));  // result: ['Hello', 'Hello']
+console.log(text.replace(/Hello/g, 'Hi'));  // result: Hi, World! Hi, JavaScript!
+
+// Common patterns
+const phonePattern = /^\\d{3}-\\d{3}-\\d{4}$/;
+const urlPattern = /^(https?:\\/\\/)?[\\w\\-]+(\\.[\\w\\-]+)+[\\/#?]?.*$/;
+const passwordPattern = /^(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+
+// Regex groups
+const datePattern = /(\\d{4})-(\\d{2})-(\\d{2})/;
+const date = '2024-03-27';
+const [full, year, month, day] = date.match(datePattern);
+console.log(year, month, day);  // result: 2024 03 27`,
+          },
+          {
+            type: 'warning',
+            content:
+              'Regular expressions are powerful but can be complex. Always test them thoroughly with various inputs to ensure they work as expected.',
+          },
+        ],
+      };
+
+      // Main render function
+      function renderResource(data) {
+        // Set header content
+        document.getElementById(
+          'resourceType'
+        ).textContent = `${data.icon} ${data.type}`;
+        document.getElementById(
+          'resourceAuthor'
+        ).textContent = `👤 ${data.author}`;
+        document.getElementById('resourceDate').textContent = `📅 ${data.date}`;
+        document.getElementById('resourceTitle').textContent = data.title;
+
+        // Render tags
+        const tagsContainer = document.getElementById('resourceTags');
+        data.tags.forEach((tag) => {
+          const tagSpan = document.createElement('span');
+          tagSpan.className = 'tag';
+          tagSpan.textContent = tag;
+          tagsContainer.appendChild(tagSpan);
+        });
+
+        // Render content sections
+        const sectionsContainer = document.getElementById('contentSections');
+        data.sections.forEach((section) => {
+          sectionsContainer.appendChild(createSection(section));
+        });
+
+        // Initialize navigation and features
+        populateNavigation(data.sections);
+        setupSearch();
+        setupMobileNav();
+        setupActiveLinks();
+
+        // Initialize Prism.js syntax highlighting
+        Prism.highlightAll();
+      }
+      renderResource(resourceData);
+    </script>
+  </body>
+</html>
