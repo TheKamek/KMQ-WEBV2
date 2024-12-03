@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+      title="KMQ-Js"
+    />
     <link
       href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
       rel="stylesheet"
@@ -14,7 +18,8 @@
         --text-secondary: #64748b;
         --accent: #2563eb;
         --code-bg: #1e293b;
-        --nav-width: 280px;
+        --nav-width: min(280px, 90vw);
+        --container-padding: clamp(1rem, 5vw, 2rem);
       }
 
       [data-theme='dark'] {
@@ -31,6 +36,10 @@
         padding: 0;
       }
 
+      html {
+        font-size: clamp(14px, 1vw, 16px);
+      }
+
       body {
         background: var(--bg-primary);
         color: var(--text-primary);
@@ -38,6 +47,7 @@
         min-height: 100vh;
         line-height: 1.6;
         display: flex;
+        overflow-x: hidden;
       }
 
       .nav-sidebar {
@@ -48,21 +58,24 @@
         left: 0;
         top: 0;
         overflow-y: auto;
-        padding: 20px;
+        padding: var(--container-padding);
         border-right: 1px solid rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        z-index: 100;
       }
 
       .nav-search {
-        margin-bottom: 20px;
+        margin-bottom: 1.5rem;
       }
 
       .nav-search input {
         width: 100%;
-        padding: 8px 12px;
+        padding: 0.5rem 0.75rem;
         border: 1px solid var(--text-secondary);
-        border-radius: 6px;
+        border-radius: 0.375rem;
         background: var(--bg-primary);
         color: var(--text-primary);
+        font-size: 0.875rem;
       }
 
       .nav-menu {
@@ -70,166 +83,157 @@
       }
 
       .nav-item {
-        margin-bottom: 10px;
+        margin-bottom: 0.5rem;
       }
 
       .nav-link {
         color: var(--text-primary);
         text-decoration: none;
-        padding: 8px 12px;
+        padding: 0.5rem 0.75rem;
         display: block;
-        border-radius: 6px;
-        transition: background-color 0.2s;
+        border-radius: 0.375rem;
+        transition: all 0.2s;
+        font-size: 0.875rem;
       }
 
-      .nav-link:hover {
+      .nav-link:hover,
+      .nav-link.active {
         background: rgba(37, 99, 235, 0.1);
         color: var(--accent);
       }
 
       .nav-link.active {
-        background: rgba(37, 99, 235, 0.1);
-        color: var(--accent);
         font-weight: 500;
       }
 
       .container {
-        max-width: 900px;
+        width: min(900px, 100% - 2rem);
         margin: 0 auto;
-        padding: 40px 20px;
-        margin-left: calc(var(--nav-width) + 20px);
+        padding: clamp(1.5rem, 5vw, 2.5rem) var(--container-padding);
+        margin-left: calc(var(--nav-width) + var(--container-padding));
       }
 
       .mobile-nav-toggle {
         display: none;
         position: fixed;
-        top: 20px;
-        right: 20px;
+        top: 1rem;
+        right: 1rem;
         z-index: 1000;
         background: var(--accent);
         color: white;
         border: none;
-        padding: 8px 12px;
-        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        border-radius: 0.375rem;
         cursor: pointer;
+        font-size: 0.875rem;
       }
 
-      @media (max-width: 768px) {
-        .nav-sidebar {
-          transform: translateX(-100%);
-          transition: transform 0.3s ease;
-          z-index: 999;
-        }
-
-        .nav-sidebar.active {
-          transform: translateX(0);
-        }
-
-        .container {
-          margin-left: 20px;
-          padding: 20px;
-        }
-
-        .mobile-nav-toggle {
-          display: block;
-        }
-      }
-
-      /* Rest of your existing styles */
       .resource-header {
-        margin-bottom: 40px;
+        margin-bottom: clamp(1.5rem, 5vw, 2.5rem);
       }
 
       .resource-meta {
         display: flex;
         align-items: center;
-        gap: 15px;
+        gap: 1rem;
         color: var(--text-secondary);
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
         flex-wrap: wrap;
+        font-size: 0.875rem;
       }
 
       .resource-type {
-        padding: 5px 12px;
-        border-radius: 15px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
         background: rgba(37, 99, 235, 0.1);
         color: var(--accent);
         font-weight: 500;
       }
 
       .title {
-        font-size: clamp(2rem, 5vw, 2.5rem);
-        margin-bottom: 15px;
+        font-size: clamp(1.5rem, 5vw, 2.5rem);
+        margin-bottom: 1rem;
         line-height: 1.2;
+        word-wrap: break-word;
       }
 
       .tags {
         display: flex;
-        gap: 8px;
+        gap: 0.5rem;
         flex-wrap: wrap;
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
       }
 
       .tag {
-        padding: 4px 12px;
-        border-radius: 15px;
+        padding: 0.25rem 0.75rem;
+        border-radius: 999px;
         background: rgba(37, 99, 235, 0.1);
         color: var(--accent);
-        font-size: 0.9rem;
+        font-size: 0.75rem;
       }
 
       .content-section {
         background: var(--bg-secondary);
-        border-radius: 20px;
-        padding: 30px;
-        margin-bottom: 30px;
+        border-radius: 1.25rem;
+        padding: clamp(1.25rem, 4vw, 2rem);
+        margin-bottom: 1.5rem;
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
       }
 
       .section-title {
-        font-size: 1.5rem;
-        margin-bottom: 20px;
+        font-size: clamp(1.25rem, 3vw, 1.5rem);
+        margin-bottom: 1.25rem;
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 0.625rem;
+        word-wrap: break-word;
       }
 
       .content-text {
         color: var(--text-secondary);
-        margin-bottom: 20px;
+        margin-bottom: 1.25rem;
+        font-size: clamp(0.875rem, 2vw, 1rem);
       }
 
       .code-block {
-        margin: 20px 0;
-        border-radius: 10px;
-        overflow: hidden;
+        margin: 1.25rem 0;
+        border-radius: 0.625rem;
+        overflow-x: auto;
+      }
+
+      .code-block pre {
+        margin: 0;
+        padding: 1rem;
+      }
+
+      .warning-box,
+      .info-box {
+        padding: 1rem;
+        margin: 1.25rem 0;
+        border-radius: 0 0.625rem 0.625rem 0;
+        font-size: 0.875rem;
       }
 
       .warning-box {
         background: #fff5f5;
         border-left: 4px solid #f56565;
-        padding: 15px;
-        margin: 20px 0;
-        border-radius: 0 10px 10px 0;
         color: #c53030;
       }
 
       .info-box {
         background: #ebf8ff;
         border-left: 4px solid #4299e1;
-        padding: 15px;
-        margin: 20px 0;
-        border-radius: 0 10px 10px 0;
         color: #2b6cb0;
       }
 
       .list-content {
         list-style: none;
+        font-size: clamp(0.875rem, 2vw, 1rem);
       }
 
       .list-content li {
-        margin-bottom: 12px;
-        padding-left: 25px;
+        margin-bottom: 0.75rem;
+        padding-left: 1.5rem;
         position: relative;
       }
 
@@ -239,22 +243,22 @@
         left: 0;
         color: var(--accent);
       }
-      /* Add these styles */
+
       .nav-header {
-        margin-bottom: 20px;
-        padding-bottom: 15px;
+        margin-bottom: 1.25rem;
+        padding-bottom: 1rem;
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
       }
 
       .back-button {
         display: inline-block;
-        padding: 8px 16px;
+        padding: 0.5rem 1rem;
         background: var(--accent);
         color: white;
         border: none;
-        border-radius: 6px;
+        border-radius: 0.375rem;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 0.875rem;
         transition: background-color 0.2s;
         text-decoration: none;
       }
@@ -262,12 +266,61 @@
       .back-button:hover {
         background: #1d4ed8;
       }
+
+      /* Responsive breakpoints */
+      @media (max-width: 768px) {
+        .nav-sidebar {
+          transform: translateX(-100%);
+        }
+
+        .nav-sidebar.active {
+          transform: translateX(0);
+        }
+
+        .container {
+          margin-left: var(--container-padding);
+          width: 100%;
+        }
+
+        .mobile-nav-toggle {
+          display: block;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .resource-meta {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 0.5rem;
+        }
+
+        .content-section {
+          padding: 1rem;
+        }
+      }
+
+      /* Dark mode overlay when mobile menu is active */
+      .overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 90;
+      }
+
+      .overlay.active {
+        display: block;
+      }
     </style>
   </head>
   <body>
-    <button class="mobile-nav-toggle">Menu</button>
+    <div class="overlay" id="overlay"></div>
+    <button class="mobile-nav-toggle" id="mobileNavToggle">Menu</button>
 
-    <nav class="nav-sidebar">
+    <nav class="nav-sidebar" id="navSidebar">
       <div class="nav-header">
         <a href="../resources.html">
           <button class="back-button">← Back</button>
@@ -302,127 +355,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-javascript.min.js"></script>
     <script>
       // Function to create a section based on type
-      // Function to create a section based on type
-      function createSection(sectionData) {
-        const section = document.createElement('section');
-        section.className = 'content-section';
-
-        // Only set ID if there's a title
-        if (sectionData.title) {
-          section.id = sectionData.title.toLowerCase().replace(/\s+/g, '-');
-        }
-
-        switch (sectionData.type) {
-          case 'text':
-            section.innerHTML = `
-        <h2 class="section-title">${sectionData.title}</h2>
-        <p class="content-text">${sectionData.content}</p>
-      `;
-            break;
-
-          case 'code':
-            section.innerHTML = `
-        <h2 class="section-title">${sectionData.title}</h2>
-        <div class="code-block">
-          <pre><code class="language-javascript">${sectionData.content}</code></pre>
-        </div>
-      `;
-            break;
-
-          case 'list':
-            const listItems = sectionData.items
-              .map((item) => `<li>${item}</li>`)
-              .join('');
-            section.innerHTML = `
-        <h2 class="section-title">${sectionData.title}</h2>
-        <ul class="list-content">${listItems}</ul>
-      `;
-            break;
-
-          case 'warning':
-          case 'info':
-            // These types don't need an ID or title
-            section.innerHTML = `
-        <div class="${sectionData.type}-box">⚠️ ${sectionData.content}</div>
-      `;
-            break;
-        }
-
-        return section;
-      }
-      // Function to populate navigation
-      function populateNavigation(sections) {
-        const navMenu = document.getElementById('navMenu');
-        sections.forEach((section) => {
-          if (section.title) {
-            const li = document.createElement('li');
-            li.className = 'nav-item';
-            const link = document.createElement('a');
-            link.href = `#${section.title.toLowerCase().replace(/\s+/g, '-')}`;
-            link.className = 'nav-link';
-            link.textContent = section.title;
-            li.appendChild(link);
-            navMenu.appendChild(li);
-          }
-        });
-      }
-
-      // Search functionality
-      function setupSearch() {
-        const searchInput = document.getElementById('searchInput');
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        searchInput.addEventListener('input', (e) => {
-          const searchTerm = e.target.value.toLowerCase();
-          navLinks.forEach((link) => {
-            const text = link.textContent.toLowerCase();
-            link.parentElement.style.display = text.includes(searchTerm)
-              ? 'block'
-              : 'none';
-          });
-        });
-      }
-
-      // Mobile navigation
-      function setupMobileNav() {
-        const toggleBtn = document.querySelector('.mobile-nav-toggle');
-        const nav = document.querySelector('.nav-sidebar');
-
-        toggleBtn.addEventListener('click', () => {
-          nav.classList.toggle('active');
-        });
-
-        // Close nav when clicking outside
-        document.addEventListener('click', (e) => {
-          if (!nav.contains(e.target) && !toggleBtn.contains(e.target)) {
-            nav.classList.remove('active');
-          }
-        });
-      }
-
-      // Active link highlighting
-      function setupActiveLinks() {
-        const navLinks = document.querySelectorAll('.nav-link');
-
-        window.addEventListener('scroll', () => {
-          let current = '';
-          const sections = document.querySelectorAll('.content-section');
-
-          sections.forEach((section) => {
-            const sectionTop = section.offsetTop;
-            if (window.pageYOffset >= sectionTop - 60) {
-              current = section.id;
-            }
-          });
-
-          navLinks.forEach((link) => {
-            link.classList.remove('active');
-            if (link.getAttribute('href').slice(1) === current) {
-              link.classList.add('active');
-            }
-          });
-        });
-      }
 
       const resourceData = {
         type: 'Tutorial',
@@ -1220,44 +1152,286 @@ console.log(year, month, day);  // result: 2024 03 27`,
           },
         ],
       };
+      function createSection(sectionData) {
+        const section = document.createElement('section');
+        section.className = 'content-section';
 
-      // Main render function
-      function renderResource(data) {
-        // Set header content
-        document.getElementById(
-          'resourceType'
-        ).textContent = `${data.icon} ${data.type}`;
-        document.getElementById(
-          'resourceAuthor'
-        ).textContent = `👤 ${data.author}`;
-        document.getElementById('resourceDate').textContent = `📅 ${data.date}`;
-        document.getElementById('resourceTitle').textContent = data.title;
+        if (sectionData.title) {
+          section.id = sectionData.title.toLowerCase().replace(/\s+/g, '-');
+        }
 
-        // Render tags
-        const tagsContainer = document.getElementById('resourceTags');
-        data.tags.forEach((tag) => {
-          const tagSpan = document.createElement('span');
-          tagSpan.className = 'tag';
-          tagSpan.textContent = tag;
-          tagsContainer.appendChild(tagSpan);
-        });
+        switch (sectionData.type) {
+          case 'text':
+            section.innerHTML = `
+              <h2 class="section-title">${sectionData.title}</h2>
+              <p class="content-text">${sectionData.content}</p>
+            `;
+            break;
 
-        // Render content sections
-        const sectionsContainer = document.getElementById('contentSections');
-        data.sections.forEach((section) => {
-          sectionsContainer.appendChild(createSection(section));
-        });
+          case 'code':
+            section.innerHTML = `
+              <h2 class="section-title">${sectionData.title}</h2>
+              <div class="code-block">
+                <pre><code class="language-javascript">${sectionData.content}</code></pre>
+              </div>
+            `;
+            break;
 
-        // Initialize navigation and features
-        populateNavigation(data.sections);
-        setupSearch();
-        setupMobileNav();
-        setupActiveLinks();
+          case 'list':
+            const listItems = sectionData.items
+              .map((item) => `<li>${item}</li>`)
+              .join('');
+            section.innerHTML = `
+              <h2 class="section-title">${sectionData.title}</h2>
+              <ul class="list-content">${listItems}</ul>
+            `;
+            break;
 
-        // Initialize Prism.js syntax highlighting
-        Prism.highlightAll();
+          case 'warning':
+          case 'info':
+            section.innerHTML = `
+              <div class="${sectionData.type}-box">⚠️ ${sectionData.content}</div>
+            `;
+            break;
+        }
+
+        return section;
       }
-      renderResource(resourceData);
+
+      // Function to populate navigation
+      function populateNavigation(sections) {
+        const navMenu = document.getElementById('navMenu');
+        sections.forEach((section) => {
+          if (section.title) {
+            const li = document.createElement('li');
+            li.className = 'nav-item';
+            const link = document.createElement('a');
+            link.href = `#${section.title.toLowerCase().replace(/\s+/g, '-')}`;
+            link.className = 'nav-link';
+            link.textContent = section.title;
+            li.appendChild(link);
+            navMenu.appendChild(li);
+          }
+        });
+      }
+
+      // Enhanced mobile navigation
+      function setupMobileNav() {
+        const toggleBtn = document.getElementById('mobileNavToggle');
+        const nav = document.getElementById('navSidebar');
+        const overlay = document.getElementById('overlay');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        function closeNav() {
+          nav.classList.remove('active');
+          overlay.classList.remove('active');
+          document.body.style.overflow = '';
+        }
+
+        toggleBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          nav.classList.toggle('active');
+          overlay.classList.toggle('active');
+          document.body.style.overflow = nav.classList.contains('active')
+            ? 'hidden'
+            : '';
+        });
+
+        overlay.addEventListener('click', closeNav);
+
+        // Close nav when clicking a link on mobile
+        navLinks.forEach((link) => {
+          link.addEventListener('click', () => {
+            if (window.innerWidth <= 768) {
+              closeNav();
+            }
+          });
+        });
+
+        // Handle resize events
+        window.addEventListener('resize', () => {
+          if (window.innerWidth > 768) {
+            closeNav();
+          }
+        });
+      }
+
+      // Enhanced search functionality
+      function setupSearch() {
+        const searchInput = document.getElementById('searchInput');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        searchInput.addEventListener('input', (e) => {
+          const searchTerm = e.target.value.toLowerCase();
+          navLinks.forEach((link) => {
+            const text = link.textContent.toLowerCase();
+            const matches = text.includes(searchTerm);
+            link.parentElement.style.display = matches ? 'block' : 'none';
+            if (matches) {
+              const regex = new RegExp(`(${searchTerm})`, 'gi');
+              link.innerHTML = text.replace(regex, '<mark>$1</mark>');
+            } else {
+              link.textContent = text;
+            }
+          });
+        });
+      }
+
+      // Enhanced active link highlighting
+      function setupActiveLinks() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('.content-section');
+        const observerOptions = {
+          root: null,
+          rootMargin: '-20% 0px -75% 0px',
+          threshold: 0,
+        };
+
+        const intersectionCallback = (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              navLinks.forEach((link) => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').slice(1) === entry.target.id) {
+                  link.classList.add('active');
+                  link.scrollIntoViewIfNeeded?.();
+                }
+              });
+            }
+          });
+        };
+
+        const observer = new IntersectionObserver(
+          intersectionCallback,
+          observerOptions
+        );
+        sections.forEach((section) => observer.observe(section));
+      }
+
+      // Main render function with enhanced error handling
+      function renderResource(data) {
+        try {
+          // Set header content with fallbacks
+          document.getElementById('resourceType').textContent = `${
+            data.icon || '📄'
+          } ${data.type || 'Resource'}`;
+          document.getElementById('resourceAuthor').textContent = `👤 ${
+            data.author || 'Unknown Author'
+          }`;
+          document.getElementById('resourceDate').textContent = `📅 ${
+            data.date || 'No date'
+          }`;
+          document.getElementById('resourceTitle').textContent =
+            data.title || 'Untitled Resource';
+
+          // Render tags
+          const tagsContainer = document.getElementById('resourceTags');
+          tagsContainer.innerHTML = ''; // Clear existing tags
+          if (Array.isArray(data.tags) && data.tags.length > 0) {
+            data.tags.forEach((tag) => {
+              const tagSpan = document.createElement('span');
+              tagSpan.className = 'tag';
+              tagSpan.textContent = tag;
+              tagsContainer.appendChild(tagSpan);
+            });
+          }
+
+          // Render content sections
+          const sectionsContainer = document.getElementById('contentSections');
+          sectionsContainer.innerHTML = ''; // Clear existing sections
+          if (Array.isArray(data.sections) && data.sections.length > 0) {
+            data.sections.forEach((section) => {
+              if (section && typeof section === 'object') {
+                sectionsContainer.appendChild(createSection(section));
+              }
+            });
+          } else {
+            const emptySection = createSection({
+              type: 'text',
+              title: 'No Content',
+              content: 'This resource has no content sections.',
+            });
+            sectionsContainer.appendChild(emptySection);
+          }
+
+          // Initialize features
+          populateNavigation(data.sections || []);
+          setupSearch();
+          setupMobileNav();
+          setupActiveLinks();
+
+          // Initialize syntax highlighting
+          Prism.highlightAll();
+
+          // Add smooth scroll behavior
+          document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener('click', function (e) {
+              e.preventDefault();
+              const targetId = this.getAttribute('href').slice(1);
+              const target = document.getElementById(targetId);
+              if (target) {
+                target.scrollIntoView({
+                  behavior: 'smooth',
+                  block: 'start',
+                });
+              }
+            });
+          });
+        } catch (error) {
+          console.error('Error rendering resource:', error);
+          document.body.innerHTML = `
+      <div style="padding: 2rem; text-align: center;">
+        <h1>Error Loading Resource</h1>
+        <p>Sorry, there was an error loading this resource. Please try refreshing the page.</p>
+        <button onclick="location.reload()" style="padding: 0.5rem 1rem; margin-top: 1rem;">
+          Refresh Page
+        </button>
+      </div>
+    `;
+        }
+      }
+
+      // Add keyboard navigation support
+      function setupKeyboardNavigation() {
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            const nav = document.getElementById('navSidebar');
+            const overlay = document.getElementById('overlay');
+            if (nav.classList.contains('active')) {
+              nav.classList.remove('active');
+              overlay.classList.remove('active');
+              document.body.style.overflow = '';
+            }
+          }
+        });
+      }
+
+      // Initialize all features
+      document.addEventListener('DOMContentLoaded', () => {
+        setupKeyboardNavigation();
+
+        // Check for dark mode preference
+        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+
+        // Watch for dark mode changes
+        window
+          .matchMedia('(prefers-color-scheme: dark)')
+          .addEventListener('change', (e) => {
+            document.documentElement.setAttribute(
+              'data-theme',
+              e.matches ? 'dark' : 'light'
+            );
+          });
+
+        // Call renderResource if resourceData exists
+        if (typeof resourceData !== 'undefined') {
+          renderResource(resourceData);
+        } else {
+          console.error('Resource data not found');
+        }
+      });
     </script>
   </body>
 </html>
