@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+      title="Insight"
+    />
+    <title>Insight</title>
+    <style>
+      :root {
+        --primary: #0a0a0a;
+        --accent: #00ff88;
+        --text-light: #ffffff;
+        --gradient: linear-gradient(45deg, #00ff88, #00ccff);
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--primary);
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: var(--text-light);
+        overflow-x: hidden;
+        min-height: 100vh;
+        opacity: 0;
+        transition: opacity 1s ease-in;
+      }
+
+      body.loaded {
+        opacity: 1;
+      }
+
+      .loading-screen {
+        position: fixed;
+        inset: 0;
+        background: var(--primary);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2000;
+        transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+      }
+
+      .loading-screen.fade-out {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      .loader {
+        position: relative;
+        width: 150px;
+        height: 150px;
+      }
+
+      .loader:before,
+      .loader:after {
+        content: '';
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        border-top-color: var(--accent);
+      }
+
+      .loader:before {
+        animation: spin 1.5s linear infinite;
+        border-width: 2px;
+      }
+
+      .loader:after {
+        animation: spin 1s linear infinite reverse;
+        border-width: 4px;
+      }
+
+      .loader-text {
+        position: absolute;
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: var(--accent);
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      .animated-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 0;
+        background: radial-gradient(
+            circle at 50% 50%,
+            rgba(0, 255, 136, 0.1),
+            transparent 60%
+          ),
+          radial-gradient(
+            circle at 100% 0%,
+            rgba(0, 204, 255, 0.1),
+            transparent 50%
+          );
+        filter: blur(60px);
+        animation: backgroundFlow 20s ease infinite alternate;
+      }
+
+      .nav-header {
+        background: rgba(10, 10, 10, 0.8);
+        backdrop-filter: blur(10px);
+        padding: 1.5rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .nav-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .nav-title {
+        font-size: 2rem;
+        font-weight: 700;
+        background: var(--gradient);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+
+      .back-btn {
+        color: var(--text-light);
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        padding: 0.7rem 1.5rem;
+        border-radius: 50px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .back-btn:hover {
+        border-color: var(--accent);
+        background: rgba(0, 255, 136, 0.1);
+        transform: translateX(-5px);
+      }
+
+      .gallery-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 0 2rem;
+        position: relative;
+        z-index: 1;
+      }
+
+      .gallery-grid {
+        columns: 4 300px;
+        column-gap: 1.5rem;
+        width: 100%;
+        margin: 0 auto;
+      }
+
+      .gallery-item {
+        break-inside: avoid;
+        margin-bottom: 1.5rem;
+        position: relative;
+        border-radius: 15px;
+        overflow: hidden;
+        cursor: pointer;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        opacity: 0;
+        background: rgba(255, 255, 255, 0.05);
+        padding: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: all 0.3s ease;
+        animation: fadeInScale 0.6s ease forwards;
+      }
+
+      .gallery-item:hover {
+        transform: translateY(-5px);
+        border-color: var(--accent);
+        box-shadow: 0 10px 20px rgba(0, 255, 136, 0.1);
+      }
+
+      .gallery-item img {
+        width: 100%;
+        height: 300px;
+        display: block;
+        border-radius: 10px;
+        transition: all 0.5s ease;
+        opacity: 0;
+        object-fit: cover;
+      }
+
+      .gallery-item img.loaded {
+        opacity: 1;
+        height: auto;
+      }
+
+      .gallery-caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 2rem;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+
+      .gallery-item:hover .gallery-caption {
+        transform: translateY(0);
+      }
+
+      .caption-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: var(--accent);
+      }
+
+      .caption-text {
+        font-size: 0.9rem;
+        line-height: 1.4;
+        opacity: 0.9;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      @keyframes backgroundFlow {
+        0% {
+          transform: scale(1) rotate(0deg);
+        }
+        100% {
+          transform: scale(1.2) rotate(10deg);
+        }
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .gallery-grid {
+          columns: 2 250px;
+        }
+        .nav-title {
+          font-size: 1.6rem;
+        }
+        .gallery-container {
+          padding: 0 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .gallery-grid {
+          columns: 1 auto;
+        }
+        .nav-title {
+          font-size: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="loading-screen" id="loadingScreen">
+      <div class="loader">
+        <span class="loader-text">INSIGHT</span>
+      </div>
+    </div>
+
+    <div class="animated-bg"></div>
+
+    <nav class="nav-header">
+      <div class="nav-content">
+        <h1 class="nav-title">Insight</h1>
+        <a href="./index.html" class="back-btn">← Back</a>
+      </div>
+    </nav>
+
+    <div class="gallery-container">
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+
+    <script>
+      const galleryItems = [
+        {
+          src: './images/Image.png',
+          title: 'A1',
+          description: 'City lights and modern architecture',
+        },
+        {
+          src: './images/Image (55).jpg',
+          title: 'Natural Wonder',
+          description: 'Mountain landscapes at sunset',
+        },
+        {
+          src: './images/Image (54).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (53).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (52).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (51).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (50).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (49).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (48).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (47).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (46).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (45).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (44).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (43).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (42).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (41).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (40).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (39).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (38).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (37).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (36).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (35).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (34).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (33).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (32).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (31).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (30).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (29).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (28).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (27).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (26).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (25).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (24).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (23).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (22).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (21).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (20).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (19).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (18).jpg',
+          title: '',
+          description: '',
+        },
+        {
+          src: './images/Image (17).jpg',
+          title: '',
+          description: '',
+        },
+      ];
+
+      document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          document.getElementById('loadingScreen').classList.add('fade-out');
+          document.body.classList.add('loaded');
+          initGallery();
+        }, 2000);
+      });
+
+      function initGallery() {
+        const galleryGrid = document.getElementById('galleryGrid');
+
+        const imageObserver = new IntersectionObserver(
+          (entries, observer) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const img = entry.target;
+                const actualSrc = img.dataset.src;
+
+                const tempImage = new Image();
+                tempImage.onload = () => {
+                  img.src = actualSrc;
+                  img.classList.add('loaded');
+                };
+                tempImage.src = actualSrc;
+
+                observer.unobserve(img);
+              }
+            });
+          },
+          {
+            root: null,
+            rootMargin: '50px 0px',
+            threshold: 0.1,
+          }
+        );
+
+        galleryItems.forEach((item, index) => {
+          const galleryItem = document.createElement('div');
+          galleryItem.className = 'gallery-item';
+          galleryItem.style.animationDelay = `${index * 0.1 + 2}s`;
+
+          galleryItem.innerHTML = `
+                    <img 
+                        data-src="${item.src}"
+                        src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                        alt="${item.title}"
+                    >
+                    <div class="gallery-caption">
+                        <h3 class="caption-title">${item.title}</h3>
+                        <p class="caption-text">${item.description}</p>
+                    </div>
+                `;
+
+          galleryGrid.appendChild(galleryItem);
+
+          const img = galleryItem.querySelector('img');
+          imageObserver.observe(img);
+        });
+      }
+    </script>
+  </body>
+</html>

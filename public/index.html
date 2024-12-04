@@ -109,17 +109,6 @@
         animation: fadeIn 0.5s ease-out;
       }
 
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-
       .nav-item {
         aspect-ratio: 1;
         text-decoration: none;
@@ -137,13 +126,14 @@
         border: 1px solid transparent;
         height: 100%;
       }
+
       .nav-item-d {
+        display: none;
         aspect-ratio: 1;
         text-decoration: none;
         border-radius: 24px;
         background: rgb(39, 38, 38);
         transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
@@ -153,20 +143,22 @@
         overflow: hidden;
         border: 1px solid transparent;
         height: 100%;
-      }
-
-      .nav-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: var(--gradient-overlay);
         opacity: 0;
-        transition: opacity 0.3s ease;
+        animation: voidAppear 1s ease-out forwards;
       }
 
+      @keyframes voidAppear {
+        from {
+          opacity: 0;
+          transform: scale(0.8);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .nav-item::before,
       .nav-item-d::before {
         content: '';
         position: absolute;
@@ -179,22 +171,14 @@
         transition: opacity 0.3s ease;
       }
 
-      .nav-item:hover {
-        transform: translateY(-8px);
-        box-shadow: var(--card-hover-shadow);
-        border-color: var(--accent);
-      }
-
-      .nav-item:hover::before {
-        opacity: 1;
-      }
-
+      .nav-item:hover,
       .nav-item-d:hover {
         transform: translateY(-8px);
         box-shadow: var(--card-hover-shadow);
         border-color: var(--accent);
       }
 
+      .nav-item:hover::before,
       .nav-item-d:hover::before {
         opacity: 1;
       }
@@ -205,13 +189,11 @@
         transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       }
 
-      .nav-item:hover .icon {
-        transform: scale(1.2) rotate(5deg);
-      }
-
+      .nav-item:hover .icon,
       .nav-item-d:hover .icon {
         transform: scale(1.2) rotate(5deg);
       }
+
       .nav-title {
         font-size: clamp(1.1rem, 4vw, 1.3rem);
         font-weight: 600;
@@ -277,21 +259,6 @@
           min-height: 180px;
         }
       }
-
-      @media (hover: none) {
-        .description {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .nav-item:hover {
-          transform: none;
-        }
-
-        .nav-item:active {
-          transform: scale(0.98);
-        }
-      }
     </style>
   </head>
   <body>
@@ -351,10 +318,12 @@
           <div class="nav-title">Testament</div>
           <div class="description">My last words</div>
         </a>
-        <a href="thevoid.html" class="nav-item-d">
+
+        <a href="thevoid.html" class="nav-item-d" id="void-link">
           <div class="icon">🌌</div>
           <div class="nav-title-d">The Void</div>
         </a>
+
         <a href="honor-list.html" class="nav-item">
           <div class="icon">🏆</div>
           <div class="nav-title">Honor List</div>
@@ -398,6 +367,11 @@
           <div class="nav-title">Reading Journey</div>
           <div class="description">What I am reading rn</div>
         </a>
+        <a href="insight-gallery.html" class="nav-item">
+          <div class="icon">🖼️</div>
+          <div class="nav-title">Insights</div>
+          <div class="description">Look at some pictures I took</div>
+        </a>
       </div>
     </div>
 
@@ -405,6 +379,23 @@
       const items = document.querySelectorAll('.nav-item');
       items.forEach((item, index) => {
         item.style.animationDelay = `${index * 0.1}s`;
+      });
+
+      let secretCode = '';
+      const correctCode = 'void';
+      let voidRevealed = false;
+
+      document.addEventListener('keydown', (e) => {
+        secretCode += e.key.toLowerCase();
+        if (secretCode.length > correctCode.length) {
+          secretCode = secretCode.slice(-correctCode.length);
+        }
+
+        if (secretCode === correctCode && !voidRevealed) {
+          const voidLink = document.getElementById('void-link');
+          voidLink.style.display = 'flex';
+          voidRevealed = true;
+        }
       });
     </script>
   </body>
